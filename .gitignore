@@ -1,0 +1,53 @@
+# ============================================================
+# DocMind — RAG Knowledge Assistant
+# Git Ignore Rules
+# ============================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local ChromaDB data
+data/chroma/
+
+# Local uploaded/generated documents
+data/documents/
+data/uploads/
+
+# Model files
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.onnx
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
