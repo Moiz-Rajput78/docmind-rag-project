@@ -47,6 +47,10 @@ class HybridRetriever:
     These weights were selected from the project's 30-question
     hybrid weight experiment. They should be treated as experiment
     results for this dataset, not as universal optimal weights.
+
+    An existing EmbeddingService can be supplied so the Dense
+    retrieval component can share the embedding model with other
+    retrievers.
     """
 
     def __init__(
@@ -56,13 +60,18 @@ class HybridRetriever:
         dense_weight: float = 0.6,
         bm25_weight: float = 0.4,
         reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        embedding_service: EmbeddingService | None = None,
     ) -> None:
 
         if dense_weight < 0:
-            raise ValueError("dense_weight cannot be negative.")
+            raise ValueError(
+                "dense_weight cannot be negative."
+            )
 
         if bm25_weight < 0:
-            raise ValueError("bm25_weight cannot be negative.")
+            raise ValueError(
+                "bm25_weight cannot be negative."
+            )
 
         total_weight = dense_weight + bm25_weight
 
@@ -74,7 +83,14 @@ class HybridRetriever:
         self.dense_weight = dense_weight / total_weight
         self.bm25_weight = bm25_weight / total_weight
 
-        self.embedding_service = EmbeddingService()
+        # Reuse an existing embedding service when provided.
+        # This prevents loading the same Sentence Transformer model
+        # multiple times inside AnswerService.
+        self.embedding_service = (
+            embedding_service
+            if embedding_service is not None
+            else EmbeddingService()
+        )
 
         self.store = ChromaStore(
             persist_directory=chroma_dir,
@@ -100,6 +116,7 @@ class HybridRetriever:
 
         Lowercasing keeps lexical matching case-insensitive.
         """
+
         return text.lower().split()
 
     def _load_all_documents(self) -> list[dict[str, Any]]:
@@ -389,9 +406,8 @@ class HybridRetriever:
         """
         Fuse Dense and BM25 rankings using normalized scores.
 
-        A reciprocal-rank style contribution is used so that both
-        retrieval methods contribute even when their raw score scales
-        differ.
+        A weighted score fusion is used so both retrieval methods
+        contribute even though their raw score scales differ.
         """
 
         dense_scores: dict[str, float] = {}
@@ -475,8 +491,7 @@ class HybridRetriever:
             fused_scores[chunk_id] = (
                 self.dense_weight
                 * dense_score
-                +
-                self.bm25_weight
+                + self.bm25_weight
                 * bm25_score
             )
 
@@ -498,14 +513,17 @@ class HybridRetriever:
             )
 
             result["rank"] = rank
+
             result["dense_score"] = normalized_dense.get(
                 chunk_id,
                 0.0,
             )
+
             result["bm25_score"] = normalized_bm25.get(
                 chunk_id,
                 0.0,
             )
+
             result["hybrid_score"] = fused_scores[
                 chunk_id
             ]
@@ -667,12 +685,15 @@ class HybridRetriever:
         ]
 
         if use_reranker:
+
             final_results = self.rerank(
                 query=query,
                 results=candidates,
                 final_k=top_k,
             )
+
         else:
+
             final_results = candidates[
                 :top_k
             ]

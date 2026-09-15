@@ -4,33 +4,46 @@ DocMind RAG - Answer Service
 This module connects:
 
     User Question
-        ↓
-    Retriever
-        ↓
-    Retrieved Chunks
-        ↓
-    Context Builder
-        ↓
-    Grounded Prompt
-        ↓
-    Ollama Cloud LLM
-        ↓
-    Answer + Authoritative Sources
+            ↓
+    Hybrid Retrieval
+            ├── Dense Semantic Retrieval
+            └── BM25 Lexical Retrieval
+                    ↓
+                Score Fusion
+                    ↓
+            Cross-Encoder Reranking
+                    ↓
+            Retrieved Chunks
+                    ↓
+            Context Builder
+                    ↓
+            Grounded Prompt
+                    ↓
+            Ollama Cloud LLM
+                    ↓
+        Answer + Authoritative Sources
 
 Important:
+
 The LLM generates the answer, but this service owns the source metadata.
+
 We do not rely on the LLM to generate source numbers or filenames.
+
+The original dense Retriever remains available as a fallback.
 """
 
 from __future__ import annotations
 
 from typing import Any
+import re
 
+from app.embeddings.embedding_service import EmbeddingService
 from app.generation.llm import OllamaCloud
 from app.generation.prompts import (
     SYSTEM_PROMPT,
     build_user_prompt,
 )
+from app.retrieval.hybrid_retriever import HybridRetriever
 from app.retrieval.retriever import Retriever
 
 
@@ -42,31 +55,119 @@ class AnswerService:
     End-to-end RAG answer service.
 
     Responsibilities:
+
     - Retrieve relevant chunks.
     - Build grounded context.
     - Send context + question to the LLM.
     - Return the generated answer.
     - Return authoritative source metadata from retrieval.
+
+    Retrieval modes:
+
+    - Hybrid + Cross-Encoder Reranker: default.
+    - Dense-only Retriever: fallback/experimental mode.
+
+    The embedding model is shared between the dense and hybrid
+    retrievers so it is loaded only once.
     """
 
-    def __init__(self, top_k: int = 3):
+    def __init__(
+        self,
+        top_k: int = 3,
+        use_hybrid: bool = True,
+        candidate_k: int = 10,
+        dense_weight: float = 0.6,
+        bm25_weight: float = 0.4,
+        use_reranker: bool = True,
+    ):
         if top_k < 1:
-            raise ValueError("top_k must be at least 1.")
+            raise ValueError(
+                "top_k must be at least 1."
+            )
+
+        if candidate_k < top_k:
+            raise ValueError(
+                "candidate_k must be greater than or equal to top_k."
+            )
+
+        if dense_weight < 0 or bm25_weight < 0:
+            raise ValueError(
+                "dense_weight and bm25_weight cannot be negative."
+            )
+
+        if dense_weight == 0 and bm25_weight == 0:
+            raise ValueError(
+                "At least one retrieval weight must be greater than zero."
+            )
 
         self.top_k = top_k
+        self.use_hybrid = use_hybrid
+        self.candidate_k = candidate_k
+        self.dense_weight = dense_weight
+        self.bm25_weight = bm25_weight
+        self.use_reranker = use_reranker
 
-        self.retriever = Retriever()
+        # ------------------------------------------------------------
+        # Shared embedding service
+        # ------------------------------------------------------------
+
+        # Load the Sentence Transformer embedding model ONCE.
+        #
+        # Both Retriever and HybridRetriever receive this same
+        # instance, avoiding duplicate model loading.
+        self.embedding_service = EmbeddingService()
+
+        # ------------------------------------------------------------
+        # Retrieval services
+        # ------------------------------------------------------------
+
+        # Original dense retriever is intentionally preserved.
+        self.dense_retriever = Retriever(
+            embedding_service=self.embedding_service,
+        )
+
+        # Hybrid retrieval combines:
+        #
+        #   Dense semantic retrieval
+        #   BM25 lexical retrieval
+        #   Cross-encoder reranking
+        #
+        # It reuses the same embedding service.
+        self.hybrid_retriever = HybridRetriever(
+            dense_weight=dense_weight,
+            bm25_weight=bm25_weight,
+            embedding_service=self.embedding_service,
+        )
+
+        # Backward-compatible alias.
+        #
+        # Existing code that accesses service.retriever will continue
+        # to work and will use the selected retrieval mode.
+        self.retriever = (
+            self.hybrid_retriever
+            if self.use_hybrid
+            else self.dense_retriever
+        )
+
+        # ------------------------------------------------------------
+        # LLM
+        # ------------------------------------------------------------
+
         self.llm = OllamaCloud()
 
-    def build_context(self, results: list[dict[str, Any]]) -> str:
+    def build_context(
+        self,
+        results: list[dict[str, Any]],
+    ) -> str:
         """
         Convert retrieved chunks into structured context for the LLM.
 
-        The source metadata is explicitly included so the model can understand
-        where each piece of information came from.
+        The source metadata is explicitly included so the model can
+        understand where each piece of information came from.
 
-        However, source citations are NOT generated by the model. The original
-        metadata remains authoritative in the returned result.
+        However, source citations are NOT generated by the model.
+        The original metadata remains authoritative in the returned
+        result.
         """
 
         if not results:
@@ -74,8 +175,14 @@ class AnswerService:
 
         context_parts: list[str] = []
 
-        for index, result in enumerate(results, start=1):
-            metadata = result.get("metadata", {})
+        for index, result in enumerate(
+            results,
+            start=1,
+        ):
+            metadata = result.get(
+                "metadata",
+                {},
+            )
 
             filename = (
                 metadata.get("filename")
@@ -89,7 +196,10 @@ class AnswerService:
                 or "unknown"
             )
 
-            page = metadata.get("page", result.get("page"))
+            page = metadata.get(
+                "page",
+                result.get("page"),
+            )
 
             chunk_number = metadata.get(
                 "chunk_number",
@@ -115,12 +225,17 @@ class AnswerService:
             context_parts.append(
                 f"""
 --- Retrieved Chunk {index} ---
+
 Document: {filename}
+
 Category: {category}
+
 Page: {page_display}
+
 Chunk: {chunk_display}
 
 Content:
+
 {content}
 """.strip()
             )
@@ -134,14 +249,20 @@ Content:
         """
         Build authoritative source metadata from retrieval results.
 
-        These sources come directly from Chroma/retrieval metadata rather than
-        from anything generated by the LLM.
+        These sources come directly from Chroma/retrieval metadata
+        rather than from anything generated by the LLM.
         """
 
         sources: list[dict[str, Any]] = []
 
-        for index, result in enumerate(results, start=1):
-            metadata = result.get("metadata", {})
+        for index, result in enumerate(
+            results,
+            start=1,
+        ):
+            metadata = result.get(
+                "metadata",
+                {},
+            )
 
             filename = (
                 metadata.get("filename")
@@ -164,31 +285,63 @@ Content:
                 result.get("chunk_number"),
             )
 
+            # Prefer the original Chroma distance when available.
+            # Hybrid retrieval may additionally provide
+            # hybrid/reranker scores.
             distance = result.get("distance")
 
-            # Chroma uses -1 for documents where a page number does not exist.
+            # Chroma uses -1 for documents where a page number
+            # does not exist.
             if page == -1:
                 page = None
 
-            sources.append(
-                {
-                    "source_number": index,
-                    "filename": filename,
-                    "page": page,
-                    "category": category,
-                    "chunk_number": chunk_number,
-                    "distance": distance,
-                }
-            )
+            source = {
+                "source_number": index,
+                "filename": filename,
+                "page": page,
+                "category": category,
+                "chunk_number": chunk_number,
+                "distance": distance,
+            }
+
+            # Preserve additional retrieval diagnostics when supplied
+            # by HybridRetriever. These do not affect authoritative
+            # source identity.
+
+            if result.get("hybrid_score") is not None:
+                source["hybrid_score"] = result.get(
+                    "hybrid_score"
+                )
+
+            if result.get("reranker_score") is not None:
+                source["reranker_score"] = result.get(
+                    "reranker_score"
+                )
+
+            if result.get("dense_score") is not None:
+                source["dense_score"] = result.get(
+                    "dense_score"
+                )
+
+            if result.get("bm25_score") is not None:
+                source["bm25_score"] = result.get(
+                    "bm25_score"
+                )
+
+            sources.append(source)
 
         return sources
 
-    def _normalize_answer(self, answer: str) -> str:
+    def _normalize_answer(
+        self,
+        answer: str,
+    ) -> str:
         """
         Clean up the LLM response without changing its factual content.
 
-        The model is instructed not to create source citations. This method
-        also removes common citation markers if an LLM produces them anyway.
+        The model is instructed not to create source citations.
+        This method also removes common citation markers if an LLM
+        produces them anyway.
 
         We intentionally do NOT rewrite factual content.
         """
@@ -201,25 +354,28 @@ Content:
         if not cleaned:
             return ABSTENTION_MESSAGE
 
-        # If the model accidentally includes our citation marker despite the
-        # prompt, remove only the marker. Source information is displayed
-        # separately from authoritative metadata.
-        import re
+        # If the model accidentally includes our citation marker
+        # despite the prompt, remove only the marker.
+        #
+        # Source information is displayed separately from
+        # authoritative metadata.
 
         cleaned = re.sub(
-            r"【\s*Source\s*\d+\s*】",
+            r"【\s*\*Source\*\d+\s*】",
             "",
             cleaned,
             flags=re.IGNORECASE,
         )
 
         cleaned = re.sub(
-            r"\[\s*Source\s*\d+\s*\]",
+            r"\[\s*\*Source\*\d+\s*\]",
             "",
             cleaned,
             flags=re.IGNORECASE,
         )
 
+        # Collapse excessive spaces/tabs while preserving normal
+        # line breaks and Markdown formatting.
         cleaned = re.sub(
             r"[ \t]{2,}",
             " ",
@@ -234,45 +390,92 @@ Content:
 
         return cleaned.strip() or ABSTENTION_MESSAGE
 
-    def ask(self, question: str) -> dict[str, Any]:
+    def _retrieve(
+        self,
+        question: str,
+    ) -> list[dict[str, Any]]:
+        """
+        Retrieve chunks using the configured retrieval strategy.
+        """
+
+        if self.use_hybrid:
+            return self.hybrid_retriever.retrieve(
+                query=question,
+                top_k=self.top_k,
+                candidate_k=self.candidate_k,
+                use_reranker=self.use_reranker,
+            )
+
+        return self.dense_retriever.retrieve(
+            question,
+            self.top_k,
+        )
+
+    def get_retrieval_mode(self) -> str:
+        """
+        Return a human-readable description of the active
+        retrieval mode.
+        """
+
+        if not self.use_hybrid:
+            return "Dense Semantic Retrieval"
+
+        if self.use_reranker:
+            return (
+                "Hybrid Dense + BM25 + Cross-Encoder Reranker"
+            )
+
+        return "Hybrid Dense + BM25"
+
+    def ask(
+        self,
+        question: str,
+    ) -> dict[str, Any]:
         """
         Answer a user question using the RAG pipeline.
 
         Returns:
+
             {
                 "question": str,
                 "answer": str,
                 "sources": list[dict],
                 "retrieved_count": int,
-                "top_k": int
+                "top_k": int,
+                "retrieval_mode": str
             }
         """
 
         question = question.strip()
 
         if not question:
-            raise ValueError("Question cannot be empty.")
+            raise ValueError(
+                "Question cannot be empty."
+            )
 
         # ------------------------------------------------------------
         # 1. Retrieve relevant document chunks
         # ------------------------------------------------------------
 
-        results = self.retriever.retrieve(
-           question,
-           self.top_k,
+        results = self._retrieve(
+            question
         )
 
         # ------------------------------------------------------------
         # 2. Build authoritative source metadata
         # ------------------------------------------------------------
 
-        sources = self._build_sources(results)
+        sources = self._build_sources(
+            results
+        )
 
         # ------------------------------------------------------------
         # 3. Build context
         # ------------------------------------------------------------
 
-        context = self.build_context(results)
+        context = self.build_context(
+            results
+        )
 
         # ------------------------------------------------------------
         # 4. Handle empty retrieval safely
@@ -285,6 +488,7 @@ Content:
                 "sources": [],
                 "retrieved_count": 0,
                 "top_k": self.top_k,
+                "retrieval_mode": self.get_retrieval_mode(),
             }
 
         # ------------------------------------------------------------
@@ -309,7 +513,9 @@ Content:
         # 7. Normalize answer
         # ------------------------------------------------------------
 
-        answer = self._normalize_answer(answer)
+        answer = self._normalize_answer(
+            answer
+        )
 
         # ------------------------------------------------------------
         # 8. Return answer + authoritative sources
@@ -321,6 +527,7 @@ Content:
             "sources": sources,
             "retrieved_count": len(results),
             "top_k": self.top_k,
+            "retrieval_mode": self.get_retrieval_mode(),
         }
 
 
@@ -341,6 +548,10 @@ def answer_question(
         print(result["sources"])
     """
 
-    service = AnswerService(top_k=top_k)
+    service = AnswerService(
+        top_k=top_k
+    )
 
-    return service.ask(question)
+    return service.ask(
+        question
+    )

@@ -19,14 +19,25 @@ class Retriever:
 
     Converts a user question into an embedding and retrieves
     the most semantically relevant document chunks from ChromaDB.
+
+    An existing EmbeddingService can be supplied so multiple
+    retrieval components can share the same embedding model.
     """
 
     def __init__(
         self,
         chroma_dir: str | Path = CHROMA_DIR,
         collection_name: str = "docmind_documents",
+        embedding_service: EmbeddingService | None = None,
     ):
-        self.embedding_service = EmbeddingService()
+        # Reuse an existing embedding service when provided.
+        # This prevents loading the same Sentence Transformer model
+        # multiple times inside AnswerService.
+        self.embedding_service = (
+            embedding_service
+            if embedding_service is not None
+            else EmbeddingService()
+        )
 
         self.store = ChromaStore(
             persist_directory=chroma_dir,
@@ -50,16 +61,18 @@ class Retriever:
 
         query = query.strip()
 
-        # Convert question into embedding
-        query_embedding = self.embedding_service.embed_text(query)
+        # Convert question into embedding.
+        query_embedding = self.embedding_service.embed_text(
+            query
+        )
 
-        # Search ChromaDB using the existing ChromaStore interface
+        # Search ChromaDB using the existing ChromaStore interface.
         results = self.store.query(
             query_embedding,
             top_k,
         )
 
-        retrieved = []
+        retrieved: list[dict[str, Any]] = []
 
         documents = results.get("documents", [[]])[0]
         metadatas = results.get("metadatas", [[]])[0]
@@ -114,7 +127,7 @@ class Retriever:
         Retrieve results for multiple questions.
         """
 
-        results = {}
+        results: dict[str, list[dict[str, Any]]] = {}
 
         for query in queries:
             results[query] = self.retrieve(
@@ -126,4 +139,5 @@ class Retriever:
 
     def count(self) -> int:
         """Return the number of chunks currently stored."""
+
         return self.store.count()
