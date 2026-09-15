@@ -1,0 +1,18 @@
+NovaTech Product B — NovaFlow
+=============================
+
+Overview
+--------
+NovaFlow is a fictional workflow automation platform designed to help organizations automate repetitive business processes.
+
+Workflow Structure
+------------------
+A NovaFlow workflow consists of a trigger, one or more actions, optional conditions, and a final execution state.
+
+Supported Actions
+-----------------
+Common actions include sending notifications, updating records, calling HTTP endpoints, creating tasks, and writing approved data to external systems.
+
+Execution States
+----------------
+A workflow can be Pending, Running, Completed, Failed, or Disabled.

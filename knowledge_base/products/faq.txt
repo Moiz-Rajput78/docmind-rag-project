@@ -1,0 +1,18 @@
+NovaTech Products — Frequently Asked Questions
+==============================================
+
+NovaDesk Access
+---------------
+NovaDesk administrators can invite users from the Administration section. The invited user receives instructions for completing account setup.
+
+NovaFlow Failure
+----------------
+When a NovaFlow workflow fails, administrators should review the execution log, identify the failed action, and correct the configuration before retrying.
+
+Priority Levels
+---------------
+NovaDesk supports Low, Medium, High, and Critical ticket priorities.
+
+Product Documentation
+---------------------
+Product-specific configuration instructions should be followed before changing production settings.

@@ -1,0 +1,18 @@
+NovaTech Technical Guide — Troubleshooting
+==========================================
+
+Application Does Not Start
+--------------------------
+Check the application configuration, verify that required services are available, inspect application logs, and confirm that the database connection is working.
+
+Database Connection Failure
+---------------------------
+Verify the database address, credentials, network connectivity, and database service status. Never include database passwords in support tickets.
+
+Users Cannot Sign In
+--------------------
+Check authentication configuration, account status, identity-provider connectivity, and relevant logs.
+
+Notifications Are Missing
+-------------------------
+Verify notification rules, recipient configuration, background processing, and application logs.
