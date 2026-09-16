@@ -1,0 +1,1734 @@
+question,difficulty,category,expected_sources,normal_answer,rag_answer,normal_generation_ms,rag_retrieval_ms,rag_context_ms,rag_generation_ms,rag_total_ms,normal_evidence_support_proxy,rag_groundedness_proxy,rag_context_relevance,normal_citation_available,rag_citation_available,expected_source_found,normal_abstained,rag_abstained,rag_source_count,normal_error,rag_error
+How many annual leave days do full-time employees receive?,easy,hr,leave_policy.pdf,"The number of annual‑leave (vacation) days that a full‑time employee gets isn’t set by a single universal rule—it depends on the country’s labor laws, the specific employer’s policies, the employee’s length of service, and sometimes the employee’s role or seniority. Here’s a broad overview of the most common standards around the world:
+
+| Region / Country | Legal Minimum (or typical) annual leave for full‑time staff* | Typical corporate practice (including extra “company‑paid” days) |
+|-------------------|--------------------------------------------------------------|--------------------------------------------------------------|
+| **United States** | No federal minimum (most states also have none). Private‑sector employers usually offer **10–20 days** (2–4 weeks) after a year of service. | Many companies add 2–5 “floating holidays,” personal days, or paid holidays, bringing the total to **12–25 days**. |
+| **Canada** | Minimum **2 weeks** (10 working days) for most provinces; **3 weeks** after 5 years of service in many provinces. | Many employers start at **15–20 days** (≈3–4 weeks) and increase with tenure. |
+| **European Union** (EU‑wide directive) | Minimum **4 weeks** (20 working days) of paid vacation per year. | Countries often go beyond that: e.g., Germany ≈ 24 days, France ≈ 25 days, Spain ≈ 22 days, plus public holidays. |
+| **United Kingdom** | Minimum **28 days** of paid leave (includes public holidays). | Many employers offer **25–30 days** of “annual leave” **plus** the statutory public holidays, effectively 30–35 days total. |
+| **Australia** | Minimum **4 weeks** (20 working days) for full‑time employees; **5 weeks** for shift workers. | Commonly **20–25 days** plus any additional “personal/carer” days. |
+| **New Zealand** | Minimum **4 weeks** (20 working days). | Typical packages are **20–25 days**, sometimes more for senior staff. |
+| **Japan** | Legal minimum starts at **10 days** (first year) and rises to **20 days** after 6.5 years of continuous employment. | Many large firms provide **15–20 days** initially, increasing with seniority. |
+| **China** | Minimum: **5 days** (first year), **10 days** (after 1 year), **15 days** (after 10 years) of paid leave. | Larger companies often add “company‑specific” holidays, ending up with **10–20 days** total. |
+| **India** | Minimum **12 days** of paid leave per year (plus 10 days casual and 8 days sick leave). | Many private firms grant **15–20 days** of “earned leave” in addition to casual/sick leave. |
+
+\*All figures are expressed in *working days* (usually Monday‑Friday) unless otherwise noted.
+
+### Key factors that affect the exact number
+
+1. **Length of service / seniority** – Many employers increase vacation entitlement after a certain number of years (e.g., 5, 10, 15 years).
+2. **Collective bargaining agreements** – In unionized workplaces, the contract may specify a higher (or lower) amount than the statutory minimum.
+3. **Industry norms** – Sectors such as tech, finance, or consultancy often provide more generous vacation packages to stay competitive.
+4. **Full‑time definition** – Some companies count a 35‑hour week as full‑time, others require 40 hours. The leave accrual may be pro‑rated accordingly.
+5. **Carry‑over policies** – Some firms allow unused days to roll over to the next year (often with a cap), which can affect how many you can *use* in a given year.
+6. **Public holidays** – In many jurisdictions the statutory vacation amount is **in addition to** statutory public holidays; in others the public holidays are counted as part of the vacation total.
+
+### How to find the exact number for a specific job
+
+1. **Check the employee handbook or contract** – Companies typically spell out the “annual leave entitlement” (sometimes called “vacation,” “holiday,” or “paid time off (PTO)”).
+2. **Ask HR or your manager** – They can clarify if there are any accrual schedules, seniority bumps, or special “floating” days.
+3. **Look up local labor laws** – If you’re unsure whether the company’s policy meets the legal minimum, each country’s labor ministry or a reputable labor‑law website can confirm the statutory baseline.
+4. **Consider any special arrangements** – Some firms have “unlimited PTO” policies, which technically have no set number but still require manager approval and may have cultural expectations.
+
+### Quick rule‑of‑thumb summary
+
+- **U.S. private sector:** ≈ 10–20 days (plus holidays)  
+- **EU / Australia / New Zealand:** ≈ 20–30 days (including holidays)  
+- **Asia (Japan, China, India, etc.):** ≈ 10–20 days, often increasing with tenure  
+
+If you have a particular country, industry, or company in mind, let me know and I can provide a more focused answer!",Full-time employees receive 20 annual leave days per calendar year.,4600.5,8212.08,0.02,1351.21,9563.63,0.0295,1.0,0.9583,False,True,True,False,False,3,,
+How many sick leave days do employees receive?,easy,hr,leave_policy.pdf,"The number of sick‑leave days an employee gets isn’t the same everywhere – it depends on the country’s labor laws, the state or province you’re in, and the individual employer’s policy (including any collective‑bargaining agreement).
+
+**Typical benchmarks**
+
+| Region / Country | Statutory minimum (or common practice) | How it’s usually set |
+|------------------|----------------------------------------|----------------------|
+| **United States** (federal) | No federal law requiring paid sick leave. Many states and cities have their own rules (e.g., California: ≥ 3 hours per 30 hours worked, up to 24 days per year). | Most private employers offer 5‑10 paid sick days per year, often accrued based on tenure. |
+| **Canada** | Varies by province. For example, Ontario requires 3 paid sick days per year for most employees; Quebec provides 2 weeks of paid sick leave after a qualifying period. | Many employers top this up to 5‑10 days or provide a separate “sick‑day bank.” |
+| **European Union** | EU directives set a minimum of **5 working days** of paid sick leave per year (the “minimum” can be higher in national law). | In practice, most EU countries grant 10‑30 days (or more) depending on tenure and collective agreements. |
+| **United Kingdom** | No statutory paid‑sick‑leave entitlement, but employees are entitled to **Statutory Sick Pay (SSP)** for up to 28 weeks (currently £109.40 per week). | Many employers supplement SSP with a contractual sick‑pay scheme (e.g., 5‑10 days of full pay, then reduced rates). |
+| **Australia** | Under the National Employment Standards (NES), employees get **10 days** of paid personal/carer leave per year (accrues progressively). | Some awards or enterprise agreements add extra days or “extra sick leave.” |
+| **India** | The Factories Act provides **12 days** of sick leave per year (with medical certificate). Other sectors may have different rules. |
+| **Japan** | No statutory paid sick‑leave quota, but most companies provide a paid‑sick‑leave system that generally covers **10‑20 days** annually, often increasing with seniority. |
+
+**Key points to keep in mind**
+
+1. **Accrual vs. lump‑sum** – Some employers let sick days accrue each month (e.g., 1 day per month), while others give a fixed annual “bank.”
+2. **Carry‑over** – Policies differ on whether unused sick days roll over to the next year, expire, or are paid out at termination.
+3. **Documentation** – After a certain number of consecutive days (commonly 2‑3), a doctor’s note may be required.
+4. **Paid vs. unpaid** – Even where a statutory minimum exists, the law may specify only **unpaid** leave, leaving it up to the employer to offer paid sick days.
+
+---
+
+### What to do next?
+
+- **Check your employment contract or employee handbook** – It should spell out the exact number of sick days, accrual method, and any conditions (e.g., medical certificates).
+- **Look at local labor‑law resources** – Government labor departments or official websites list the statutory minimum for your jurisdiction.
+- **Ask HR** – If you’re unsure, a quick question to your HR or payroll department will give you the definitive answer for your particular workplace.
+
+If you can tell me the country, state/province, or the specific company you’re curious about, I can narrow the information down further. Otherwise, the range above should give you a solid starting point.",Employees receive 10 sick leave days per calendar year.,4654.69,134.71,0.01,1306.68,1441.45,0.0228,1.0,0.9444,False,True,True,False,False,3,,
+What is NovaDesk?,easy,products,product_a.pdf,"**NovaDesk** is the name commonly used for a modern, technology‑enabled workspace‑management solution. In most contexts you’ll find it described as a platform that helps organizations run hybrid‑work offices more efficiently by:
+
+| Feature | What it does |
+|---------|--------------|
+| **Desk‑booking / hot‑desking** | Employees can see which desks are free in real time, reserve a workstation for the day (or a specific time slot), and check‑in/out via a web portal or mobile app. |
+| **Seating‑layout planning** | Facilities managers can design floor‑plans, assign zones, and move people around quickly when the office layout changes. |
+| **Analytics & utilization reporting** | The system collects data on how often desks are used, occupancy rates, peak traffic times, etc., helping companies right‑size their space and reduce overhead. |
+| **Health & safety compliance** | In the post‑COVID era many NovaDesk‑type tools add visitor‑screening, capacity‑limits, cleaning‑schedule alerts, and contact‑tracing integrations. |
+| **Integrations** | It often syncs with calendar tools (Outlook, Google Calendar), identity providers (Azure AD, Okta), and workplace‑services like room‑booking, visitor‑management, or building‑automation systems. |
+| **User experience** | Employees typically get a simple UI: a map of the office, filter by desk type (standing, private, collaborative), and a one‑click reservation button. Some solutions also support QR‑code or NFC check‑in at the desk. |
+
+### Who uses it?
+- **Large enterprises** that support a hybrid work model and need to maximize office real‑estate efficiency.
+- **Co‑working spaces** that want to let members reserve hot desks or private offices on demand.
+- **Universities / research labs** that manage shared workstations and need to track usage for budgeting or compliance reasons.
+
+### Why it’s called “NovaDesk”
+The “Nova” part of the name is usually a branding choice meant to evoke “new” or “innovative” (nova → a bright, new star). The “Desk” suffix makes it clear that the product is centered around workplace seating and desk management.
+
+### Possible variations
+There are a few unrelated products that also carry the NovaDesk name, such as:
+
+| Variant | Description |
+|---------|-------------|
+| **NovaDesk (hardware)** | A line of ergonomic office desks that incorporate built‑in power outlets, USB ports, cable‑management trays, and sometimes even integrated monitors. |
+| **NovaDesk (remote‑desktop software)** | A lightweight remote‑access tool for connecting to a computer over the internet, similar to TeamViewer or VNC. This usage is far less common. |
+
+If you’re hearing the name in the context of a **software platform for office space management**, the description above is the one that most people refer to. If you meant one of the hardware or remote‑desktop products, let me know and I can give more details!","NovaDesk is a customer‐support management platform offered by NovaTech. It enables support teams to handle customer requests, assign tickets, track their status, and monitor service performance. Its key capabilities include ticket management, team assignment, priority levels, customer profiles, dashboards, search, and configurable notification rules.",6467.11,193.24,0.01,2190.45,2383.78,0.0043,0.8438,1.0,False,True,True,False,False,3,,
+What is NovaFlow?,easy,products,product_b.txt,"**NovaFlow** can refer to several different products, services, or brands, depending on the industry and context. Below are the most common uses of the name that show up in publicly‑available information up to 2024. If you have a particular domain (e.g., software, medical devices, finance, etc.) in mind, let me know and I can narrow the description.
+
+---
+
+## 1. NovaFlow – Low‑Code Workflow / Automation Platform  
+- **What it is:** A cloud‑based, low‑code platform that lets businesses design, automate, and monitor business processes (e.g., approvals, data integrations, task routing) without extensive programming.  
+- **Key features** typically include:  
+  - Drag‑and‑drop process builder  
+  - Pre‑built connectors to popular SaaS tools (Salesforce, Slack, Google Workspace, etc.)  
+  - Real‑time analytics and dashboards  
+  - Role‑based access controls and audit trails  
+  - API exposure for custom integrations  
+- **Typical users:** HR departments (onboarding), finance (invoice approvals), IT (service‑ticket routing), and any team looking to replace manual spreadsheets or email loops with an automated flow.  
+- **Pricing model:** Usually subscription‑based (tiered by number of users, flows, or runtime minutes).  
+- **Example vendor:** *NovaFlow Labs* (based in the U.S.) launched the platform in 2021 and markets it as “the fastest way to build enterprise‑grade workflows”.
+
+---
+
+## 2. NovaFlow – Medical Device (Catheter/Infusion System)  
+- **What it is:** A line of disposable catheters and fluid‑delivery systems used for intravenous therapy, blood sampling, or dialysis.  
+- **Key attributes:**  
+  - Anti‑reflux valve to prevent back‑flow  
+  - High‑flow lumen for rapid infusion of fluids or blood products  
+  - Transparent chamber for visual monitoring of air bubbles  
+- **Manufacturer:** Often associated with *NovaMed* or *NovaFlow Medical Solutions*, a company that supplies hospitals and clinics in North America and Europe.  
+- **Regulatory status:** Generally cleared by the FDA (510(k) for the U.S.) and CE‑marked for the European market.
+
+---
+
+## 3. NovaFlow – Financial‑Technology (FinTech) Service  
+- **What it is:** A B2B SaaS platform that helps small‑to‑mid‑size enterprises manage cash‑flow forecasting, invoicing, and automated collections.  
+- **Core capabilities:**  
+  - Real‑time cash‑flow visibility across multiple bank accounts  
+  - AI‑driven revenue projection models  
+  - Integrated payment gateway for batch invoicing and automatic reminders  
+- **Target market:** Companies that need more sophisticated cash‑management tools than basic accounting software but don’t require an ERP.  
+- **Notable partners:** Often integrated with accounting platforms such as Xero, QuickBooks, and NetSuite.
+
+---
+
+## 4. NovaFlow – Data‑Streaming / IoT Middleware  
+- **What it is:** A lightweight, open‑source library (sometimes found on GitHub) for handling high‑throughput data streams from IoT sensors, edge devices, or micro‑services.  
+- **Features:**  
+  - Built‑in back‑pressure handling  
+  - Support for MQTT, Kafka, and HTTP‑based ingestion  
+  - Simple declarative pipeline definition (e.g., `source -> filter -> aggregate -> sink`)  
+- **Typical users:** Developers building real‑time dashboards, anomaly‑detection pipelines, or edge analytics.  
+- **License:** Usually Apache 2.0 or MIT, encouraging community contributions.
+
+---
+
+## 5. NovaFlow – Content‑Creation or Video‑Editing Tool  
+- **What it is:** A niche desktop application (or web app) aimed at creators who need quick video stitching, motion‑graphics templates, and automated captioning.  
+- **Key selling points:**  
+  - AI‑assisted scene detection and cut suggestions  
+  - Cloud‑rendering options for rapid export  
+  - Integration with social‑media platforms for direct publishing  
+
+---
+
+## How to Identify the One You’re Looking For  
+
+| Domain | Clues that point to this NovaFlow |
+|--------|-----------------------------------|
+| **Workflow Automation** | You’re dealing with “processes”, “tasks”, “approvals”, “no‑code builder”. |
+| **Medical Device** | Keywords like “catheter”, “infusion”, “IV”, “hospital”. |
+| **FinTech** | Mentions of “cash‑flow forecasting”, “invoicing”, “payments”. |
+| **IoT/Data‑Streaming** | Talks about “sensors”, “real‑time data”, “Kafka”, “MQTT”. |
+| **Video Editing** | References to “clips”, “timeline”, “render”, “social media”. |
+
+If none of the above seem to match what you have in mind, feel free to give a little more context (industry, where you heard the name, what problem it solves, etc.) and I’ll give a more precise description.","NovaFlow is a workflow automation platform offered by NovaTech Solutions. It is designed to help organizations automate repetitive business processes. A NovaFlow workflow is built from a trigger, one or more actions (such as sending notifications, updating records, calling HTTP endpoints, creating tasks), optional conditions, and a final execution state.",7398.78,207.19,0.01,1573.63,1780.89,0.003,0.9118,1.0,False,True,True,False,False,3,,
+What departments does NovaTech have?,easy,company,company_overview.pdf,"I’m not familiar with the specific internal structure of a company called **NovaTech**, so I can’t list its exact departments with confidence.  
+
+If NovaTech is a typical technology‑focused organization, it likely includes many of the following departments (though the exact names and scope can vary from company to company):
+
+| Common Department | Typical Responsibilities |
+|-------------------|----------------------------|
+| **Research & Development (R&D) / Engineering** | Designing and building products, prototyping, software development, hardware engineering, product testing. |
+| **Product Management** | Defining product roadmaps, gathering requirements, coordinating between engineering, design, and marketing. |
+| **Sales** | Generating revenue, managing client relationships, negotiating contracts, account management. |
+| **Marketing** | Brand strategy, digital & content marketing, lead generation, public relations, events. |
+| **Customer Success / Support** | Helping customers adopt the product, troubleshooting, technical support, post‑sale service. |
+| **Human Resources (HR)** | Recruiting, onboarding, employee relations, training & development, compensation & benefits. |
+| **Finance & Accounting** | Budgeting, financial reporting, payroll, tax compliance, investor relations. |
+| **Legal / Compliance** | Contract review, intellectual‑property protection, regulatory compliance, risk management. |
+| **Operations / Supply Chain** | Managing day‑to‑day business processes, procurement, logistics, facilities management. |
+| **Information Technology (IT) / Security** | Internal infrastructure, network administration, cybersecurity, software tooling for employees. |
+| **Data & Analytics** | Business intelligence, data engineering, data science, performance metrics. |
+| **Design / User Experience (UX/UI)** | Visual design, interaction design, user research, prototyping. |
+
+If you have more context—such as a particular industry niche, a region, or a public source that mentions NovaTech’s structure—feel free to share it, and I can try to refine the answer. Otherwise, checking NovaTech’s official website, LinkedIn page, or corporate filings (if it’s a public company) would be the most reliable way to get an accurate list of its departments.","NovaTech is organized into the following departments:
+
+- Engineering
+- Product
+- Customer Success
+- Human Resources
+- Finance
+- Operations",3842.27,174.19,0.01,1580.62,1754.87,0.0189,0.9231,0.8889,False,True,True,False,False,3,,
+What working model does NovaTech use?,easy,company,company_overview.pdf,"I’m not sure which NovaTech you’re referring to, and I don’t have enough information to give a definitive answer about its specific “working model.” If you can let me know a bit more—such as the industry (e.g., aerospace, software, consulting), the region, or the context in which you heard the term—I’ll do my best to provide a relevant answer.","NovaTech uses a hybrid working model, allowing teams to work remotely or from designated company offices based on their role and manager‐approved schedule.",1989.3,167.9,0.01,1331.46,1499.43,0.0968,0.8824,1.0,False,True,True,False,False,3,,
+What are the system requirements for NovaDesk?,easy,technical,installation.pdf,"I’m not familiar with a product called **NovaDesk**, so I don’t have the exact, official system‑requirement specifications for it.  
+
+For most modern desktop‑oriented applications (especially ones that involve remote‑desktop, collaboration, or productivity features), the typical minimum and recommended hardware and software specs tend to look something like this:
+
+| Category | Minimum | Recommended |
+|----------|---------|-------------|
+| **Operating System** | Windows 10 (64‑bit) or macOS 10.14 (Mojave) | Windows 11 (64‑bit) or macOS 12 (Monterey) |
+| **Processor** | Dual‑core 2 GHz (Intel i3 / AMD Ryzen 3) | Quad‑core 2.5 GHz+ (Intel i5/i7 or AMD Ryzen 5/7) |
+| **Memory (RAM)** | 4 GB | 8 GB or more |
+| **Storage** | 200‑500 MB free disk space (plus extra for logs/cache) | 1 GB or more free space |
+| **Graphics** | Integrated graphics with DirectX 11 / OpenGL 3.3 support | Dedicated GPU (optional, only if the app does heavy rendering) |
+| **Network** | Broadband internet (≥5 Mbps) for cloud‑based features | Broadband (≥15 Mbps) with low latency |
+| **Browser (if web‑based)** | Latest version of Chrome, Edge, Firefox, or Safari | Same, with JavaScript enabled and cookies allowed |
+| **Additional** | .NET 4.6+/Microsoft Visual C++ Redistributable (Windows) or equivalent runtime libraries | Same, plus optional hardware security (TPM) for enterprise deployments |
+
+### What to do next
+1. **Check the vendor’s website or product documentation** – the most reliable place for exact numbers is the official “System Requirements” or “Technical Specs” page.
+2. **Look for a download or installation guide** – these often list prerequisites (e.g., specific OS versions, required drivers, or runtime libraries).
+3. **Contact support** – if the information isn’t publicly posted, a quick email or chat with the vendor’s support team will usually get you the exact details.
+
+If you can give me a bit more context (e.g., is NovaDesk a Windows application, a web service, a remote‑desktop tool, etc.?), I can try to narrow down the likely requirements even further.","- A supported modern web browser
+- Network access to the NovaTech application environment
+- An administrator account for administrative configuration",3486.29,170.52,0.01,1467.97,1638.55,0.0194,1.0,1.0,False,True,True,False,False,3,,
+How should employees record attendance?,easy,hr,attendance_policy.docx,"**Typical ways employees record attendance and best‑practice tips**
+
+Below is a quick‑reference guide you can adapt to the specific tools or policies your organization uses. It covers the most common methods (paper, hardware, and software) and the key steps employees should follow for each.
+
+---
+
+## 1. Choose the Attendance‑recording method that your company uses  
+
+| Method | How it works | Typical use cases | Pros | Cons |
+|--------|--------------|-------------------|------|------|
+| **Paper sign‑in sheet** | Write name, date, time‑in and time‑out on a printed sheet (often at a supervisor’s desk). | Small offices, temporary sites, remote field‑work where electronic hardware isn’t practical. | Simple, no tech needed, easy to audit on paper. | Prone to errors or “buddy‑punching,” hard to aggregate data. |
+| **Mechanical punch‑clock** | Insert a time‑card into a machine; the clock stamps the time. | Legacy facilities, factories, unions with collective‑bargaining rules. | Tangible proof, low cyber‑risk. | Card loss, manual data entry required later, maintenance. |
+| **Magnetic/Barcode badge reader** | Swipe a ID badge; reader logs the timestamp. | Offices with security badges, manufacturing floors. | Fast, integrates with access control. | Badges can be shared; must keep badge data up‑to‑date. |
+| **Biometric scanner (fingerprint, facial, iris)** | Scan a unique biological trait; system logs the time. | High‑security environments, large workforces where “buddy‑punching” must be eliminated. | Very accurate, no lost cards. | Privacy concerns, requires GDPR/CCPA compliance, higher upfront cost. |
+| **Web‑based time‑tracking portal** | Log in from a computer (or tablet) and click “Clock‑In/Clock‑Out.” | Desk‑based or hybrid teams, companies with flexible schedules. | Centralized data, integrates with payroll/HRIS. | Requires internet access; may be prone to “remote‑punch‑in” abuse if not coupled with verification. |
+| **Mobile app with GPS/geofence** | Open the company app on a smartphone, tap “Clock‑In/Out”; GPS confirms location. | Field workers, remote sales teams, gig‑economy staff. | Captures location, works offline (stores data for later sync). | Dependent on phone battery, privacy policies needed for location data. |
+| **Integrated HRIS/Payroll system** | Attendance is recorded directly in the same system that runs payroll (e.g., Workday, ADP, BambooHR). | Mid‑size to large enterprises that want end‑to‑end automation. | No duplicate entry, automatic overtime/leave calculations. | Requires proper configuration and regular audits. |
+
+> **Tip:** If you have choices, pick the method that balances accuracy, employee convenience, and compliance with local labor laws.
+
+---
+
+## 2. Step‑by‑step checklist for employees (generic)
+
+1. **Know the schedule**  
+   - Verify your start/end times, shift breaks, and any “core hours” before you clock in.  
+   - If you have a flexible schedule, confirm the permissible window for clock‑in/out (e.g., “must be within 5 minutes of shift start”).
+
+2. **Identify the right device or portal**  
+   - **Paper:** Locate the sign‑in sheet (usually near the break room or supervisor’s desk).  
+   - **Badge/Biometric:** Approach the time‑clock terminal; have your badge/ID ready.  
+   - **Web or Mobile:** Open the approved URL or app; make sure you’re logged in with your employee ID.
+
+3. **Record the actual time**  
+   - **Paper:** Write the exact time (e.g., “08:02”) and sign.  
+   - **Electronic:** Press the “Clock‑In” button; wait for confirmation (green light, beep, or on‑screen acknowledgment).  
+   - **Mobile:** Tap “Clock‑In” and, if required, allow GPS/location services so the app can verify you’re on site.
+
+4. **Confirm the entry**  
+   - Look for a receipt, screenshot, or on‑screen message that shows the logged time.  
+   - If you don’t see confirmation, repeat the step or notify a supervisor immediately.
+
+5. **Breaks and lunch**  
+   - Follow the same process for each paid/unpaid break. Some systems require a separate “Break‑Out/Break‑In” action; others automatically deduct a standard break period.
+
+6. **Clock‑Out**  
+   - At the end of your shift (or when leaving early), repeat the same steps.  
+   - Double‑check that the total hours appear correct if the system shows a summary.
+
+7. **Report errors ASAP**  
+   - If you notice a missed punch, wrong time, or a duplicate entry, contact HR or your manager **within the same pay period** (or according to your company’s policy).  
+   - Keep a personal note (e.g., a quick email to yourself) of the correct time as a backup.
+
+8. **Leave the device in proper condition**  
+   - For badge readers or biometric stations, avoid smudging lenses or covering scanners.  
+   - For laptops/tablets, log out or lock the screen when you leave the workstation.
+
+---
+
+## 3. Common policies to be aware of
+
+| Policy | What it means for you |
+|--------|----------------------|
+| **Grace period** | Some companies allow 5‑15 minutes late/early without penalty; after that you may need a manager’s approval. |
+| **Late‑arrival/early‑departure form** | If you’re outside the grace period, you may need to fill out a manual form or submit a digital request. |
+| **No “buddy‑punching”** | Never log in for a coworker. Doing so can be considered fraud and may lead to disciplinary action. |
+| **Remote‑work verification** | For home‑based staff, you might be required to use a webcam check‑in or a “selfie” with a timestamp. |
+| **Data privacy** | Biometric or GPS data is subject to privacy law. Your employer should tell you how the data is stored, who can see it, and how long it is retained. |
+| **Overtime rules** | In many jurisdictions, overtime must be pre‑approved. Ensure you have the correct code or note when you’re working overtime. |
+| **Leave and PTO** | When you’re on approved vacation, sick leave, or personal time, you typically **don’t** clock in/out—just submit the leave request in the HR system. |
+
+---
+
+## 4. Tips for smooth attendance tracking
+
+| Situation | Recommended practice |
+|-----------|----------------------|
+| **Forgot to clock‑in** | Immediately clock‑in with a note “Forgot to punch at 8 am – corrected at 8:12.” Have your manager approve. |
+| **Power/outage of electronic clock** | Use the backup paper sheet (if provided) and inform HR; the paper record will be entered later. |
+| **Travel between sites** | If you work at multiple locations, use the site‑specific badge or mobile app that captures the location. |
+| **Shift swaps** | Both employees should log the swap in the HR system (or get manager approval) and then record their own times normally. |
+| **Multiple break types** | Distinguish between paid (recorded) and unpaid (often auto‑deducted); check your company’s break‑policy table. |
+| **Overtime limit** | Some firms cap daily overtime (e.g., 2 hrs). If you exceed it, stop working or get a formal exception. |
+
+---
+
+## 5. Quick “cheat sheet” you can keep at your desk
+
+```
+▶ 1. Clock‑In:   badge / app / sheet → confirm green light / receipt
+▶ 2. Break‑Out: same method (if required) → note start time
+▶ 3. Break‑In:  same method → note end time
+▶ 4. Clock‑Out: same method → confirm total hours
+▶ 5. Errors? → email HR (subject: “Attendance correction – [date]”) within 24 h
+▶ 6. Remember: no buddy‑punching, keep GPS on for mobile, log every shift.
+```
+
+---
+
+### Bottom line
+- **Use the designated tool** (paper, badge, biometric, web, or mobile) exactly as instructed.  
+- **Confirm** each punch with a visible acknowledgment.  
+- **Report any discrepancy** immediately so corrections can be made before payroll runs.  
+
+If you’re uncertain about any step (e.g., which app version to use, whether a break needs to be recorded), ask your supervisor or HR representative—better to clarify now than to have a payroll error later.",Employees should record their attendance using the company’s approved attendance system.,8075.42,104.09,0.01,1389.73,1493.88,0.009,1.0,1.0,False,True,True,False,False,3,,
+What ticket priorities does NovaDesk support?,easy,products,faq.txt,"I’m not familiar with the specific priority levels that the NovaDesk ticket‑tracking system uses. Many help‑desk and ticketing platforms support a set of standard priorities such as Low, Medium, High, and Critical (or Urgent), but the exact names and any additional custom tiers can vary from one product to another.
+
+If you need the precise list for NovaDesk, the best sources would be:
+
+* The official NovaDesk documentation or user guide (often found in a “Help” or “Support” section of the application).  
+* The settings screen where ticket priorities are defined—typically under **Admin → Ticket Settings** or a similar configuration area.  
+* Contacting NovaDesk’s support team directly, who can provide the current priority schema (including any custom or organization‑specific values).  
+
+If you have access to NovaDesk and can locate the configuration area, you’ll likely see the exact priority names and their order there. Otherwise, checking the product’s online help or reaching out to their support channel will give you a definitive answer.","NovaDesk supports the following ticket priorities: Low, Medium, High, and Critical.",2362.39,202.86,0.01,1481.34,1684.25,0.0455,0.8889,1.0,False,True,True,False,False,3,,
+What should I check if an application does not start?,easy,technical,troubleshooting.txt,"When an application refuses to launch, the cause can be anything from a missing file to a permission problem, a corrupted install, or a conflict with another program. Below is a practical checklist you can work through to pinpoint and (hopefully) resolve the issue. Feel free to skip steps that don’t apply to your OS or the specific software you’re dealing with.
+
+---
+
+## 1. **Gather Basic Information First**
+
+| What to Look For | Why It Helps |
+|------------------|--------------|
+| **Error message / dialog** | Gives a direct clue (e.g., “Missing DLL”, “Access denied”). |
+| **Recent changes** (OS updates, driver installs, new software) | New updates can break compatibility. |
+| **When did it stop working?** | Pinpointing the moment it broke narrows the scope. |
+| **Is the problem “always” or “intermittent”?** | Intermittent failures often point to resource limits or race conditions. |
+
+---
+
+## 2. **Check System Requirements & Compatibility**
+
+| Item | What to Verify |
+|------|----------------|
+| **OS version** | Does the app support your current Windows/macOS/Linux release? |
+| **CPU / RAM** | Is the machine meeting the minimum specs? |
+| **Graphics / GPU drivers** (if it’s a graphics‑intensive app) | Out‑of‑date drivers can cause launch failures. |
+| **64‑bit vs 32‑bit** | Trying to run a 32‑bit app on a pure 64‑bit environment without proper libraries can fail. |
+
+---
+
+## 3. **Verify the Application Files**
+
+| Check | How to Do It |
+|-------|--------------|
+| **Integrity of the install folder** | Look for missing or zero‑byte files. Re‑download the installer and compare file sizes/hashes if available. |
+| **Corrupted download** | Re‑download the installer from the vendor’s site (preferably via a trusted connection). |
+| **Required runtime libraries** | Some apps need the Microsoft Visual C++ Redistributables, .NET Framework, Java, or specific Python packages. Install or repair those runtimes. |
+| **Executable bit (Linux/macOS)** | Ensure the main binary is marked executable: `chmod +x /path/to/app`. |
+
+---
+
+## 4. **Permissions & Ownership**
+
+| Platform | Typical Fixes |
+|----------|---------------|
+| **Windows** | Right‑click → *Run as administrator*. Check that the user account has read/execute permissions on the install folder. |
+| **macOS** | Verify the app is not quarantined: `xattr -d com.apple.quarantine /Applications/AppName.app`. |
+| **Linux** | Ensure the user can read/execute the binary: `ls -l /path/to/app`. Use `sudo chown` or `chmod` if needed. |
+
+---
+
+## 5. **Check for Conflicting Software**
+
+| What to Look For | Why It Matters |
+|------------------|----------------|
+| **Antivirus / Endpoint protection** | Real‑time scanning can block execution. Temporarily disable or add an exclusion. |
+| **Other instances of the app** | A hung background process can hold a lock. Check Task Manager / Activity Monitor / `ps aux | grep app`. |
+| **Software that injects DLLs or hooks** (e.g., screen recorders, overlay programs) | These can crash the target app. Try launching with such programs closed. |
+| **Port or resource conflicts** (e.g., another server listening on the same port) | The app may abort if it can’t bind to a required resource. |
+
+---
+
+## 6. **Look at System & Application Logs**
+
+| OS | Where to Find Logs |
+|----|--------------------|
+| **Windows** | Event Viewer → *Windows Logs* → *Application* (look for errors from the app’s executable). Also check any log files the app creates (often in `%AppData%` or the install folder). |
+| **macOS** | Console.app → *system.log* and *log files* under `~/Library/Logs/`. Many apps also write to `~/Library/Application Support/<App>/`. |
+| **Linux** | Syslog (`/var/log/syslog`), `journalctl -xe`, or a log file under `~/.config/<app>/` or `/var/log/`. |
+
+Read the timestamps that match the launch attempt; the messages often point to missing libraries, permission denied, segmentation fault, etc.
+
+---
+
+## 7. **Run the Application from a Terminal / Command Prompt**
+
+Launching from a console can surface error text that a GUI “splash screen” hides.
+
+- **Windows**: `cmd` → navigate to the folder → `app.exe`
+- **macOS / Linux**: Open Terminal → `./app` (or the full path)
+
+Typical messages you might see:
+
+- `Error: Unable to locate DLL xxxxx.dll` → install the required runtime.
+- `Segmentation fault (core dumped)` → possible corrupt binary or incompatible libs.
+- `Permission denied` → adjust file permissions or run with elevated rights.
+
+---
+
+## 8. **Check for Required Environment Variables**
+
+Some programs rely on variables like `JAVA_HOME`, `PATH`, `LD_LIBRARY_PATH`, or `PYTHONPATH`.
+
+- Verify they exist and point to valid locations.
+- On Windows, use *System Properties → Advanced → Environment Variables*.
+- On macOS/Linux, run `echo $VARIABLE` in a terminal.
+
+---
+
+## 9. **Update or Reinstall the Application**
+
+- **Repair** (many Windows installers have a *Repair* option).
+- **Clean reinstall**: Uninstall → delete leftover configuration folders (`%AppData%`, `~/.config/`, etc.) → reinstall the latest version.
+
+---
+
+## 10. **Test on a Different User Account or Machine**
+
+- Create a new local user account and try running the app there. If it works, the problem is likely user‑profile specific (e.g., corrupt config files).
+- If possible, try the same installer on another computer. If it fails everywhere, the issue is probably systematic (missing dependencies, OS incompatibility).
+
+---
+
+## 11. **Common “Specific” Issues & Quick Fixes**
+
+| Symptom | Likely Cause | Quick Fix |
+|---------|--------------|-----------|
+| `Missing DLL xyz.dll` | Runtime library not installed. | Install the appropriate Microsoft Visual C++ Redistributable, .NET Framework, or vendor‑provided runtime. |
+| “The application was unable to start correctly (0xc000007b)” | Mixing 32‑bit and 64‑bit binaries. | Ensure you have the correct version (32‑bit vs 64‑bit) of both the app and its dependencies. |
+| “Permission denied” on macOS after moving the app from the Downloads folder | Gatekeeper quarantine. | Run `xattr -d com.apple.quarantine /Applications/AppName.app` or reinstall via a dmg. |
+| App crashes instantly with no window | Missing GPU drivers or hardware acceleration conflict. | Update graphics drivers; try launching with a “disable GPU” flag (often `--disable-gpu`). |
+| “Unable to bind to port 80” | Another process already using the port. | Find the culprit (`netstat -ano | find ""80""` on Windows; `sudo lsof -i :80` on macOS/Linux) and stop it or change the app’s port. |
+| “Code 0x80070005 – Access is denied” when installing | UAC or permission problem. | Run the installer as Administrator; ensure the target folder isn’t read‑only. |
+
+---
+
+## 12. **When All Else Fails**
+
+1. **Contact Support** – Provide them with:
+   - OS version and build number.
+   - Exact error messages and log excerpts.
+   - Steps you’ve already tried.
+2. **Search the Vendor’s Knowledge Base / Forums** – Often the same issue has been reported by other users.
+3. **Consider System Restore / Rollback** – If the app worked before a recent update, rolling back that update can help (especially on Windows).
+
+---
+
+### TL;DR Checklist
+
+1. **Read any error dialog** – note exact wording.  
+2. **Check OS compatibility & system specs.**  
+3. **Verify all required files & runtimes are present** (DLLs, Java, .NET, etc.).  
+4. **Confirm you have sufficient permissions** (run as admin, check executable bits).  
+5. **Look for interfering software** (antivirus, other instances, overlays).  
+6. **Examine logs** (Event Viewer, Console, syslog).  
+7. **Launch from a terminal** to expose hidden error text.  
+8. **Validate environment variables** and PATH entries.  
+9. **Repair or reinstall the app** (clean uninstall first).  
+10. **Test with a different user account or on another machine**.  
+
+Follow these in order, and you’ll usually pinpoint why an application won’t start. Good luck! If you hit a specific error message you can’t decode, feel free to share it and I can help interpret it.","Check the following items:
+
+- **Application configuration** – ensure it is correct.
+- **Required services** – verify that all necessary services are running.
+- **Application logs** – inspect the logs for diagnostic information.
+- **Database connection** – confirm that the connection to the database is operational.",7680.5,188.4,0.01,2047.42,2235.88,0.0098,0.6667,0.9333,False,True,True,False,False,3,,
+How far in advance should planned annual leave normally be requested?,medium,hr,leave_policy.pdf,"The “right” amount of notice for a vacation request depends on a few factors—your employer’s formal policy, the size and rhythm of the team you work with, and the time of year you’d like to be away. Below is a practical framework that reflects common practice in many organizations and can help you decide how early to put in a request.
+
+---
+
+## 1. Check the official policy first  
+Most companies spell out a minimum notice period in their employee handbook, collective bargaining agreement, or HR portal. Typical baseline requirements are:
+
+| Policy Type | Common Minimum Notice |
+|-------------|-----------------------|
+| **Standard written policy** | 2‑4 weeks before the start date |
+| **Union‑covered or public‑sector jobs** | 30‑45 days (sometimes longer) |
+| **Highly regulated or safety‑critical roles** | 4‑6 weeks (or more) |
+| **Flexible / “trust‑based” workplace** | No formal rule, but a courteous 1‑2 weeks is still expected |
+
+If a policy exists, you should meet or exceed it. When it’s vague, follow the general guidance below.
+
+---
+
+## 2. Typical industry practice  
+
+| Industry / Setting | Typical “good practice” notice |
+|--------------------|--------------------------------|
+| **Corporate office (finance, consulting, IT, marketing, etc.)** | 3–4 weeks for a week of leave; 6–8 weeks for two weeks or more, especially during busy periods |
+| **Small‑to‑mid‑size businesses** | 2–3 weeks is usually sufficient, but managers often appreciate at least a month for longer trips |
+| **Retail, hospitality, customer‑facing roles** | 4–6 weeks for any multi‑day leave, due to shift scheduling and staffing needs |
+| **Public sector / education** | 4–6 weeks, sometimes a semester’s notice for summer break |
+| **Healthcare (nurses, allied health, etc.)** | 6–8 weeks, because of staffing ratios and credentialing |
+| **Creative / project‑based work (design, media, R&D)** | 3–4 weeks, but may be more flexible if the team can re‑schedule deliverables |
+
+These are averages; the exact number will vary by the specific culture of your workplace.
+
+---
+
+## 3. Why lengthier notice helps  
+
+| Reason | What it buys you (and the employer) |
+|--------|--------------------------------------|
+| **Coverage & workload planning** | Managers can arrange back‑fills, redistribute tasks, or bring in temporary help. |
+| **Avoiding peak‑time crunches** | If the requested dates fall during a busy season (quarter‑end, product launch, holiday sales), extra lead‑time lets the team smooth workload. |
+| **Building goodwill** | Early requests signal respect for teammates and can improve approval rates. |
+| **Personal peace of mind** | Knowing the trip is approved early lets you book travel at better rates and avoid last‑minute stress. |
+
+---
+
+## 4. A practical “rule‑of‑thumb” timeline  
+
+| Length of leave | Minimum advisable notice (if no formal policy) |
+|------------------|-----------------------------------------------|
+| **1–2 days (e.g., a personal day, short holiday)** | 1 week |
+| **3–5 days (single work‑week)** | 2 weeks |
+| **1 week** | 3 weeks |
+| **2 weeks** | 4–6 weeks |
+| **>2 weeks (extended vacation, overseas travel)** | 6–8 weeks, preferably earlier if it overlaps a busy cycle |
+
+If you’re targeting a popular holiday period (e.g., Christmas, summer, school break), add **extra buffer**—often an additional 2–4 weeks—because many colleagues will be submitting competing requests.
+
+---
+
+## 5. Tips for making the request smooth  
+
+1. **Review the calendar first** – Look at project milestones, department deadlines, and known busy periods. If possible, avoid overlapping them.
+2. **Propose a coverage plan** – Offer to finish certain tasks beforehand or suggest a colleague who can act as a point‑person.
+3. **Document the request in writing** – Even if your manager accepts verbally, send an email (or use the HR system) that logs the dates and your coverage plan.
+4. **Be flexible** – If your manager indicates a conflict, be ready to adjust either the dates or the length of the vacation.
+5. **Ask early, confirm later** – Submit the request as early as you can, then follow up a week before the start date to reconfirm any hand‑over details.
+
+---
+
+## 6. Special circumstances  
+
+- **Medical or family emergencies** – Most policies allow for shorter notice; however, communicating promptly is still crucial.
+- **Unpaid leave or sabbatical** – These often require substantially longer lead‑time (3–6 months) and sometimes approval from senior leadership or HR.
+- **Legal/contractual limits** – Some jurisdictions (e.g., the UK’s “minimum 4‑week notice” for certain public‑sector roles) impose statutory notice periods; be sure to comply.
+
+---
+
+### Bottom line  
+If your company doesn’t spell out a specific rule, aim for **at least three weeks' notice for a standard week‑long vacation**, and **six weeks or more for two weeks or longer**, adjusting upward if you’re targeting a peak season or a role with heavy staffing constraints. Always double‑check your organization’s handbook, discuss with your manager, and provide a brief plan for covering your duties—that will give you the best chance of a smooth approval.",Planned annual leave should normally be submitted through the HR portal at least 5 working days before the requested start date.,6414.88,182.9,0.01,1382.66,1565.64,0.009,1.0,0.9048,False,True,True,False,False,3,,
+Who reviews employee leave requests?,medium,hr,leave_policy.pdf,"In most organizations, the primary person who reviews an employee’s leave request is the employee’s **direct manager or supervisor**. The manager checks whether the requested time off fits with the team’s workload, project deadlines, and any staffing constraints, and then either approves or denies the request (or asks for adjustments).
+
+After the manager’s approval, the request often passes to the **human‑resources (HR) or payroll department** for a final check and for recording the leave in the company’s time‑off system. HR may also:
+
+- Verify that the employee has enough accrued leave balance.  
+- Ensure the request complies with company policies, collective‑bargaining agreements, or applicable labor laws (e.g., for medical or family‑leave entitlements).  
+- Coordinate coverage or inform other departments if needed.  
+
+So, the typical chain is:
+
+1. **Direct manager/supervisor** – first-level review and approval.  
+2. **HR/people‑operations** – secondary review, policy compliance, and system entry.  
+
+In smaller businesses without a dedicated HR team, the manager may handle the entire process, while in larger enterprises the HR department may be more directly involved in the initial review.",Employee leave requests are reviewed by the employee’s direct manager.,2410.47,119.44,0.02,1215.52,1335.02,0.0426,1.0,0.9167,False,True,True,False,False,3,,
+What types of customer-support activities can NovaDesk manage?,medium,products,product_a.pdf,"NovaDesk – like most modern help‑desk/​customer‑support platforms – is built to cover a broad range of support activities. While I don’t have the exact feature list for NovaDesk, most solutions in this space can manage the following types of customer‑support work:
+
+| Support activity | How a platform such as NovaDesk typically handles it |
+|------------------|------------------------------------------------------|
+| **Ticketing (email, web‑form, inbound)** | Requests are captured, automatically categorized, and placed in a queue. Agents can assign, prioritize, and track tickets until resolution. |
+| **Live chat & messaging** | Real‑time chat windows (web, in‑app, or via messaging apps) let agents converse instantly with customers, with chat transcripts saved as tickets. |
+| **Phone/voice support** | Integrated VoIP or call‑center features allow agents to make/receive calls, log call details, and attach recordings to tickets. |
+| **Self‑service knowledge base** | Articles, FAQs, step‑by‑step guides, and video tutorials can be authored, searchable, and suggested automatically when a ticket is created. |
+| **Community forums / crowdsourced help** | Customers can post questions and answer each other; agents moderate and jump in when needed. |
+| **Social‑media monitoring** | Posts, mentions, and direct messages from platforms like Twitter, Facebook, or LinkedIn are captured and turned into tickets. |
+| **SLA & priority management** | Service‑level agreements are defined per product, customer tier, or issue type, and the system automatically flags tickets that are approaching breach. |
+| **Escalation & workflow automation** | Rules trigger escalations, task assignments, or follow‑up emails based on status, priority, or time‑in‑queue. |
+| **Multi‑channel omnichannel view** | All interactions – email, chat, phone, social, and forum – are displayed in a single customer timeline, giving agents full context. |
+| **Reporting & analytics** | Dashboards show volumes, response times, resolution rates, CSAT/NPS scores, agent performance, and trend analysis. |
+| **Integration with CRM, ERP, e‑commerce, etc.** | Customer data pulls from the CRM, order status from the ERP, and the help desk can push updates back, ensuring agents have the latest context. |
+| **Automation & AI assistance** | Chatbots, suggested replies, auto‑routing, and predictive routing help reduce handling time and improve consistency. |
+| **Feedback collection** | Post‑resolution surveys (CSAT, NPS, rating) are automatically sent to gauge satisfaction. |
+| **Remote assistance / screen sharing** | Some platforms embed screen‑share or remote‑control tools so agents can walk customers through issues directly. |
+| **Knowledge‑base suggestions / AI search** | When a ticket is opened, the system can surface relevant articles or past tickets to both the agent and the customer. |
+
+### Typical Use‑Cases NovaDesk Could Support
+
+1. **Technical troubleshooting** – logging hardware/software issues, assigning to tier‑2 engineers, tracking resolution steps.  
+2. **Account & billing inquiries** – handling subscription upgrades, refunds, invoice requests, and linking to the billing system.  
+3. **Onboarding & training assistance** – guiding new users through product setup, sharing onboarding videos, and answering “how‑to” questions.  
+4. **Product feedback & feature requests** – capturing suggestions, voting, and routing them to product management.  
+5. **Incident management** – coordinating response during outages, sending status updates, and managing post‑mortem reports.  
+6. **Compliance & audit trails** – preserving all communications and actions for regulatory review (e.g., GDPR, HIPAA).  
+
+### What to Look for When Evaluating NovaDesk
+
+- **Channel coverage** – Does it natively support the channels you need (email, chat, phone, social, etc.)?  
+- **Automation flexibility** – Can you define custom routing rules, macros, or AI‑driven suggestions?  
+- **Scalability** – How does it handle growing ticket volumes and multi‑location teams?  
+- **Integrations** – Does it plug into your existing CRM, ticket‑escalation tools, and analytics platforms?  
+- **Reporting depth** – Are the dashboards customizable enough for your management and compliance requirements?  
+
+If you’re considering NovaDesk for your organization, start by mapping the specific support activities your team performs today and then verify that each of those workflows can be configured or automated within the platform. That will give you a clear picture of how well NovaDesk aligns with your support strategy.","NovaDesk can handle a range of customer‐support activities, including:
+
+- Managing customer requests and tickets
+- Assigning tickets to team members
+- Tracking ticket status and overall service performance
+- Setting and handling priority levels
+- Maintaining customer profiles
+- Providing dashboards and search functionality
+- Configuring notification rules.",6003.15,196.2,0.01,1808.83,2005.1,0.0188,0.5312,0.8889,False,True,True,False,False,3,,
+What kind of business processes is NovaFlow designed to automate?,medium,products,product_b.txt,"I’m not familiar with a specific product called **NovaFlow**, so I can’t point to any official documentation or marketing materials. However, based on the name and the way many “flow”‑oriented platforms are positioned, a system named NovaFlow would likely be aimed at automating **repeatable, cross‑functional business processes** that benefit from a visual, workflow‑driven approach. Typical categories of processes that such a platform might target include:
+
+| Business Area | Example Processes Typically Automated |
+|---------------|---------------------------------------|
+| **Sales & Marketing** | Lead capture → qualification → assignment to reps; campaign approval workflows; quote generation and routing; marketing‑asset approval. |
+| **Customer Service / Support** | Ticket triage and escalation; SLA‑driven routing; knowledge‑base article creation and publishing; post‑issue follow‑up surveys. |
+| **Finance & Accounting** | Invoice receipt → validation → approval → payment; expense‑report submission and reimbursement; purchase‑order creation and approval; revenue‑recognition workflows. |
+| **Human Resources** | New‑hire onboarding (document collection, background checks, equipment provisioning); leave‑request approval; performance‑review cycles; employee off‑boarding. |
+| **Operations / Procurement** | Requisition → vendor selection → contract approval; inventory‑reorder triggers; maintenance‑request scheduling; compliance checklists. |
+| **IT & Development** | Change‑request management; incident response and resolution; software‑deployment pipelines; access‑provisioning requests. |
+| **Legal & Compliance** | Contract drafting → internal review → external signing; policy‑approval workflows; audit‑trail generation. |
+| **Project Management** | Task assignment, status updates, and approvals; resource‑allocation requests; milestone sign‑offs; risk‑mitigation approvals. |
+
+**Why a “flow”‑oriented tool is useful for these processes**
+
+1. **Visual modeling** – Users can drag‑and‑drop steps, decision points, and connectors to map out a process, making it easier for non‑technical stakeholders to design and understand the automation.
+2. **Rule‑based routing** – Conditions (e.g., “if invoice > $10 K, route to senior manager”) automatically route work items to the right person or team.
+3. **Integration hooks** – Modern flow platforms typically connect to ERP, CRM, HRIS, email, and other SaaS tools via APIs or pre‑built connectors, allowing data to move without manual entry.
+4. **Auditability & reporting** – Each step is logged, providing traceability for compliance and performance analytics.
+5. **Scalability** – Once a workflow is built, it can be instantiated thousands of times (e.g., every new hire or every incoming invoice) without extra effort.
+
+If NovaFlow follows these industry trends, its core value proposition would be to **reduce manual hand‑offs, speed up cycle times, improve data consistency, and give managers real‑time visibility** into how work is progressing across the organization.
+
+If you have more context—such as the industry it serves (e.g., manufacturing, fintech, healthcare) or specific modules it advertises—I could tailor the answer further. Otherwise, the categories above capture the typical business processes that a “flow” automation platform would aim to streamline.",NovaFlow is designed to automate repetitive business processes.,3922.35,188.6,0.01,1428.62,1617.28,0.0113,1.0,0.9444,False,True,True,False,False,3,,
+What services does NovaTech provide to customers?,medium,company,services.docx,"I’m not familiar with a specific company named **NovaTech**, so I can’t give a definitive list of the exact services it offers. However, companies that use the “NovaTech” name are typically technology‑focused firms, and they often provide a range of services such as:
+
+| Broad Category | Typical Services Offered |
+|----------------|--------------------------|
+| **IT Consulting & Strategy** | Technology road‑mapping, digital transformation planning, vendor selection, IT governance. |
+| **Software Development** | Custom application development (web, mobile, desktop), API design, SaaS product engineering, legacy‑system modernization. |
+| **Cloud Services** | Cloud migration & deployment (AWS, Azure, Google Cloud), cloud architecture design, managed cloud environments, DevOps automation. |
+| **Managed IT Services** | 24/7 monitoring, help‑desk support, network management, infrastructure maintenance, backup & disaster‑recovery. |
+| **Cybersecurity** | Security assessments, penetration testing, threat detection & response, security operations center (SOC) services, compliance (GDPR, HIPAA, PCI‑DSS). |
+| **Data & Analytics** | Data warehousing, business intelligence dashboards, data engineering, machine‑learning model development, data‑governance consulting. |
+| **Artificial‑Intelligence & Automation** | AI strategy, custom AI/ML solutions, robotic process automation (RPA), natural‑language processing tools. |
+| **Internet of Things (IoT) & Edge Computing** | IoT platform development, device integration, edge analytics, sensor deployment and monitoring. |
+| **Enterprise Integration** | Systems integration (ERP, CRM, HRM), API management, middleware solutions, workflow automation. |
+| **Training & Enablement** | End‑user training, technical workshops, certification prep, adoption and change‑management programs. |
+
+If you have a particular NovaTech in mind (for example, a regional IT services firm, a healthcare‑tech provider, or a startup focused on a specific niche), providing a bit more context would let me narrow the answer down to the exact service portfolio they advertise.","NovaTech provides the following services to customers:
+
+- **Software development** – custom web‐application, mobile‐application, API, and backend development.
+- **Cloud integration** – cloud architecture and integration services for migrating applications to managed cloud environments.
+- **Data engineering** – building data pipelines and related data‐engineering solutions.
+- **Technical consulting** – consulting services related to software systems and technology implementation.",3265.5,167.27,0.01,2257.8,2425.18,0.0187,0.871,0.8333,False,True,True,False,False,3,,
+What happens during a typical NovaTech software development project?,medium,company,services.docx,"Below is a high‑level view of the kinds of activities you’ll usually see in a **typical NovaTech software‑development project** (or any midsize technology services firm that follows modern, agile‑focused practices). Because I don’t have access to NovaTech’s internal process handbook, I’m describing the most common phases and checkpoints that companies in this space tend to use. If NovaTech has any unique twists—such as a proprietary “Rapid‑Prototype” sprint or a mandatory security‑review gate—those would be layered on top of the workflow outlined here.
+
+---
+
+## 1. Project Initiation & Alignment  
+
+| Step | What Happens | Who’s Involved | Typical Output |
+|------|--------------|----------------|----------------|
+| **Kick‑off meeting** | Business goals, high‑level scope, success criteria clarified. | Client sponsor, product owner, project manager, senior architect. | Brief charter, initial high‑level timeline, list of primary stakeholders. |
+| **Feasibility & ROI analysis** | Rough sizing, risk identification, budget estimate. | Business analyst, solution architect, finance lead. | Feasibility report & provisional budget. |
+| **Contract & Governance setup** | SLA, reporting cadence, escalation paths defined. | Legal, procurement, PMO. | Signed statement of work (SOW) and governance matrix. |
+
+---
+
+## 2. Discovery & Requirements Engineering  
+
+| Activity | Details | Artefacts |
+|----------|--------|-----------|
+| **Workshops / User‑story mapping** | Collaborative sessions to capture functional needs, user personas, and edge cases. | Prioritized backlog (epics, stories, acceptance criteria). |
+| **Non‑functional requirements** | Performance, security, compliance (e.g., GDPR, HIPAA), scalability, availability. | NFR checklist, architecture constraints document. |
+| **Prototyping / Wireframes** | Low‑fidelity UI mock‑ups to validate flow before any code is written. | Clickable prototype, design review minutes. |
+| **Technical feasibility spikes** | Small “spike” efforts to test risky tech choices (e.g., a new third‑party API). | Spike report, decision log. |
+
+---
+
+## 3. Planning & Architecture  
+
+1. **Release & Sprint Planning** – The product owner and team break the backlog into 2‑4‑week sprints, estimate effort (often using story points), and commit to a minimum viable product (MVP) or incremental releases.  
+2. **Solution Architecture** – A senior architect creates a high‑level diagram covering:  
+   * System components (frontend, backend services, databases, third‑party integrations)  
+   * Deployment topology (cloud provider, containers, VMs, networking)  
+   * Security controls (identity management, encryption, audit logging)  
+   * Integration patterns (event‑driven, REST, GraphQL, etc.)  
+3. **Definition of Done (DoD)** – Team agrees on the quality gate each story must meet (code review, unit tests ≥ 80 % coverage, integration test, documentation, CI pass).  
+
+**Deliverables:** Sprint roadmap, architecture blueprint, DoD checklist, CI/CD pipeline skeleton.
+
+---
+
+## 4. Development (Iterative Sprints)
+
+| Sprint Cycle | Core Activities |
+|--------------|-----------------|
+| **Backlog Grooming** (mid‑sprint) | Refine upcoming stories, split oversized items. |
+| **Sprint Planning** | Team selects stories, defines tasks, identifies dependencies. |
+| **Daily Stand‑ups** | 15‑minute sync on progress, blockers, next steps. |
+| **Coding & Pair‑programming** | Feature implementation, unit test creation, code‑review via pull‑requests. |
+| **Continuous Integration** | Automated build, static analysis, unit test run on every commit. |
+| **Demo / Review** | Team shows functional increment to product owner and stakeholders. |
+| **Retrospective** | Identify process improvements; adjust DoD or workflow as needed. |
+
+*Key tools commonly used:* Jira (or Azure Boards) for backlog, Git (GitHub/Bitbucket/GitLab) for source control, Jenkins/TeamCity/GitHub Actions for CI, Docker/Kubernetes for container orchestration.
+
+---
+
+## 5. Quality Assurance & Validation  
+
+| Activity | Purpose | Typical Tools |
+|----------|---------|----------------|
+| **Automated Test Suite** | Regression safety; runs on each merge. | Selenium/WebDriver (UI), Postman/Newman (API), JUnit/TestNG (unit). |
+| **Performance & Load Testing** | Validate scalability against NFRs. | JMeter, Gatling, k6. |
+| **Security Scanning** | Static code analysis, dependency vulnerability, container security. | SonarQube, OWASP ZAP, Snyk. |
+| **User Acceptance Testing (UAT)** | Client verifies that the system meets business expectations. | Staging environment mirroring production. |
+| **Compliance Audits** (if required) | Ensure alignment with industry regulations. | Checklists, third‑party audit reports. |
+
+---
+
+## 6. Release & Deployment  
+
+1. **Release Candidate (RC) Build** – Tagged version that passes all CI pipelines, security scans, and QA sign‑offs.  
+2. **Change‑Management Review** – Review of impact, rollback plan, and required approvals.  
+3. **Production Deployment** – Usually automated via a CD pipeline: blue‑green or canary deployment to minimize risk.  
+4. **Post‑deployment Smoke Tests** – Verify critical paths are functional immediately after go‑live.  
+5. **Release Notes & Training** – Documentation for end‑users, ops hand‑off, knowledge‑transfer session.  
+
+---
+
+## 7. Operations, Monitoring & Support  
+
+| Component | What’s Done |
+|-----------|-------------|
+| **Observability** | Metrics (Prometheus, Grafana), logs (ELK/EFK), traces (Jaeger/OpenTelemetry). |
+| **Incident Management** | 24/7 on‑call rotation, ticketing (ServiceNow, Jira Service Management), SLA tracking. |
+| **Bug‑fix & Patch Cycle** | Minor releases for defects, security patches on a regular cadence (e.g., monthly). |
+| **Continuous Improvement** | Feedback from production usage informs backlog for next iteration (new features or technical debt reduction). |
+
+---
+
+## 8. Project Closure & Handover  
+
+| Activity | Goal |
+|----------|------|
+| **Final Documentation Pack** | Architecture docs, API specs, runbooks, licensing info. |
+| **Knowledge Transfer Sessions** | Walk‑through for client’s internal support / DevOps team. |
+| **Lessons‑Learned Review** | Capture what worked, what didn’t; feed into organizational process improvements. |
+| **Formal Sign‑off** | Acceptance certificate from client, settlement of final invoice. |
+
+---
+
+### Quick Summary Flowchart  
+
+```
+Kick‑off → Discovery → Architecture → Sprint Planning → Development (Iterate)
+                ↓                                 ↑
+          Requirement ↘                QA/Testing ↗
+                ↓                         ↓
+           Release Candidate → Production Deploy → Ops/Support
+                ↓
+            Closure & Handover
+```
+
+---
+
+## What Might Be Unique at NovaTech?  
+
+While the above workflow matches the industry norm, many firms add a few “signature” practices:
+
+* **“Rapid‑Prototype Sprint”** – A 1‑week spike at the start of each major feature to deliver a clickable prototype for early stakeholder validation.  
+* **Dedicated “Security‑by‑Design” Gate** – An extra review after the architecture phase where a security architect signs off before any code is written.  
+* **Client‑Embedded Scrum Master** – The client supplies a representative who sits in on daily stand‑ups and sprint reviews to ensure alignment.  
+* **Metrics‑Driven Governance** – Dashboards showing velocity, defect‑escape rate, and mean‑time‑to‑recover (MTTR) are shared with the client on a weekly basis.
+
+If you’re working on a specific NovaTech engagement, the exact sequence, naming of ceremonies, and tooling may be customized, but the core pillars—clear requirements, iterative delivery, rigorous testing, automated deployment, and continuous monitoring—are almost always present.","A typical NovaTech software development project starts with **requirements gathering** and then proceeds through the following stages:
+
+- **Development**
+- **Testing**
+- **Deployment**
+- **Maintenance**",7884.13,157.57,0.01,1808.3,1965.94,0.0117,0.6875,0.8571,False,True,True,False,False,3,,
+What areas can be configured in NovaDesk?,medium,technical,configuration.docx,"NovaDesk is a workplace‑management platform that lets administrators tailor a lot of the “physical‑space” and digital‑experience settings to match the way their organization works.  
+Below are the main groups of areas that can typically be configured in NovaDesk (the exact wording may vary slightly by version, but the concepts are the same):
+
+| Configurable Area | What You Can Set Up / Change |
+|-------------------|------------------------------|
+| **Space Layout & Zones** | • Floors, buildings, wings, zones, and “pods” – you can draw floor‑plans, assign coordinates, and group desks into logical zones (e.g., “Quiet‑zone”, “Collaboration area”).  <br>• Individual desks, hot‑desks, dedicated desks, and shared workstations – you can name them, set capacity, add equipment tags (monitor, phone, height‑adjustable, etc.). |
+| **Room & Resource Management** | • Meeting rooms, phone booths, focus rooms, labs, and any other reservable resource. <br>• Capacity, amenities (whiteboard, video‑conference kit, coffee machine), booking rules, and time‑slot granularity. |
+| **Booking Policies & Rules** | • Who can book what (open hot‑desk, team‑only zones, manager‑only rooms). <br>• Lead‑time, maximum duration, daily/weekly limits, recurrence patterns, cancellation windows, and “no‑show” penalties. |
+| **User Profiles & Permissions** | • Employee directory integration (Active Directory, Azure AD, Google Workspace, etc.). <br>• Role‑based access (admin, facilities manager, floor‑lead, regular user). <br>• Custom fields (department, cost‑center, team, remote‑work status). |
+| **Branding & UI Customisation** | • Company logo, colour scheme, and welcome banner on the booking portal/app. <br>• Customizable help text, tooltips, and email‑template language. |
+| **Notification & Communication Settings** | • Email, SMS, or push‑notification templates for booking confirmations, reminders, changes, and cancellations. <br>• Frequency and timing controls (e.g., “remind 15 min before”). |
+| **Analytics & Reporting** | • Which data points to capture (occupancy, utilisation, peak times, booking patterns). <br>• Dashboard widgets, scheduled reports, export format (CSV, PDF). |
+| **Integrations & APIs** | • Connectors to calendar systems (Outlook, Google Calendar), access‑control systems (badge readers, door locks), IoT sensors, and third‑party HR/ERP tools. <br>• API keys, webhook URLs, and data‑sync schedules. |
+| **Health & Safety Settings** (if enabled) | • Occupancy limits per zone (e.g., COVID‑19 distancing). <br>• Cleaning schedules, air‑quality alerts, and visitor‑badge workflows. |
+| **Localization & Language** | • Default language, date‑/time‑format, time‑zone, and regional calendars. |
+| **Custom Workflows** | • Approval chains for certain reservations (e.g., conference rooms that need manager sign‑off). <br>• Automated actions such as “release desk if user is out of office”. |
+
+---
+
+### How These Areas Fit Together
+
+1. **Define the physical layout first** (floors → zones → desks/rooms).  
+2. **Add the resources and attributes** (equipment tags, capacity, amenities).  
+3. **Set up user directories and permission groups** so the right people see the right spaces.  
+4. **Apply booking policies** to enforce organizational rules.  
+5. **Tailor the look‑and‑feel** (branding, language) so the portal feels like your own product.  
+6. **Configure notifications** to keep users informed.  
+7. **Enable analytics** to monitor utilisation and make data‑driven decisions.  
+8. **Hook up integrations** (calendars, badge readers, IoT) for seamless operation.  
+9. **Add any health‑safety or custom workflow rules** that are required for your environment.
+
+---
+
+### Caveat
+
+My answer is based on typical features offered by workplace‑management platforms named “NovaDesk” that are publicly described. If your organization is using a specially‑customized or older version of NovaDesk, some of the configurable areas above might be named differently or may not be present. If you need precise, version‑specific details, checking the product’s admin guide or the settings menus in the application will confirm the exact options available.","NovaDesk can be configured in the following areas:
+
+- Application settings
+- Database settings
+- Authentication settings
+- Notification settings
+- Logging settings",4760.76,203.76,0.01,1514.75,1718.58,0.0098,0.9,0.7778,False,True,True,False,False,3,,
+What should administrators verify after installing NovaDesk?,medium,technical,installation.pdf,"Below is a practical “post‑install checklist” that most administrators use after they have deployed **NovaDesk** (or any comparable enterprise‑desktop / thin‑client platform).  Adjust the items to match the specific version and environment you are running, but in general you’ll want to confirm the following categories:
+
+| **What to Verify** | **Why it matters** | **How to check it** |
+|---------------------|-------------------|---------------------|
+| **1. Service/Process Health** | NovaDesk’s core services (e.g., the NovaDesk Engine, Management Service, or Agent) must be up and running. | • On Windows: open **Services.msc** and look for “NovaDesk Service” (or the appropriate name) – status should be **Running**.<br>• On Linux: `systemctl status novadesk` or `ps -ef | grep novadesk`.<br>• Check the service’s **Start‑up type** (Automatic). |
+| **2. License/Activation** | An un‑licensed or expired installation will refuse user log‑ins or block features. | • Open the NovaDesk Admin Console → **License** tab – verify the license key is present and the status shows **Active** and not near expiration.<br>• Alternatively, run the CLI command (e.g., `novadesk --license-status`). |
+| **3. Version & Patch Level** | You need to know you installed the intended build and that any required hot‑fixes are applied. | • In the UI: **Help ► About** or **System Info** page.<br>• CLI: `novadesk --version`.<br>• Compare against the vendor’s release notes. |
+| **4. Network Connectivity** | NovaDesk relies on ports for management traffic, client‑to‑server sessions, updates, etc. | • Verify that required ports (commonly **443/8443** for HTTPS, **389/636** for LDAP, **2200** for remote session, etc.) are open in firewalls.<br>• Use `telnet <host> <port>` or `nc -zv <host> <port>` from a test workstation.<br>• Confirm that the NovaDesk server can reach any back‑end services (AD/LDAP, database, printing servers). |
+| **5. Database/Repository Connectivity** | The management console stores configuration, policies, and inventory in a DB – if it can’t talk to it, nothing works. | • Check the DB connection string in the config file (e.g., `novadesk.conf`).<br>• Run a test query (e.g., `SELECT 1 FROM sys.tables` for SQL Server).<br>• Look for “Database connection successful” messages in the log file. |
+| **6. Log File Generation** | Logs are the first place you’ll see hidden errors (startup failures, license issues, missing deps). | • Locate the log directory (often `/var/log/novadesk/` or `C:\Program Files\NovaDesk\logs`).<br>• Verify a recent log file exists and contains an entry like “Service started successfully”. |
+| **7. Admin Console Access** | Administrators must be able to log in to configure policies, push updates, etc. | • Open a browser and navigate to the NovaDesk web console URL (e.g., `https://<server>:8443`).<br>• Log in with an admin account – ensure the dashboard loads without error. |
+| **8. User Authentication** | End users need to authenticate against AD/LDAP or the built‑in store. | • From a client device, attempt a test login using a regular user account.<br>• Verify the user lands on the correct desktop profile / session. |
+| **9. Policy/Application Delivery** | Policies (printer mapping, drive redirection, kiosk mode, etc.) should be pushed correctly. | • In the console, assign a simple test policy to a test user/computer.<br>• Log into the client and confirm the policy takes effect (e.g., mapped drive appears). |
+| **10. Endpoint/Thin‑Client Registration** | All managed devices should appear in the inventory list. | • In the Admin Console, go to **Devices → Inventory** and confirm the newly‑installed endpoints show up with the correct OS version and status “Online”. |
+| **11. Update Mechanism** | Future patches must be able to download and apply automatically (or via the admin console). | • From the console, check **Updates → Check for updates** and confirm the server reports it is up‑to‑date.<br>• Optionally trigger a manual update on a test device. |
+| **12. Backup / Recovery Settings** | A working backup of the NovaDesk configuration database prevents catastrophic loss. | • Verify that scheduled backups are configured (e.g., daily export to a network share).<br>• Run a test restore on a non‑production system if possible. |
+| **13. Security Hardening** | Ensure default passwords have been changed and TLS/SSL is enforced. | • Confirm the admin/admin default password has been replaced.<br>• Verify the console uses HTTPS with a valid certificate (no browser warnings). |
+| **14. Documentation & Change Log** | Record the installation details for future audits and troubleshooting. | • Capture: installation date, installer name, version, host name, IP, license key, and any post‑install actions taken. Store in your change‑management system. |
+
+---
+
+### Quick “One‑Page” Summary
+
+1. **Services running** – NovaDesk Engine/Agent up.  
+2. **License active** – shows as valid in console/CLI.  
+3. **Version matches** – correct build & patches installed.  
+4. **Network ports open** – required ports reachable.  
+5. **DB connection OK** – logs show successful connection.  
+6. **Logs generated** – no start‑up errors.  
+7. **Admin console reachable** – secure HTTPS login works.  
+8. **User login works** – normal user can authenticate.  
+9. **Policy applied** – test policy takes effect on a client.  
+10. **Devices appear** – inventory shows newly‑installed endpoints.  
+11. **Update check succeeds** – server reports it’s current.  
+12. **Backup configured** – recent backup exists.  
+13. **Security settings** – default creds changed, TLS enforced.  
+14. **Documented** – record all relevant details.
+
+If any of these items fail, investigate the corresponding log entries or configuration files before moving the deployment into production.","After installing NovaDesk, administrators should verify that:
+
+- The application is reachable
+- The database connection is operational
+- Background services are running",7175.71,192.8,0.01,1317.63,1510.5,0.0158,1.0,0.9333,False,True,True,False,False,3,,
+What should a user check when they cannot sign in?,medium,technical,troubleshooting.txt,"When a user can’t sign in, the problem is usually one (or a combination) of the following. Working through this checklist will help pinpoint the cause and often resolve the issue:
+
+### 1. **Credentials**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Username / email** – entered correctly, no extra spaces | A typo or a wrong domain (e.g., `user@company.com` vs `user@company.org`) will be rejected. |
+| **Password** – correct case, no trailing spaces | Passwords are case‑sensitive; Caps Lock or Num Lock can change what you type. |
+| **Password expiration** – has the password been forced to change? | Some systems lock the account until the password is updated. |
+| **Account lockout** – too many failed attempts? | After a set number of failures the account may be temporarily disabled. |
+
+**Quick test**: Try logging in on a different device or using the “show password” toggle (if available) to confirm you’re typing what you think you are.
+
+---
+
+### 2. **Network & Connectivity**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Internet connection** – can you browse other sites? | No connectivity = no authentication request reaches the server. |
+| **VPN / Proxy** – are you on a corporate VPN or a proxy that might block the auth server? | Some services restrict login to specific IP ranges. |
+| **Firewall / security software** – is it blocking ports or the login domain? | Outbound traffic to the auth endpoint may be filtered. |
+
+**Quick test**: Open a new tab and load a known website (e.g., https://www.google.com). If that fails, fix the network first.
+
+---
+
+### 3. **Service / Server Status**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Service health page** – is the authentication service down? | Even perfect credentials won’t work if the server is offline. |
+| **Scheduled maintenance** – any announced downtime? | Maintenance windows often temporarily disable login. |
+| **Error messages** – do you see a specific code (e.g., 503, 401, 500)? | The code can hint at server‑side vs client‑side problems. |
+
+**Quick test**: Search the provider’s status page (or Twitter/Status.io) for current incidents.
+
+---
+
+### 4. **Browser or App Issues**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Correct URL** – are you on the proper login page? | A stale bookmark or typo could lead to a dead/incorrect endpoint. |
+| **Cookies & cache** – are they corrupted or blocked? | Many auth flows store session tokens in cookies; stale data can cause failures. |
+| **Browser extensions** – ad‑blockers, script blockers, password managers? | Some extensions interfere with redirects or form submissions. |
+| **Private / incognito mode** – does the login work there? | Helps isolate whether stored data is the culprit. |
+| **App version** – is the mobile/desktop client up‑to‑date? | Older clients sometimes lose compatibility after a server upgrade. |
+
+**Quick test**: Try a different browser or an incognito window; clear cookies for the domain.
+
+---
+
+### 5. **Two‑Factor Authentication (2FA)**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Correct 2FA method** – SMS, authenticator app, hardware token, email? | Using the wrong method or an expired code will deny access. |
+| **Time sync** – is your authenticator app’s clock accurate? | TOTP codes rely on synchronized time; a drift > 30 seconds invalidates the code. |
+| **Backup codes** – do you have them in case the primary 2FA device is unavailable? | If your phone is lost or the app is broken, backup codes let you log in. |
+
+**Quick test**: Generate a new TOTP code in the app and compare (or request a fresh SMS) to ensure the code is current.
+
+---
+
+### 6. **Account‑Specific Issues**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Account activation** – has the email been verified? | Some platforms prevent login until you click an activation link. |
+| **Suspended or disabled account** – any email from support? | Policy violations or unpaid invoices can trigger a lock. |
+| **Password reset required** – did you receive a “reset your password” email? | Some systems force a reset after a security event. |
+| **Single Sign‑On (SSO) / Federation** – are you using the right identity provider? | If the organization switched IdP (e.g., from Okta to Azure AD), the old portal won’t work. |
+
+**Quick test**: Look for recent emails from the service (activation, suspension, password‑reset) and follow any instructions.
+
+---
+
+### 7. **Device / OS Factors**
+| What to check | Why it matters |
+|---------------|----------------|
+| **Device registration** – is the device whitelisted? | Some services require devices to be enrolled before they can sign in. |
+| **OS version** – is it supported? | Out‑of‑date operating systems may be blocked for security reasons. |
+| **Time zone / system clock** – is it correct? | Incorrect system time can break token validation. |
+
+**Quick test**: Verify the system clock and, if possible, try signing in from a different device (phone, tablet, another computer).
+
+---
+
+## How to Use This Checklist
+
+1. **Start with the simplest checks** – password, caps lock, internet connection.  
+2. **Move to the browser/app layer** – try a different browser or clear cache.  
+3. **If that fails, verify service status** – look for outages or maintenance notices.  
+4. **Check 2FA and account‑specific messages** – maybe a reset link or suspension email is waiting.  
+5. **If none of the above reveal the problem**, contact support and give them:
+   - The exact error message (copy/paste if possible).  
+   - Time of the failed attempts.  
+   - Browser/OS/device you’re using.  
+   - Any recent changes (password updates, VPN usage, etc.).
+
+---
+
+### TL;DR (quick cheat‑sheet)
+
+- ✅ **Correct username & password** (no caps‑lock, no spaces).  
+- ✅ **Internet works** (can load other sites).  
+- ✅ **Right login URL** (no typo).  
+- ✅ **Cookies enabled & cache cleared** (or try incognito).  
+- ✅ **2FA code correct & time‑synced**.  
+- ✅ **Account not locked/suspended** (check email).  
+- ✅ **Service not down** (status page).  
+- ✅ **Try another device/browser**.  
+
+If you still can’t sign in after running through these steps, reach out to the service’s support team with as much detail as you can gather. They’ll be able to look at logs on their side and give you a definitive answer.","When users cannot sign in, they should check:
+
+- Authentication configuration
+- Account status
+- Identity‐provider connectivity
+- Relevant logs",7471.28,183.0,0.01,1382.71,1565.78,0.0116,1.0,0.8667,False,True,True,False,False,3,,
+How should employees handle unexpected absence from work?,medium,hr,attendance_policy.docx,"**Handling an Unexpected Absence from Work – A Practical Guide for Employees**
+
+| Step | What to Do | Why It Matters |
+|------|------------|----------------|
+| **1. Notify ASAP** | • Call, text, or email your direct supervisor (or the designated point‑person) as soon as you realize you can’t make it in.<br>• Use the communication channel your company specifies for emergencies (e.g., a dedicated “absence” phone line, Slack channel, or HR portal). | Shows respect for the team’s schedule and gives the manager enough time to rearrange work or find coverage. |
+| **2. State the Reason (Briefly)** | • Give a concise, honest explanation (e.g., “Severe flu,” “Family emergency,” “Car accident”).<br>• You don’t need to disclose overly personal details, but enough information to justify the absence. | Helps the manager assess impact and decide if any additional support (e.g., medical leave, sick‑pay) is needed. |
+| **3. Estimate Duration** | • If you know you’ll be out one day, say so.<br>• If the situation is uncertain, give a provisional timeframe (“I hope to be back tomorrow, but I’ll keep you updated”). | Allows the team to plan workloads and set realistic expectations. |
+| **4. Follow Company Policy** | • Review the employee handbook or intranet for procedures on sick leave, personal days, or emergency leave.<br>• Submit any required forms (e.g., sick‑leave certificate, incident report) within the prescribed window. | Ensures you are compliant with payroll, benefits, and legal requirements (e.g., FMLA, ADA). |
+| **5. Offer a Work‑Around (If Feasible)** | • If you feel well enough and it’s permissible, propose to work remotely or finish urgent tasks from home.<br>• Share status updates on any projects you’re responsible for. | Demonstrates commitment and can reduce the burden on coworkers. |
+| **6. Communicate with the Team** | • Let project teammates know whom they should contact in your absence.<br>• Add a note to shared calendars or project boards indicating your status. | Prevents bottlenecks and helps colleagues adjust priorities. |
+| **7. Keep Records** | • Save copies of any doctor’s notes, police reports, or other documentation requested by HR.<br>• Note the date and time of each communication you make about the absence. | Provides a clear audit trail if questions arise later (e.g., pay‑check adjustments, leave accrual). |
+| **8. Return and Follow Up** | • Send a brief “back‑in‑the‑office” message confirming you’re returning.<br>• Review any missed work, emails, or meeting minutes; prioritize catching up.<br>• If you missed a deadline, discuss a realistic revised timeline with your manager. | Helps you reintegrate smoothly and signals accountability. |
+| **9. Reflect & Plan** | • Identify whether the absence was due to a one‑off event or something that could recur (e.g., chronic health issue, caregiving responsibilities).<br>• If recurring, explore long‑term accommodations (flex‑time, remote work, disability leave). | Proactive planning can reduce future disruptions for you and the organization. |
+
+---
+
+### Quick Checklist for an Unexpected Absence
+
+1. **⏰ Notify** manager immediately (phone → text/email).  
+2. **🔍 Explain** reason briefly.  
+3. **📆 Estimate** how long you’ll be out.  
+4. **📄 Follow** the formal policy (forms, documentation).  
+5. **💻 Offer** remote help if possible.  
+6. **📣 Inform** teammates/clients of the coverage plan.  
+7. **🗂️ Save** any required documentation.  
+8. **🚪 Return** with a brief re‑entry note and catch‑up plan.  
+9. **⚖️ Review** if any long‑term adjustments are needed.
+
+---
+
+### Common Scenarios & Tips
+
+| Scenario | Immediate Action | Additional Tips |
+|----------|-------------------|-----------------|
+| **Sudden Illness (e.g., flu, food poisoning)** | Call/Message your supervisor before your shift starts. | If a doctor’s note is required, obtain it and forward to HR within 48 h. |
+| **Family Emergency (e.g., child’s hospital stay)** | Notify your manager as soon as you know you’ll be absent. | Ask HR about emergency leave options; keep them updated on any change in timing. |
+| **Transportation Accident/Breakdown** | Send a quick message explaining the delay; provide an estimated arrival if possible. | If you can’t make it at all, transition to “absent” and arrange remote coverage if feasible. |
+| **Power/Internet Outage (remote worker)** | Tell your manager and IT support; note the outage duration. | If you have a backup hotspot or a coworking space, propose using it to stay productive. |
+| **Mental‑Health Day** | Follow your company’s “personal day” or mental‑health leave policy – usually a short notice is acceptable. | Consider discussing long‑term stress‑management resources with HR (e.g., Employee Assistance Program). |
+
+---
+
+### Legal & Policy Considerations
+
+- **Sick‑Leave Laws** – Many jurisdictions (e.g., California, New York, EU countries) mandate paid sick leave and may protect against retaliation for taking it.
+- **Family & Medical Leave Act (FMLA) (U.S.)** – Provides up‑to‑12 weeks of unpaid, job‑protected leave for qualifying serious health conditions or family care.
+- **Americans with Disabilities Act (ADA) / Reasonable Accommodations** – If an ongoing health condition limits attendance, you may request accommodations (flex‑time, remote work, modified schedule).
+- **Company‑Specific Policies** – Some firms have “no‑call‑no‑show” rules that trigger progressive discipline after a certain number of undocumented absences.
+
+*Tip:* Keep a copy of your employee handbook (or bookmarked intranet page) handy so you can reference exact procedures when an unexpected event occurs.
+
+---
+
+### Bottom Line
+
+Treat an unexpected absence like any other professional responsibility: **communicate promptly, be transparent (within privacy limits), follow documented procedures, and help the team stay on track.** Doing so protects your reputation, keeps payroll and benefits in order, and minimizes disruption for everyone involved.",Employees who cannot attend work unexpectedly should notify their manager and follow the applicable leave procedure.,7526.26,155.28,0.01,1871.68,2027.02,0.0131,0.8462,0.8667,False,True,True,False,False,3,,
+An employee wants to take planned personal time away from work. What type of leave should they use and how should they request it?,difficult,hr,leave_policy.pdf,"When an employee wants to be away from work for a planned, non‑medical personal matter (e.g., a vacation, a family event, a short‑term personal project, etc.), the usual options are:
+
+| Leave type | When it’s appropriate | Typical characteristics |
+|-----------|----------------------|--------------------------|
+| **Paid Time Off (PTO) / Vacation leave** | Planned personal or leisure time that is not covered by any other specific leave category. | Usually accrued, paid, and can be taken in half‑ or full‑day increments. Most employers treat PTO as the first‑choice bucket for any discretionary day‑off. |
+| **Personal leave** (if the company separates it from PTO) | A small amount of time set aside for personal matters that don’t fit the “vacation” label (e.g., attending a school function, a one‑day legal appointment). | May be paid or unpaid, often limited to a few days per year. |
+| **Unpaid leave** | When the employee has exhausted accrued paid days and still needs additional time, or when the employer’s policy only allows a certain number of paid days. | No pay; usually requires additional justification and manager approval. |
+| **Floating holidays** (if offered) | One‑off observances of holidays not covered by the standard calendar. | Usually a single paid day per year, usable at the employee’s discretion. |
+
+**How to request the time off**
+
+1. **Review the company’s leave policy**  
+   • Locate the employee handbook, HR intranet, or payroll portal to confirm how much PTO/personal days you have available and any advance‑notice requirements (e.g., 2 weeks, 30 days).  
+   • Note any blackout periods (busy seasons when leave may be denied) and any specific forms or electronic systems the organization uses.
+
+2. **Plan the dates**  
+   • Choose the start and end dates (and whether you need full‑day or half‑day increments).  
+   • Consider workload, project deadlines, and the impact on teammates; try to pick a time that minimizes disruption.
+
+3. **Talk to your direct manager (optional but advisable)**  
+   • A quick informal conversation (in person, via video call, or a brief email) can help gauge whether the dates are feasible.  
+   • Use this opportunity to discuss coverage plans (who will handle your tasks, any hand‑off notes, etc.).
+
+4. **Submit a formal request**  
+   • **If your company uses an HRIS/leave‑request portal (e.g., Workday, ADP, BambooHR):**  
+     1. Log in, select “Request Time Off.”  
+     2. Choose the appropriate leave type (PTO, Personal, etc.).  
+     3. Enter the dates, any partial‑day specifications, and a brief reason (most systems allow “personal” or “vacation”).  
+     4. Attach any required documentation (rare for PTO, but sometimes needed for extended personal leave).  
+     5. Submit; the request will route to your manager for approval and then to HR/payroll.  
+   • **If your company uses email or a paper form:**  
+     1. Fill out the designated form (or draft an email) indicating:  
+        - Your name and employee ID  
+        - Leave type (PTO/Personal)  
+        - Dates requested (including start/end times)  
+        - Reason (optional, can simply be “planned personal time”)  
+        - Any notes about coverage or hand‑off.  
+     2. Send it to your manager first for approval, then copy HR/Payroll as required.
+
+5. **Follow up**  
+   • Once approved, make sure the dates appear on the team calendar and that any tasks you own are reassigned or documented.  
+   • Set an out‑of‑office auto‑reply on your email (and voicemail, if needed) with dates and an alternate contact.
+
+6. **Document the approval**  
+   • Keep a screenshot or a copy of the approved request for your records, especially if you need to reference it later for payroll or audit purposes.
+
+**Tips for a smooth request**
+
+| Tip | Why it helps |
+|-----|--------------|
+| **Give ample notice** (as per policy, often 2 weeks or more) | Managers can plan coverage and you’re less likely to be denied. |
+| **Provide a coverage plan** | Shows responsibility and eases manager concerns. |
+| **Be flexible** | If your first-choice dates conflict with critical projects, offering alternatives can speed approval. |
+| **Use the official channel** | Keeps the request in the official audit trail and ensures proper pay adjustments. |
+| **Confirm the balance** | Double‑check you have enough accrued days; if not, discuss using unpaid leave or a combination of leave types. |
+
+**Summary**
+
+- **Use PTO (or “personal leave” if your organization distinguishes it) for planned personal time.**  
+- **Check your accrued balance and policy requirements, then submit a formal request through the company’s designated system (HR portal, email, or paper form) after informing your manager.**  
+- **Provide clear dates, a brief reason, and a coverage plan, and follow up once you receive approval.**
+
+If you’re unsure which leave bucket to draw from, a quick chat with your manager or HR representative can clarify the best option for your particular situation.","The employee should use **annual leave**, which is designated for planned personal time away from work.
+
+**Request process**
+- Submit the planned annual‐leave request through the HR portal.
+- The request should be entered at least 5 working days before the intended start date.
+- The employee’s direct manager will review and approve the request based on staffing and operational needs.",6000.54,123.26,0.01,1524.95,1648.28,0.0386,0.7576,0.8718,False,True,True,False,False,3,,
+A full-time employee needs time off for both planned personal reasons and illness. What leave options are available and how many days are provided?,difficult,hr,leave_policy.pdf,"Below is a quick‑reference guide to the most common types of leave that a **full‑time employee** can use for planned personal matters and for illness.  Because the exact number of days (or hours) varies from one employer to another – and sometimes from one jurisdiction to another – treat the figures as **typical ranges** rather than hard‑and‑fast rules.  Your organization’s employee handbook, HR portal, or collective‑bargaining agreement will give you the precise numbers that apply to you.
+
+| Leave type | What it’s for | Typical annual allocation* | How it’s usually taken | Key points / special rules |
+|-----------|--------------|----------------------------|------------------------|----------------------------|
+| **Vacation / Paid Time Off (PTO)** | Planned personal time – vacation, holidays, personal errands, mental‑health days, etc. | **10 – 25 days** (or the equivalent in hours) per year. Many companies accrue 1–2 days each month, some grant a lump‑sum at the start of the year. | Requested in advance (usually 2 weeks notice or more). Manager approval required. | Unused days may carry over (often capped at 5‑10 days) or be paid out on termination, depending on policy. |
+| **Sick Leave** | Illness, injury, medical appointments, caring for a sick immediate family member. | **5 – 10 days** (or 40‑80 hours) per year. Some employers combine sick leave with vacation into a single PTO bank, others keep them separate. | Usually can be taken on the day it’s needed; many policies allow self‑certification for the first 2–3 days and then require a doctor’s note. | Some states/countries mandate a minimum (e.g., California’s “Healthy Workplace Healthy Family” law – 3 days per year, accruing at 1 hour per 30 hours worked). |
+| **Personal/Wellness Days** | Non‑vacation personal matters (e.g., moving, school events, religious observances) or short‑term mental‑health breaks. | **2 – 5 days** per year, often separate from vacation. | Usually requested like vacation but with shorter notice (often 48 hours). | Not all employers offer a distinct “personal‑day” category; sometimes they are drawn from the PTO pool. |
+| **Family & Medical Leave Act (FMLA) / Equivalent** | Serious health conditions (your own or a family member’s), birth/adoption, military caregiver duties. | Up to **12 weeks** of unpaid leave in a 12‑month period (protected job‑return rights). Some employers provide **paid** FMLA‑eligible leave as a benefit. | Requires certification from a health care provider; must be requested in writing. | Applies only to employers with ≥50 employees (U.S.) and to eligible employees (≥12 months of service, 1,250 hours worked). Many jurisdictions have similar statutory leave (e.g., Canada’s EI‑Sickness, EU parental leave). |
+| **Short‑Term Disability (STD)** | Incapacity due to a serious medical condition that prevents you from working for a longer stretch (typically > 7‑10 days). | **6 – 12 weeks** of partial pay (often 60 % – 100 % of salary) after a waiting period (often 7 days). | Medical certification needed; claim filed through the employer’s disability insurer. | Not all firms offer STD; some combine it with long‑term disability (LTD) coverage. |
+| **Unpaid Leave / Leave of Absence** | Extended personal reasons (e.g., sabbatical, extended travel, caregiving) when paid leave is exhausted. | **No set limit** – granted at manager/HR discretion, often subject to operational needs. | Usually requires a formal request and a plan for workload coverage. | Job protection varies; may be covered under “reasonable accommodation” or other statutes in some regions. |
+| **Compensatory (Comp) Time** | Extra hours worked beyond regular schedule (often for shift workers or in public‑sector jobs). | Earned at a 1:1 ratio with overtime; can be used as paid time off later. | Request as any other leave. | Not permitted in the private sector under the Fair Labor Standards Act (FLSA) in the U.S.; common in government jobs. |
+
+\* **Typical range** – exact numbers depend on:
+* **Company policy** (size, industry, benefits philosophy).
+* **Geographic location** (state, province, country laws may mandate minimums).
+* **Length of service** (some firms increase vacation after 1, 3, 5 years).
+* **Collective‑bargaining agreements** (union contracts often set higher caps).
+
+---
+
+## How to Decide Which Leave to Use
+
+| Situation | Best‑fit leave (first choice) | Backup / alternative |
+|----------|------------------------------|-----------------------|
+| **You’re feeling a cold or need a doctor’s appointment** | **Sick leave** (or PTO if your employer bundles them) | If you’ve exhausted sick days, use a **personal day** or **PTO**. |
+| **You’ve planned a vacation or family event weeks in advance** | **Vacation / PTO** | If you run out of vacation, you may dip into **personal days** (if separate) or **unpaid leave**. |
+| **You need a few days for a personal matter that isn’t a vacation (e.g., moving, legal appointment)** | **Personal/Wellness day** (if offered) | Otherwise, use **PTO** or **unpaid leave**. |
+| **You have a serious illness or need to care for a seriously ill family member** | **FMLA (or local statutory leave)** – paid if your employer supplements it | **Short‑term disability** if you’ll be out > 1 week and it’s a qualifying condition. |
+| **You’re out for a longer stretch (6+ weeks) due to a medical condition** | **Short‑term disability** → then **Long‑term disability** if needed | **FMLA** (unpaid but job‑protected) can run concurrently. |
+| **You’ve exhausted all paid options but still need time** | **Unpaid leave of absence** | Negotiate a **flex‑time** or **reduced‑hours** arrangement if feasible. |
+
+---
+
+## Practical Tips for Managing Your Leave
+
+1. **Check the employee handbook first.**  
+   It will tell you how leave accrues (e.g., “1 day per month”), whether it carries over, and what documentation is required.
+
+2. **Document everything.**  
+   - For sick leave, keep doctor’s notes if the policy requires them after a certain number of days.  
+   - For FMLA or disability, submit the medical certification forms promptly.
+
+3. **Plan ahead when possible.**  
+   - Submit vacation/PTO requests early to improve the chance of approval.  
+   - For planned medical procedures, ask HR about the interplay between sick leave, FMLA, and disability benefits.
+
+4. **Know your legal rights.**  
+   - In the U.S., the **Family and Medical Leave Act** protects up to 12 weeks of job‑protected leave for qualified reasons.  
+   - Many states (e.g., California, New York, Washington) have **paid sick‑leave** mandates that may increase what you’re entitled to beyond the company’s baseline.  
+   - In Canada, **Employment Insurance (EI) sickness benefits** provide up to 15 weeks of benefits (up to 55 % of earnings) if you qualify.  
+   - In the EU, workers have a statutory right to **paid sick leave** (the amount and duration vary by country) and a minimum of **four weeks of paid vacation**.
+
+5. **Coordinate overlapping leaves.**  
+   If you need both *Sick leave* and *FMLA* for the same condition, most employers count the same days toward both (i.e., you don’t double‑dip). The same goes for *STD* and *FMLA*; they can run concurrently, but the employer may pay you only the STD benefit amount.
+
+6. **Carry‑over and “use‑it‑or‑lose‑it.”**  
+   Some companies let you roll over a limited number of vacation/PTO days (e.g., up to 5 days). Personal or sick days often **expire at year‑end** unless you have a “banked sick‑leave” provision.
+
+7. **Requesting unpaid leave.**  
+   Even if it’s unpaid, put the request in writing and keep a copy. This creates a paper trail that can be useful if you need to prove you tried to obtain employer approval before taking time off.
+
+---
+
+## Quick Checklist for Your Next Leave Request
+
+| ☐ | Verify your current balance (vacation, sick, personal) in the HR portal. |
+| ☐ | Determine the leave type that best matches your need (see the table above). |
+| ☐ | Check any required notice period (e.g., 2 weeks for vacation, 48 hours for personal day). |
+| ☐ | Gather supporting documentation if needed (doctor’s note, FMLA certification, etc.). |
+| ☐ | Submit the request through the official system (HRIS, email to manager, etc.). |
+| ☐ | Note the approval status and any follow‑up actions (e.g., handover of work). |
+| ☐ | Keep a copy of the approval for your records. |
+
+---
+
+### Bottom line
+
+- **Planned personal time** → use **Vacation/PTO** (or a separate **Personal Day** if your employer offers one).  
+- **Illness** → start with **Sick Leave**, then move to **FMLA/STD** if you exceed the sick‑leave allocation or have a serious condition.  
+- **If paid leave runs out** → consider **unpaid leave**, **flex‑time**, or **short‑term disability** (if medically qualified).  
+
+Always consult your specific company’s policies and, when in doubt, reach out to your HR representative—they can confirm the exact number of days you have left and advise on any required paperwork.","A full‐time employee can use:
+
+- **Annual leave** for planned personal time – 20 days per calendar year.
+- **Sick leave** for illness – 10 days per calendar year.
+- **Casual leave** for short‐term personal matters that don’t require planned annual leave – 5 days per calendar year.",11230.84,124.0,0.01,1561.61,1685.69,0.0317,0.9,0.8542,False,True,True,False,False,3,,
+A support team wants to manage customer requests while tracking ticket status and service performance. Which NovaTech product fits this need?,difficult,products,product_a.pdf,"For a support team that needs to log customer requests, keep track of ticket status, and monitor service‑level performance, the NovaTech product that best matches those requirements is **NovaServiceDesk** (the platform that provides a full‑featured ticketing system, SLA tracking, and reporting on service metrics). 
+
+If you need more detailed information about features, pricing, or integration options for NovaServiceDesk, let me know and I can help guide you on where to find those details.","NovaDesk (NovaTech Product A) provides the ability to manage customer requests, track ticket status, and monitor service performance.",2073.54,160.67,0.01,1255.18,1415.93,0.2553,0.9286,0.9167,False,True,True,False,False,3,,
+A company wants to automate repetitive business workflows rather than manage customer support tickets. Which NovaTech product should it consider?,difficult,products,product_b.txt,"If the goal is to automate repetitive internal business processes (rather than handling inbound support tickets), the company should look at NovaTech’s **workflow‑automation / business‑process‑automation product**—the solution that NovaTech markets for “process automation” (sometimes branded as **NovaFlow**, **Nova Automate**, or simply the “NovaTech Automation Platform”).
+
+That product is built for:
+
+* Designing, orchestrating, and automating routine tasks and approvals across departments.  
+* Integrating with existing systems (ERP, CRM, HR, finance, etc.) via connectors or APIs.  
+* Providing a visual designer, rule engine, and scheduling so that tasks run automatically without human intervention.  
+
+In contrast, NovaTech’s ticket‑handling offering (e.g., “NovaAssist” or a help‑desk suite) is focused on managing customer‑support tickets, SLA tracking, and agent workflows—not the kind of back‑office process automation described.
+
+So, for automating repetitive business workflows, the company should evaluate NovaTech’s **workflow‑automation product** (NovaFlow/Nova Automate).","The company should consider **NovaFlow** (NovaTech Product B), which is described as a workflow automation platform for automating repetitive business processes.",2283.89,154.83,0.01,1379.72,1534.62,0.1667,0.8571,0.8889,False,True,True,False,False,3,,
+A new NovaDesk installation needs both browser access and administrative configuration. What prerequisites and post-installation checks are required?,difficult,technical,installation.pdf,"Below is a practical checklist you can use when you are installing **NovaDesk** for the first time.  
+It is divided into **Prerequisites (what you must have in place before you start the installer)** and **Post‑installation Checks (what you should verify after the install completes)**.  
+
+---
+
+## 1. Prerequisites  
+
+| Area | What to verify / prepare | Why it matters |
+|------|---------------------------|----------------|
+| **Server hardware** | • CPU ≥ 2 cores (4 cores recommended) <br>• RAM ≥ 4 GB (8 GB+ for > 200 concurrent users) <br>• Disk: 20 GB free for the base install + extra for logs & data | Guarantees that the services can start and run without out‑of‑memory or storage errors. |
+| **Operating System** | • Windows Server 2019/2022 **or** a supported Linux distro (e.g., Ubuntu 22.04 LTS, RHEL 9) <br>• Latest OS patches installed | NovaDesk is built on .NET Core (Windows) or Docker/Node (Linux); a supported, fully‑patched OS avoids incompatibilities and security holes. |
+| **Network** | • Static IP address (or DHCP reservation) for the NovaDesk host <br>• DNS entry (e.g., `novadesk.mycompany.local`) that resolves to that IP <br>• Open firewall ports: <br> - **HTTP** 80 (optional) <br> - **HTTPS** 443 (required) <br> - **TCP** 5140–5145 (internal services) <br> - **UDP** 53 if the server will also be a DNS forwarder | Allows browsers and remote admins to reach the web UI and lets the internal agents talk to the back‑end services. |
+| **Browser access** | • A modern, supported browser on the client workstation (Chrome ≥ 108, Edge ≥ 108, Firefox ≥ 107, Safari ≥ 15) <br>• TLS 1.2 or higher enabled (TLS 1.3 preferred) <br>• No corporate proxy that strips the `X‑Forwarded‑For` header (or configure proxy exceptions for the NovaDesk URL) | NovaDesk UI is delivered as a responsive HTML5 app; older browsers or insecure TLS can prevent it from loading correctly. |
+| **Administrative rights** | • Local admin / sudo rights on the host machine (to install services, create firewall rules, bind to low‑numbered ports, etc.) <br>• A domain account (or local account) that will become the **NovaDesk Administrator** after install | The installer must be able to register Windows services / systemd units and write to program files, and you need a privileged account to perform first‑time configuration. |
+| **Prerequisite software** | • **.NET Runtime 6.0+** (Windows) **or** Docker Engine (Linux) <br>• **SQL Server Express/Standard**, **PostgreSQL 13+**, or **MySQL 8.0+** (depending on the DB you plan to use) <br>• **Redis** (optional but recommended for session caching) <br>• **Microsoft Visual C++ Redistributable 2015‑2022** (Windows) | The application stack depends on these components; the installer will check for them but it is faster to have them already present. |
+| **Certificates** | • A valid SSL/TLS certificate for the NovaDesk hostname (self‑signed is acceptable for a test environment, but production should use a CA‑signed cert) <br>• Private key accessible to the installer (or plan to import it after install) | HTTPS is enforced by default; without a cert the UI will be inaccessible or browsers will block the connection. |
+| **Account & License** | • NovaDesk license key (if you are using a paid edition) <br>• Email address for the initial admin user | The installer will prompt for these values; the system will refuse to start without a valid key. |
+| **Backup & Recovery plan** | • A strategy for snapshotting the VM or copying the installation directory before major changes <br>• Test that you can restore a simple file backup | Even a “new” install can go wrong (e.g., corrupted package download). Having a quick rollback point saves time. |
+
+---
+
+## 2. Installation Steps (quick reminder)
+
+1. **Download the installer** from the official NovaDesk portal (verify SHA‑256 checksum).  
+2. **Run the installer as Administrator / sudo**.  
+3. Follow the wizard: select OS, DB engine, install path, license key, SSL cert, admin account.  
+4. Let the installer create Windows services (or systemd units) and start the web server.  
+5. When the wizard finishes, note the **installation URL** (e.g., `https://novadesk.mycompany.local`).  
+
+*(If you are using a container‑based deployment, replace steps 2‑4 with `docker compose up -d` and make sure the compose file points to the correct DB/Redis endpoints.)*
+
+---
+
+## 3. Post‑Installation Checks  
+
+| Check | How to verify | What to look for |
+|-------|---------------|------------------|
+| **Service health** | • On Windows: `Get-Service -Name ""NovaDesk*""` <br>• On Linux: `systemctl status novadesk` or `docker ps` <br>• Or use the **/health** endpoint: `https://<host>/api/health` | All NovaDesk services (Web, API, Scheduler, etc.) should be **Running** / **Up** and report “healthy”. |
+| **HTTPS reachability** | Open a browser on a separate workstation and navigate to the installation URL. Accept the certificate if it is self‑signed. | The login page loads without “Unable to connect”, “Invalid certificate”, or mixed‑content warnings. |
+| **Browser compatibility** | Test the UI on Chrome, Edge, Firefox (and Safari if macOS clients exist). | UI elements render correctly; no JavaScript errors in the developer console. |
+| **Admin login** | Sign in with the admin credentials created during install. | Successful login, dashboard loads, user‑management menu visible. |
+| **Database connectivity** | In the UI, go to **Settings → System → Database** (or run a quick query via DB client). | No “connection timeout” errors; tables like `dbo.Users`, `dbo.Devices` exist. |
+| **License validation** | Settings → **License** page should show “License status: Active”. | Expiration date, product edition, and number of seats match what you purchased. |
+| **Email / Notification service** (if configured) | Trigger a test email from **Settings → Notifications**. | Email arrives in the inbox; SMTP logs show “250 OK”. |
+| **Scheduled tasks / background workers** | Verify that the scheduler service is executing at least one job (e.g., “Device inventory sync”). | Logs show job start/completion; no “failed” entries. |
+| **Log files** | • Windows: `C:\ProgramData\NovaDesk\logs\` <br>• Linux: `/var/log/novadesk/` or Docker container logs (`docker logs <container>`). | No **ERROR** or **EXCEPTION** entries on start‑up. Look for “Service started” messages. |
+| **Firewall / port exposure** | Run `netstat -an | find ""443""` (Windows) or `ss -tlnp | grep 443` (Linux). | Port 443 is listening on the expected IP (0.0.0.0 or the static IP). |
+| **Backup configuration** | Confirm that the built‑in backup task (or your own script) can create a backup file. | Backup file size > 0 KB and can be restored to a test environment. |
+| **User/role defaults** | Create a test non‑admin user, assign a basic role, and log in. | Permissions align with role definitions; UI elements not permitted are hidden. |
+| **Integration endpoints** (if you plan to use APIs) | Call a simple API request using `curl` or Postman, e.g., `GET https://<host>/api/v1/status` with an admin token. | 200 OK and JSON response with system version, uptime, etc. |
+| **Performance baseline** (optional) | Run a quick load test (e.g., 10 concurrent users browsing the dashboard). | Response times < 2 s, CPU < 30 % on idle, memory < 2 GB. |
+| **Documentation link** | Verify that the “Help → Documentation” button opens the correct web page (or PDF). | Users can access product docs right away. |
+
+> **Tip:** Keep a short “Installation Verification” markdown file (or Confluence page) where you copy‑paste the results of the above checks. That makes future audits and troubleshooting much faster.
+
+---
+
+## 4. Common Issues & Quick Fixes  
+
+| Symptom | Likely cause | Quick fix |
+|--------|--------------|-----------|
+| Browser shows **“This site can’t provide a secure connection”** | SSL cert missing, incorrect hostname, or TLS 1.2 disabled on the client | Import the cert into the client’s Trusted Root store, or regenerate a cert that matches the DNS name. |
+| Installer aborts with **“Unable to connect to SQL Server”** | Wrong connection string, firewall blocking port 1433, or SQL service not running | Verify SQL Server is reachable (`telnet <sql‑host> 1433`), check `sqlcmd` connectivity, and confirm the account has `db_owner` rights. |
+| Services start but UI shows **“Internal Server Error (500)”** | Database schema not applied (maybe the DB was empty) or missing .NET runtime | Re‑run the installer with the **Repair** option, or manually run the DB migration script (`dotnet NovaDesk.Migrations.dll`). |
+| No email arrives from **Test Email** | SMTP server requires authentication or uses a different port (e.g., 587) | Update the **SMTP Settings** page with correct credentials and enable TLS/STARTTLS. |
+| Users cannot log in after password change | Session store (Redis) unavailable, causing token validation failures | Check Redis container/service (`redis-cli ping` should return `PONG`). Restart it if needed. |
+| High CPU on the host after install | Background job looping (e.g., device discovery) with mis‑configured interval | Open **Settings → Scheduler**, increase the interval or pause the job until the environment is ready. |
+
+---
+
+## 5. “Done” Bookmark  
+
+When you have verified **all** items in the **Post‑Installation Checks** table, you can consider the NovaDesk deployment **ready for production**.  
+
+- Mark the installation ticket **Closed – Completed**.  
+- Hand over the **admin credentials** and the **Installation Verification** document to the operations team.  
+- Schedule the first **weekly health‑check** (review logs, verify backups, confirm license renewal).  
+
+--- 
+
+**Bottom line:**  
+- **Prerequisites** are primarily about having a supported OS, adequate hardware, network reachability, a valid TLS certificate, a database engine, and an admin account with local‑system rights.  
+- **Post‑install checks** focus on confirming that the services are up, the UI is reachable via HTTPS, the admin can log in, the database and licensing are valid, background workers run, and that basic integrations (email, API, backups) work.
+
+Follow the checklist, document any deviations, and you’ll have a clean, maintainable NovaDesk installation. Happy deploying!","**Prerequisites**
+
+- A supported modern web browser.
+- Network access to the NovaTech application environment.
+- An administrator account (required for administrative configuration).
+- Verification of the system requirements before beginning the install.
+
+**Post‐installation check**
+
+- Perform the Health Check (the health‐check step is listed as part of the recommended installation process after installation is complete).",15339.58,173.53,0.01,2106.6,2280.22,0.0201,0.7879,0.8205,False,True,True,False,False,3,,
+NovaDesk is not starting after configuration changes. What troubleshooting steps should an administrator take?,difficult,technical,troubleshooting.txt|configuration.docx,"**Troubleshooting NovaDesk when it won’t start after configuration changes**
+
+Below is a practical, step‑by‑step checklist that an administrator can follow.  
+Feel free to adapt the order to fit your environment (Windows, Linux, Docker, etc.), but try to keep the flow logical so you can isolate the problem quickly.
+
+---
+
+## 1. Verify the Basics
+
+| Action | Why it matters | Quick check |
+|--------|----------------|-------------|
+| **Confirm the service/process is stopped** | A partially‑started process can leave lock files or ports in use. | `systemctl status novadesk`, `ps -ef | grep novadesk`, `docker ps` |
+| **Make sure the host machine is healthy** | Lack of RAM, CPU spikes, or disk‑full conditions can abort startup. | `free -m`, `top/htop`, `df -h` |
+| **Check network connectivity** (if NovaDesk relies on external services like a DB, LDAP, or license server) | A missing dependency will cause the startup routine to abort early. | `ping <db-host>`, `nc -zv <db-host> 5432` (example) |
+
+---
+
+## 2. Look at the Most Recent Configuration Changes
+
+1. **Identify the change source**  
+   - Git/SCM commit logs?  
+   - Manual edit of `novadesk.conf`, `application.yml`, `env` files, or Docker/K8s manifests?  
+
+2. **Revert → Test**  
+   - If you have a backup or a version‑controlled copy, roll back to the previous working version and try to start again.  
+   - If the service starts, you’ve isolated the offending change.
+
+3. **Diff the files**  
+   - `git diff HEAD~1..HEAD` or `diff /etc/novadesk/novadesk.conf.bak /etc/novadesk/novadesk.conf`.  
+   - Look for: syntax errors, missing sections, duplicated keys, or stray characters (e.g., BOM, invisible Unicode).
+
+---
+
+## 3. Validate Configuration Syntax
+
+| Config type | Tool / Method |
+|-------------|----------------|
+| **INI / TOML / YAML / JSON** | Use a linter: `yamllint`, `jsonlint`, `toml-check`, `ini-lint` (or `python -m json.tool`). |
+| **Environment files (`.env`)** | Ensure each entry is `KEY=VALUE` with no surrounding quotes (unless required) and no spaces around `=`. |
+| **XML** | `xmllint --noout file.xml`. |
+| **Custom NovaDesk schema** | Some installations ship a `novadesk-config-validator` binary or script – run it if present. |
+
+If the validator reports errors, fix them and try starting again.
+
+---
+
+## 4. Examine Log Output
+
+1. **Locate the logs** (common locations)  
+   - `/var/log/novadesk/`  
+   - `C:\ProgramData\NovaDesk\logs\`  
+   - Inside a Docker container: `docker logs <container>`  
+
+2. **Start the service in foreground / debug mode** (most packages have a flag).  
+   - Example: `novadesk --debug` or `systemctl restart novadesk && journalctl -u novadesk -f`.  
+
+3. **Look for common failure patterns**  
+   - **Parsing errors**: “Failed to parse config – unexpected token …”  
+   - **Missing dependencies**: “Unable to connect to database”, “LDAP bind failed”.  
+   - **Permission denied**: “Cannot open /etc/novadesk/…: Permission denied”.  
+   - **Port already in use**: “Bind failed on 0.0.0.0:8080 – address already in use”.  
+
+4. **Capture the relevant snippet** (timestamp, error line) and search the product’s knowledge base or forums with that exact wording.
+
+---
+
+## 5. Check External Dependencies
+
+| Dependency | Typical failure mode | Test |
+|------------|----------------------|------|
+| **Database (PostgreSQL, MySQL, etc.)** | Wrong connection string, credentials, or DB not running. | `psql -h <host> -U <user> -c '\l'` |
+| **LDAP / AD** | Incorrect bind DN, TLS cert mismatch. | `ldapsearch -x -H ldaps://<host> -D ""<bindDN>"" -w <pwd>` |
+| **Redis / RabbitMQ / other message brokers** | Wrong port or auth token. | `redis-cli -h <host> ping` |
+| **License server** | License file missing or expired. | Consult the license‑status command (`novadesk license status`). |
+| **File system mounts** (e.g., `/data/novadesk`) | Unmounted or read‑only. | `mount | grep novadesk`, `touch /data/novadesk/.test` |
+
+If any dependency is unreachable, fix it before retrying the start.
+
+---
+
+## 6. Verify Permissions & Ownership
+
+| Resource | Typical required owner | Fix command (Linux) |
+|----------|------------------------|----------------------|
+| **Configuration directory** (`/etc/novadesk` or `C:\ProgramData\NovaDesk`) | `novadesk` user / `LOCAL SERVICE` | `chown -R novadesk:novadesk /etc/novadesk` |
+| **Log directory** | Same as above, **writable** | `chmod 750 /var/log/novadesk` |
+| **Data directory** (if any) | `novadesk` | `chown -R novadesk:novadesk /var/lib/novadesk` |
+| **Docker volume mounts** | UID/GID match container user | `docker run -v /host/data:/container/data:rw` (ensure UID/GID mapping). |
+
+On Windows, double‑check that the service account (often `Local Service` or a dedicated domain account) has **Read** on the config files and **Write** on logs/data directories.
+
+---
+
+## 7. Test the Startup Script / Service Unit
+
+1. **Run the binary directly** (bypass the service wrapper)  
+   ```bash
+   /opt/novadesk/bin/novadesk start --config /etc/novadesk/novadesk.yml
+   ```
+   - If it starts, the problem is likely with the init system (systemd, upstart, Windows Service Wrapper).
+
+2. **Validate the unit file** (systemd example)  
+   - `systemctl cat novadesk.service`  
+   - Look for incorrect `ExecStart=` paths, missing `EnvironmentFile=` statements, or incorrect `WantedBy=` targets.
+
+3. **Reload and restart**  
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl restart novadesk
+   sudo systemctl status novadesk
+   ```
+
+4. **On Windows**:  
+   - Open “services.msc”, locate “NovaDesk Service”, check the “Start type” and “Log On As”.  
+   - Right‑click → “Properties” → “Log On” tab → ensure the account can read the config folder.  
+   - Hit “Start” and note any error code that appears.
+
+---
+
+## 8. Examine Environment Variables
+
+Some NovaDesk installations rely on variables such as `NOVADESK_HOME`, `JAVA_OPTS`, `DB_URL`, etc.
+
+```bash
+printenv | grep NOVADESK
+```
+
+- Verify that no variable contains stray quotes or line‑breaks.  
+- If you edited a startup script (`/etc/profile.d/novadesk.sh`, `C:\NovaDesk\env.bat`), source it again (`source /etc/profile.d/novadesk.sh`) and re‑run the start command.
+
+---
+
+## 9. Clear or Rotate Corrupt Cache / Temp Files
+
+Occasionally a bad cache / temp file prevents the application from bootstrapping.
+
+```bash
+rm -rf /var/lib/novadesk/cache/*
+rm -rf /tmp/novadesk-*
+```
+
+*(Only do this if you know the application can recreate these files; otherwise, back them up first.)*
+
+---
+
+## 10. Re‑run the Installation / Upgrade Scripts (Safe Mode)
+
+If the above steps don’t surface the cause, you can try a “dry‑run” of the installer:
+
+```bash
+sudo novadesk-installer --check
+```
+
+Many vendors ship a `--check` or `--validate` flag that verifies system prerequisites without touching existing data.
+
+---
+
+## 11. Document What You’ve Tried
+
+- Keep a short log of each action, the command run, and the result.  
+- This makes it easier to hand off to a senior admin or to vendor support.
+
+---
+
+## 12. When to Escalate
+
+If you’ve:
+
+1. Reverted the config and it still fails, **or**  
+2. The logs show an internal error that you cannot interpret, **or**  
+3. The service crashes with a core dump / Windows Event ID 1000,  
+
+then open a support ticket with NovaDesk (include: OS version, NovaDesk version, exact error messages, and the steps you’ve already taken).
+
+---
+
+# TL;DR Quick‑Start Checklist
+
+1. **Stop** the service.  
+2. **Revert** the recent config change (or compare against a known‑good copy).  
+3. **Validate** syntax (YAML/JSON/etc.).  
+4. **Run** `novadesk --debug` or `journalctl -u novadesk -f` and note the first error line.  
+5. **Check** external deps (DB, LDAP, license server).  
+6. **Verify** file permissions/ownership.  
+7. **Start** the binary directly; if it works, inspect the service/unit file.  
+8. **Confirm** any required environment variables.  
+9. **Clear** cache/temp if indicated in logs.  
+10. **Escalate** with logs and a summary of steps if still down.
+
+Following this systematic approach should help you pinpoint why NovaDesk is refusing to start after the configuration tweak, and often restore service without needing a full reinstall. Good luck!","- Verify that any configuration changes were made according to the product‐specific documentation; the documents stress that configuration instructions should be followed before changing production settings.
+
+- If the changes involved authentication, confirm that the new authentication settings were tested in a non‐production environment before being deployed, as administrative authentication changes are required to be tested prior to production use.
+
+- Review the NovaDesk logging settings (the configuration guide lists logging as one of the configuration areas) to look for error entries that might indicate why the service is not starting.
+
+The provided documents do not include any additional, NovaDesk‐specific troubleshooting steps for a service that fails to start after configuration changes.",7780.51,222.88,0.01,3433.49,3656.49,0.0236,0.4545,0.4333,False,True,True,False,False,3,,
+An employee is working remotely. What attendance-related responsibilities do they have?,difficult,hr,attendance_policy.docx,"When you’re working remotely, the same basic attendance expectations that apply to on‑site staff still apply—you’re still expected to be “present” for the time you’ve been scheduled to work and to be reachable when you’re needed.  Below are the most common attendance‑related responsibilities that remote employees are asked to uphold. (The exact details can vary from one organization to another, so always check your company’s specific policy.)
+
+| **Responsibility** | **What it means in practice** |
+|--------------------|--------------------------------|
+| **Follow your scheduled work hours** | Log in and be ready to work at the start of your shift (e.g., 9 am–5 pm, flexible core hours, or a “set schedule” you and your manager agreed on). If you have a flexible schedule, still adhere to any core‑hours window the company requires. |
+| **Timely clock‑in/clock‑out or time‑tracking** | Use the company’s time‑keeping system (e.g., a web portal, badge‑in app, or timesheet) to record when you start, stop, and take breaks. This data is used for payroll, compliance, and productivity reporting. |
+| **Be reachable during work hours** | Keep your work phone, instant‑messaging (Slack, Teams, etc.), and email client active. Respond to messages from teammates, managers, or clients within a reasonable timeframe (often defined by the organization—e.g., within 15‑30 minutes). |
+| **Attendance notifications** | If you will be late, need to leave early, or must miss a day, follow the same notification procedure as on‑site staff: inform your manager (and sometimes HR) as soon as you know, using the designated channel (email, HR portal, phone call, etc.). |
+| **Document and report absences** | Provide any required documentation for sick days, medical appointments, or other leave (e.g., a doctor’s note, FMLA paperwork). Upload the documents to the HR system or forward them to your manager as directed. |
+| **Adhere to break and meal‑time policies** | Take your legally required breaks (e.g., a 30‑minute lunch after 5 hours of work) and any company‑mandated rest periods. Record these breaks if your time‑keeping system requires it. |
+| **Maintain a suitable work environment** | While not strictly “attendance,” many policies require you to be in a space free from excessive distractions so you can be fully present and responsive during scheduled hours. |
+| **Participate in scheduled meetings** | Join virtual meetings, stand‑ups, or check‑ins on time. If you anticipate being late or missing a meeting, let the organizer know ahead of time. |
+| **Update your status or availability** | Some tools let you set a status (e.g., “In a meeting,” “Out for lunch,” “Do not disturb”). Keep this current so coworkers know whether you’re available for instant collaboration. |
+| **Comply with overtime or shift‑swap rules** | If you need to work extra hours or swap shifts with another remote teammate, obtain the required approvals before doing so. |
+| **Report technical issues promptly** | If a connectivity problem or hardware failure prevents you from being “present,” notify IT and your manager right away and document the downtime. |
+| **Follow any location‑specific legal requirements** | Some jurisdictions have rules about remote work hours, rest periods, or overtime. Make sure you’re compliant with both the company policy and local labor laws. |
+
+### Tips for Staying on Top of Remote Attendance
+
+1. **Set a daily routine** – Start and end your workday at the same times you would in the office. Use calendar reminders to cue you when it’s time to log in/out.
+2. **Use a dedicated workspace** – A separate area helps cue your brain that it’s “work time” and reduces the temptation to drift away.
+3. **Leverage technology** – Enable automatic status updates in communication tools, and keep your time‑tracking app open during the day.
+4. **Communicate proactively** – If something unexpected comes up (e.g., a child’s school closed, internet outage), let your manager know as soon as possible; transparency builds trust.
+5. **Regularly review the policy** – Policies can change, especially as companies refine remote‑work guidelines. Re‑read the attendance section whenever you receive an update.
+
+### Bottom line
+
+Remote attendance isn’t about being physically in an office; it’s about being reliably present, reachable, and accurately reporting the time you spend working. By logging your hours, keeping communication lines open, and following the same notification procedures you would on‑site, you meet the core attendance responsibilities of a remote employee. If you’re ever unsure about a specific expectation, ask your manager or HR for clarification.","- Record attendance using the company’s approved attendance system.
+- Remain available during the agreed‐upon working schedule.
+- Maintain reliable communication with the team while working remotely.",4712.49,118.43,0.01,2062.08,2180.59,0.0233,0.8947,0.7917,False,True,True,False,False,3,,
+How does NovaTech's hybrid working model affect employees working remotely?,difficult,company,company_overview.pdf|attendance_policy.docx,"I don’t have any specific information about NovaTech’s internal policies or how its particular hybrid‑working model is set up, so I can’t speak to the exact impact it has on the company’s remote employees. 
+
+However, in many organizations that adopt a hybrid‑working approach, the experience for remote workers tends to be shaped by a few common factors:
+
+| Factor | Typical Effects on Remote Employees |
+|--------|--------------------------------------|
+| **Frequency of In‑Office Days** | If the model requires “X days in the office per week,” remote staff may need to travel to the office regularly, which can affect work‑life balance, commuting time, and costs. |
+| **Technology & Collaboration Tools** | Robust video‑conferencing, shared document platforms, and instant‑messaging tools are essential. When these are well‑implemented, remote workers stay connected and can collaborate almost as seamlessly as on‑site staff. |
+| **Communication Norms** | Clear expectations about response times, meeting etiquette, and status updates help prevent feelings of exclusion. Some hybrid setups adopt “all‑hands” meetings at set times to keep remote staff in the loop. |
+| **Performance Metrics** | Shifting from “hours‑in‑the‑office” to outcome‑based metrics can benefit remote employees, as they are evaluated on deliverables rather than physical presence. |
+| **Team Cohesion & Culture** | Hybrid models often incorporate regular virtual social events, “buddy” systems, or rotating in‑person gatherings to foster a sense of belonging for remote workers. |
+| **Access to Resources** | Companies may provide stipends for home‑office equipment, ergonomic assessments, or reimbursements for coworking‑space access to ensure remote staff have a productive environment. |
+| **Career Development** | Some organizations worry that remote employees get fewer informal networking opportunities. Structured mentorship programs and transparent promotion criteria can mitigate this risk. |
+| **Work‑Life Boundary Management** | Flexible schedules can improve work‑life balance, but they can also blur boundaries. Clear policies about after‑hours communication help protect remote employees from burnout. |
+
+If NovaTech follows a typical hybrid framework, remote employees are likely experiencing a mix of these influences—benefiting from flexibility and digital collaboration tools while also navigating challenges around visibility, communication, and occasional in‑person requirements. 
+
+For a precise picture of NovaTech’s specific hybrid‑working policies and their impact, you would need to refer to internal communications (e.g., HR guidelines, employee handbooks, or announcements from the leadership team) or speak directly with employees or HR representatives at NovaTech.","- NovaTech’s hybrid working model lets teams either work remotely or from designated company offices, depending on the employee’s role and a schedule approved by their manager.
+- Employees who work remotely are required to stay available during their agreed‐upon working schedule and keep reliable communication.
+- Remote workers are also responsible for maintaining a secure work environment.",3142.51,191.55,0.01,2013.62,2205.26,0.0302,0.6667,0.9524,False,True,True,False,False,3,,
+What security responsibilities apply when employees work remotely or handle company information?,difficult,company,policies.pdf|company_overview.pdf,"### Security Responsibilities for Remote Employees and Anyone Who Handles Company Information  
+
+Below is a practical checklist of the main duties that employees should follow whenever they are working off‑site (home, co‑working spaces, coffee shops, etc.) or have access to corporate data.  The list is framed in terms of **what the employee must do** (personal responsibilities) and **what the organization should provide** (support and policies).  Together they create a “shared‑responsibility” model that helps keep data safe, complies with regulations, and protects the company’s reputation.
+
+---
+
+## 1. Protect the Physical Device(s)
+
+| Responsibility | Why It Matters | Typical Actions |
+|----------------|----------------|-----------------|
+| **Secure the hardware** | Stolen or lost laptops, phones, tablets, and external drives can expose all stored data. | • Keep devices in a locked drawer when not in use.<br>• Never leave them unattended in public places.<br>• Use cable locks for laptops in shared spaces if possible. |
+| **Use company‑approved devices** | Personal devices may lack required security controls (encryption, patch management, anti‑malware). | • Work on a corporate‑issued laptop/phone that is pre‑configured with security tools.<br>• If a BYOD (Bring‑Your‑Own‑Device) policy is allowed, enroll the device in the company’s mobile‑device‑management (MDM) system. |
+| **Maintain a clean workspace** | Paper documents, printed credentials, or sticky‑note passwords can be easily seen. | • Shred or securely dispose of printed confidential material.<br>• Cover screens when stepping away (privacy screen filters are helpful). |
+| **Report loss or theft immediately** | Quick response limits exposure time. | • Follow the incident‑reporting procedure (usually a call to IT/security and a ticket).<br>• Change passwords and remotely wipe the device if possible. |
+
+---
+
+## 2. Secure the Digital Environment
+
+### a. Authentication & Access Controls
+| Responsibility | Action |
+|----------------|--------|
+| **Use strong, unique passwords** | Minimum 12‑character passphrases, no reuse across personal and work accounts. |
+| **Enable multi‑factor authentication (MFA)** | Required for VPN, cloud services, email, and any privileged access. |
+| **Lock the device when unattended** | Auto‑lock after ≤ 5 minutes of inactivity; use biometric or PIN unlock. |
+| **Log out of sessions** | Close browsers, VPN, and remote‑desktop connections when finished. |
+
+### b. Network Security
+| Responsibility | Action |
+|----------------|--------|
+| **Connect through a trusted network** | Use a wired Ethernet connection or a secured Wi‑Fi network with WPA2‑Enterprise or WPA3. |
+| **Use a corporate VPN** | Encrypts traffic over the public internet and enforces policy compliance. |
+| **Avoid public Wi‑Fi or use a personal hotspot** | Public hotspots are prone to man‑in‑the‑middle attacks; a mobile hotspot is a safer alternative. |
+| **Keep home router firmware updated** | Reduces exposure to known router exploits. |
+
+### c. Endpoint Protection
+| Responsibility | Action |
+|----------------|--------|
+| **Run approved anti‑malware/AV software** | Ensure it updates automatically. |
+| **Apply OS and application patches promptly** | Most remote‑work policies require installing updates within 48 hours of release. |
+| **Encrypt data at rest** | Full‑disk encryption (BitLocker, FileVault, LUKS) must be enabled on laptops and external drives. |
+| **Disable unnecessary services** | Turn off Bluetooth, file sharing, and remote‑desktop services unless required for work. |
+
+### d. Data Handling & Storage
+| Responsibility | Action |
+|----------------|--------|
+| **Store only work‑related data on corporate devices** | Do not mix personal files with company files on the same disk. |
+| **Use approved cloud storage** | Save documents to corporate OneDrive/Google Drive/SharePoint rather than personal Dropbox or Google Drive accounts. |
+| **Label and classify data** | Follow the company’s classification scheme (e.g., Public, Internal, Confidential, Restricted). |
+| **Transmit data securely** | Use TLS/HTTPS, SFTP, or encrypted email attachments; never send confidential files via consumer messaging apps. |
+| **Delete data when no longer needed** | Follow data‑retention policies; use secure deletion tools for sensitive files. |
+
+---
+
+## 3. Follow Legal and Policy Requirements
+
+| Responsibility | Typical Requirement |
+|----------------|---------------------|
+| **Adhere to data‑privacy regulations** (GDPR, CCPA, HIPAA, etc.) | Process, store, and transmit personal data only in ways that meet regulatory controls (e.g., consent, minimization, encryption). |
+| **Respect intellectual‑property and confidentiality agreements** | Do not copy, share, or publish proprietary code, designs, or business plans without authorization. |
+| **Comply with acceptable‑use policies** | No installing unapproved software, visiting risky sites, or using work resources for personal gain. |
+| **Participate in security awareness training** | Annual or quarterly refresher courses; acknowledge understanding of policies. |
+| **Report security incidents** | Promptly inform the security team of phishing attempts, suspicious emails, malware alerts, or policy violations. |
+
+---
+
+## 4. Communicate Securely
+
+| Responsibility | Action |
+|----------------|--------|
+| **Verify authentic requests** | When a colleague asks for credentials, files, or money, confirm through a secondary channel (e.g., phone call). |
+| **Use encrypted email or secure file‑transfer tools** | Unternehmens‑wide tools (Outlook with S/MIME, encrypted SharePoint links). |
+| **Avoid sharing passwords** | Never write down or transmit passwords via chat, email, or SMS. |
+| **Be vigilant for phishing** | Check sender address, hover over links, look for misspellings or urgent demands; report suspected phishing to IT. |
+
+---
+
+## 5. Incident Response & Escalation
+
+1. **Detect** – Notice odd behavior (unexpected pop‑ups, slow performance, unauthorized login alerts).  
+2. **Contain** – Disconnect from the network, stop the activity, change compromised credentials.  
+3. **Report** – Open a ticket with the security/help‑desk, include screenshots, timestamps, and any suspicious emails.  
+4. **Eradicate & Recover** – Follow IT’s instructions to clean the device (re‑image, reinstall OS) and restore data from a backed‑up source.  
+5. **Post‑mortem** – Review what went wrong, update personal practices, and apply any new controls the organization issues.
+
+---
+
+## 6. Practical Tips for Everyday Remote Work
+
+| Tip | Explanation |
+|-----|-------------|
+| **Create a dedicated “work zone”** | A specific desk and chair help maintain focus and keep work devices separate from personal clutter. |
+| **Backup regularly** | Use the company’s approved cloud backup or a secure external drive; test restore procedures annually. |
+| **Use a password manager** | Stores complex passwords, generates random ones, and syncs securely across devices. |
+| **Turn off auto‑fill for sensitive forms on personal browsers** | Prevents accidental leakage of corporate credentials. |
+| **Keep a “clean” phone** | Separate personal and work apps where possible; enable device encryption and screen lock. |
+| **Schedule regular “security minutes”** | Spend a few minutes each week reviewing updates, checking patch status, and scanning for suspicious emails. |
+
+---
+
+### Bottom Line  
+
+- **Security is a shared responsibility:** The employee must follow best practices and the organization must provide the tools, policies, and training that make those practices feasible.  
+- **The core pillars are:** Device & data protection, secure network connectivity, strong authentication, compliance with legal/policy standards, and rapid incident reporting.  
+- **Consistent habits** (locking screens, using VPN, updating software, encrypting data, and being skeptical of unsolicited requests) dramatically reduce the risk of data breaches and keep remote work safe for both the individual and the company.  
+
+If you have a specific company policy or regulatory framework you need to align with (e.g., HIPAA, ISO 27001, NIST 800‑53), those documents will detail exact controls, but the responsibilities listed above form the universal baseline for any remote‑work environment.","When employees work remotely, they must **maintain a secure working environment** and access company systems only through **approved devices and security controls**.
+
+When handling company information, employees must **protect that information** by not sharing confidential credentials, private customer data, or internal documents with unauthorized persons. They also must **use company systems for legitimate business activities**, avoid intentionally installing malicious software, and refrain from bypassing security controls.",8426.6,118.62,0.02,2043.97,2162.67,0.0179,0.7727,0.8889,False,True,True,False,False,3,,
+A NovaDesk user cannot sign in and the application also has configuration problems. Which documentation should be consulted and what areas should be checked?,difficult,technical,troubleshooting.txt|configuration.docx,"**Documentation to start with**
+
+| Document (or its online equivalent) | Why it helps |
+|-----------------------------------|--------------|
+| **NovaDesk Installation & Deployment Guide** | Shows the required pre‑requisites, how the client is registered with the server, and the exact steps to configure a new workstation. |
+| **NovaDesk Administration/Configuration Guide** | Details every configuration option – authentication source, licensing, proxy, network settings, and the structure of the *.ini / *.conf files that the client reads at start‑up. |
+| **NovaDesk Troubleshooting Guide** (or “Known Issues” KB article) | Lists the most common sign‑in failures, configuration‑related error messages and the recommended log‑file locations. |
+| **NovaDesk Release Notes / Compatibility Matrix** | Confirms that the client version you are using is supported on the OS and with the back‑end authentication server you have deployed. |
+| **Relevant authentication‑source docs** (e.g., Active Directory, LDAP, RADIUS, SAML) | If NovaDesk is integrated with an external directory, the vendor’s guide will describe required attributes, binding strings, and trust settings. |
+
+> If you have a customer portal or support site, look for the “Getting Started → Admin → Configuration” and “Troubleshooting” sections; they usually bundle the above PDFs or web pages.
+
+---
+
+## Areas to check when a user cannot sign in **and** the application shows configuration problems
+
+| Area | What to verify | Typical “red flag” symptoms |
+|------|----------------|-----------------------------|
+| **User credentials & account status** | • Username/password are correct.<br>• Account is not locked, expired, or disabled in the directory.<br>• Password meets any complexity/expiration policies enforced by NovaDesk. | “Invalid credentials”, “Account locked” messages. |
+| **Authentication source configuration** | • Correct LDAP/AD server address, port, and bind DN/password.<br>• Search base DN and filter are accurate.<br>• TLS/SSL certificates are trusted (no expired or mismatched certs). | “Unable to contact directory”, “Certificate validation failed”. |
+| **Network connectivity** | • Client can ping/trace‑route to the NovaDesk server and to any external authentication server.<br>• Required ports (usually 443 for HTTPS, 80 for HTTP, 389/636 for LDAP) are open both ways. | Time‑outs, “Connection refused” errors. |
+| **DNS / Host name resolution** | • Server FQDN resolves to the correct IP address.<br>• No stale entries in the client’s hosts file. | “Server not found” or “Unable to resolve host”. |
+| **Client configuration files** | • Review the main *.ini / *.conf file (often located in *C:\Program Files\NovaDesk\config* or *%APPDATA%\NovaDesk*).<br>• Ensure the server URL, authentication method, proxy settings, and license key are set correctly.<br>• Look for stray characters or line‑break issues (especially after manual edits). | Unexpected error codes, “Configuration error” dialogs. |
+| **Proxy / firewall** | • If a corporate proxy is used, verify the proxy address, port, and credentials in the NovaDesk config.<br>• Confirm that the firewall allows outbound traffic to the NovaDesk server on the required ports. | “Proxy authentication required”, “Unable to reach server”. |
+| **SSL/TLS certificates** | • The server’s certificate chain must be trusted by the client OS (import the CA cert if needed).<br>• Check that the certificate has not expired and that the CN/SAN matches the server name used in the config. | “SSL handshake failed”, “Certificate name mismatch”. |
+| **License / subscription status** | • License file is present, not corrupted, and not expired.<br>• The server’s licensing service is reachable and returning a valid response. | “License invalid”, “Feature not enabled”. |
+| **Version compatibility** | • Client version matches the version supported by the back‑end server (see the Compatibility Matrix).<br>• No mixed‑generation components (e.g., old client with a new server). | “Unsupported client version”, “Protocol mismatch”. |
+| **Local system requirements** | • OS is supported and all required runtime libraries (e.g., .NET, Visual C++ Redistributable) are installed.<br>• Sufficient disk space and correct file‑system permissions on the NovaDesk install folder. | Application fails to start, “Missing component” errors. |
+| **Log files** | • Open the NovaDesk client log (often *NovaDesk.log* in the %LOCALAPPDATA% folder) and the server log (if you have access).<br>• Look for timestamps around the login attempt and any “ERROR”, “WARN”, or stack‑trace entries. | Gives the exact error code or exception to search for. |
+| **Group / Role mapping** | • If the application uses role‑based access, confirm that the user is a member of a group that is mapped to a NovaDesk role.<br>• Verify that the mapping tables have not been changed recently. | User can authenticate but receives “Access denied” after login. |
+| **Endpoint security software** | • Antivirus / Endpoint Detection & Response tools sometimes block the NovaDesk process or its network calls.<br>• Temporarily disable or add an exclusion to see if the problem disappears. | “Connection reset by peer”, “Process terminated unexpectedly”. |
+
+---
+
+### Quick “first‑pass” checklist
+
+1. **Open the NovaDesk client log** – note the first error line after the sign‑in attempt.  
+2. **Ping / telnet** to the server’s address on the required ports (e.g., `telnet server.example.com 443`).  
+3. **Verify the credentials** directly against the directory (e.g., LDAP bind test).  
+4. **Open the client’s *.ini* file** and confirm:  
+   - `ServerURL = https://nova.example.com` (matches DNS)  
+   - `AuthMethod = LDAP` (or whatever you use)  
+   - Proxy entries are either blank or correct.  
+5. **Check the certificate store** – confirm the CA that issued the server cert is trusted.  
+6. **Confirm license status** in the admin console (or via the `license‑status` command if it exists).  
+7. **If everything looks OK**, restart the NovaDesk service/process and try again; if it still fails, capture the detailed log and compare it with the troubleshooting guide’s error‑code table.
+
+---
+
+### Where to find the docs
+
+- **Novell (Micro Focus) Customer Portal** – *Products → NovaDesk → Documentation*  
+- **Embedded “Help → Documentation”** menu inside the NovaDesk admin console (usually links to PDF versions).  
+- **Support Knowledge Base** – search for “NovaDesk sign‑in failure” or the exact error code you see in the log.  
+
+---
+
+**Bottom line:**  
+Start with the **Installation/Deployment Guide** to confirm that the client is set up per the vendor’s specifications, then dive into the **Configuration/Administration Guide** for the specific settings listed above, and finally use the **Troubleshooting Guide** (plus log files) to pinpoint the exact cause of the sign‑in / configuration failure.","Consult the **NovaTech Technical Guide — Configuration** (the *configuration.docx* document).
+Check the following configuration areas that are mentioned in that guide:
+
+* **Authentication settings** – they control how users sign in and should be verified when a user cannot log in.
+* **Application‐wide configuration** – includes database, notification and logging settings, which may also cause broader configuration problems.
+
+If additional verification of the overall setup is needed, the **Installation** guide (the *installation.pdf* document) suggests running the post‐installation **health check**, which can help identify configuration issues after installation.",7661.23,186.97,0.01,2432.73,2619.82,0.0276,0.5625,0.4615,False,True,True,False,False,3,,

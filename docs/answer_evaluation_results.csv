@@ -1,0 +1,116 @@
+question,difficulty,category,expected_sources,matched_sources,expected_source_found,answer,abstention_expected,abstained,abstention_correct,retrieved_count,source_count,context_characters,context_relevance_score,token_support_score,groundedness_score,citation_score,citation_correct,citation_mode,citation_numbers,suspicious_content,suspicious_patterns,answer_length,retrieval_ms,context_ms,generation_ms,total_ms,retrieval_mode,top_k,top_hybrid_score,top_reranker_score,retrieval_error,context_error,generation_error
+How many annual leave days do full-time employees receive?,easy,hr,leave_policy.pdf,leave_policy.pdf,True,Full-time employees receive 20 annual leave days per calendar year.,False,False,True,3,3,1797,0.9583,1.0,1.0,1.0,True,source_metadata,,False,,67,14308.1,0.03,1417.87,15726.57,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,9.136651039123535,,,
+How many sick leave days do employees receive?,easy,hr,leave_policy.pdf,leave_policy.pdf,True,Employees receive 10 sick leave days per calendar year.,False,False,True,3,3,1797,0.9444,1.0,1.0,1.0,True,source_metadata,,False,,55,132.7,0.03,1406.4,1539.54,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,8.503778457641602,,,
+What is NovaDesk?,easy,products,product_a.pdf,product_a.pdf,True,"NovaDesk is a customer‐support management platform. It enables support teams to handle customer requests, assign tickets, track their status, and monitor service performance. The system includes features such as ticket management, team assignment, priority levels, customer profiles, dashboards, search, and configurable notification rules, and it provides Administrator, Manager, Agent, and Viewer roles.",False,False,True,3,3,1828,1.0,0.9111,0.9378,1.0,True,source_metadata,,False,,405,201.95,0.04,2483.55,2685.99,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.6,9.261754035949707,,,
+What is NovaFlow?,easy,products,product_b.txt,product_b.txt,True,"NovaFlow is a workflow automation platform. It is described as a (fictional) system that helps organizations automate repetitive business processes. A NovaFlow workflow is built from a trigger, one or more actions, optional conditions, and a final execution state, with common actions such as sending notifications, updating records, calling HTTP endpoints, and creating tasks.",False,False,True,3,3,1632,1.0,0.8372,0.886,1.0,True,source_metadata,,False,,377,194.92,0.02,1996.01,2191.36,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.6850054195624131,10.002396583557129,,,
+What departments does NovaTech have?,easy,company,company_overview.pdf,company_overview.pdf,True,"NovaTech’s departments are:
+
+- Engineering
+- Product
+- Customer Success
+- Human Resources
+- Finance
+- Operations",False,False,True,3,3,1655,0.8889,0.8333,0.8833,1.0,True,source_metadata,,False,,112,227.0,0.02,2188.1,2415.49,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.9592402837200473,7.906118869781494,,,
+What working model does NovaTech use?,easy,company,company_overview.pdf,company_overview.pdf,True,"NovaTech uses a hybrid working model, allowing teams to work remotely or from designated company offices based on their role and manager‐approved schedule.",False,False,True,3,3,1650,1.0,0.8333,0.8833,1.0,True,source_metadata,,False,,155,195.38,0.02,1372.07,1567.86,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,8.76543140411377,,,
+What are the system requirements for NovaDesk?,easy,technical,installation.pdf,installation.pdf,True,"NovaDesk requires:
+
+- A supported modern web browser.
+- Network access to the NovaTech application environment.
+- An administrator account for administrative configuration.",False,False,True,3,3,1608,1.0,0.95,0.965,1.0,True,source_metadata,,False,,172,202.19,0.02,1934.54,2137.1,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,8.511079788208008,,,
+How should employees record attendance?,easy,hr,attendance_policy.docx,attendance_policy.docx,True,Employees should record attendance using the company’s approved attendance system.,False,False,True,3,3,1491,1.0,1.0,1.0,1.0,True,source_metadata,,False,,82,131.36,0.03,1375.25,1506.97,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,7.368228912353516,,,
+What ticket priorities does NovaDesk support?,easy,products,faq.txt,faq.txt,True,"NovaDesk supports the following ticket priorities:
+
+- Low
+- Medium
+- High
+- Critical",False,False,True,3,3,1618,1.0,0.9,0.93,1.0,True,source_metadata,,False,,84,204.78,0.04,1398.36,1603.53,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.8889805251709869,7.872731685638428,,,
+What should I check if an application does not start?,easy,technical,troubleshooting.txt,troubleshooting.txt,True,"Check the following:
+
+* The application configuration.
+* That all required services are available.
+* The application logs for diagnostic information.
+* That the database connection is working.",False,False,True,3,3,1308,0.9333,0.8421,0.8895,1.0,True,source_metadata,,False,,192,207.89,0.02,1514.63,1722.88,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.7771036899958881,4.6367340087890625,,,
+How far in advance should planned annual leave normally be requested?,medium,hr,leave_policy.pdf,leave_policy.pdf,True,Planned annual leave should normally be submitted through the HR portal at least 5 working days before the requested start date.,False,False,True,3,3,1797,0.9048,1.0,1.0,1.0,True,source_metadata,,False,,128,204.51,0.02,1519.42,1724.36,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,7.912353038787842,,,
+Who reviews employee leave requests?,medium,hr,leave_policy.pdf,leave_policy.pdf,True,Employee leave requests are reviewed by the employee’s direct manager.,False,False,True,3,3,1721,0.9167,1.0,1.0,1.0,True,source_metadata,,False,,70,131.13,0.02,1528.23,1659.76,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.8558788067906484,7.565986633300781,,,
+What types of customer-support activities can NovaDesk manage?,medium,products,product_a.pdf,product_a.pdf,True,"NovaDesk can handle a range of customer‐support tasks, including:
+
+- Managing customer requests and tickets
+- Assigning tickets to team members
+- Tracking ticket status and overall service performance
+- Setting and handling priority levels
+- Maintaining customer profiles
+- Providing dashboards for monitoring
+- Enabling search of tickets and information
+- Configuring notification rules for updates and alerts",False,False,True,3,3,1662,0.8889,0.5,0.65,1.0,True,source_metadata,,False,,410,215.77,0.02,1828.33,2044.56,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,6.386807441711426,,,
+What kind of business processes is NovaFlow designed to automate?,medium,products,product_b.txt,product_b.txt,True,NovaFlow is designed to automate repetitive business processes.,False,False,True,3,3,1632,0.9444,1.0,1.0,1.0,True,source_metadata,,False,,63,212.2,0.02,1597.79,1810.43,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,7.150901794433594,,,
+What services does NovaTech provide to customers?,medium,company,services.docx,services.docx,True,"NovaTech provides the following services to customers:
+
+- **Software development** – custom web applications, mobile applications, APIs, and backend development.
+- **Cloud integration** – cloud architecture and integration services for migrating applications to managed cloud environments.
+- **Data engineering** – building data pipelines and related data‐engineering solutions.
+- **Technical consulting** – consulting services focused on practical engineering and responsible use of technology.",False,False,True,3,3,1812,0.8333,0.8158,0.8711,1.0,True,source_metadata,,False,,495,197.39,0.02,1753.8,1951.67,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.8768560706042947,7.3632612228393555,,,
+What happens during a typical NovaTech software development project?,medium,company,services.docx,services.docx,True,"A typical NovaTech software development project starts with **requirements gathering** and then proceeds through the phases of **development**, **testing**, **deployment**, and **maintenance**.",False,False,True,3,3,1655,0.8571,0.75,0.825,1.0,True,source_metadata,,False,,193,190.32,0.02,1610.72,1801.46,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,3.165498733520508,,,
+What areas can be configured in NovaDesk?,medium,technical,configuration.docx,configuration.docx,True,"NovaDesk can be configured in the following areas:
+
+- Application settings
+- Database settings
+- Authentication settings
+- Notification settings
+- Logging settings",False,False,True,3,3,1818,0.7778,0.7143,0.8,1.0,True,source_metadata,,False,,163,206.46,0.02,1545.59,1752.45,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.6,3.912810802459717,,,
+What should administrators verify after installing NovaDesk?,medium,technical,installation.pdf,installation.pdf,True,"After installation, administrators should verify that:
+
+- The application is reachable
+- The database connection is operational
+- Background services are running",False,False,True,3,3,1534,0.9333,1.0,1.0,1.0,True,source_metadata,,False,,161,212.24,0.02,1665.65,1878.26,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.847180871412522,6.859184741973877,,,
+What should a user check when they cannot sign in?,medium,technical,troubleshooting.txt,troubleshooting.txt,True,"When a user cannot sign in, they should check:
+
+- **Authentication configuration**
+- **Account status**
+- **Identity‐provider connectivity**
+- **Relevant logs**",False,False,True,3,3,1485,0.8667,0.7778,0.8444,1.0,True,source_metadata,,False,,160,206.06,0.02,1415.35,1621.76,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,2.7333920001983643,,,
+How should employees handle unexpected absence from work?,medium,hr,attendance_policy.docx,attendance_policy.docx,True,Employees should promptly notify their manager of the unexpected absence and follow the applicable leave procedure.,False,False,True,3,3,1482,0.8667,0.8667,0.9067,1.0,True,source_metadata,,False,,115,132.52,0.03,1501.58,1634.51,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,6.8646650314331055,,,
+An employee wants to take planned personal time away from work. What type of leave should they use and how should they request it?,difficult,hr,leave_policy.pdf,leave_policy.pdf,True,"They should use **annual leave**, which is intended for planned personal time away from work.
+To request it, they normally submit the planned leave through the HR portal **at least 5 working days before the desired start date**.",False,False,True,3,3,1797,0.8718,0.8182,0.8727,1.0,True,source_metadata,,False,,228,146.44,0.03,1697.98,1844.89,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.9531949765087097,5.919005870819092,,,
+A full-time employee needs time off for both planned personal reasons and illness. What leave options are available and how many days are provided?,difficult,hr,leave_policy.pdf,leave_policy.pdf,True,"A full‐time employee can use the following leave types:
+
+- **Annual leave** – 20 days per calendar year, intended for planned personal time away from work.
+- **Casual leave** – 5 days per calendar year, for short‐term personal matters that don’t require the longer‐term planning of annual leave.
+- **Sick leave** – 10 days per calendar year, to be used when the employee is unable to work because of illness.",False,False,True,3,3,1797,0.8542,0.7333,0.8133,1.0,True,source_metadata,,False,,408,151.94,0.02,2265.64,2418.12,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,5.425342082977295,,,
+A support team wants to manage customer requests while tracking ticket status and service performance. Which NovaTech product fits this need?,difficult,products,product_a.pdf,product_a.pdf,True,"NovaDesk (NovaTech Product A) provides the capabilities to manage customer requests, assign tickets, track ticket status, and monitor service performance.",False,False,True,3,3,1815,0.9167,0.95,0.965,1.0,True,source_metadata,,False,,154,200.05,0.03,1493.22,1693.68,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,7.473441123962402,,,
+A company wants to automate repetitive business workflows rather than manage customer support tickets. Which NovaTech product should it consider?,difficult,products,product_b.txt,product_b.txt,True,"They should consider **NovaFlow** (NovaTech Product B), which is described as a workflow automation platform for automating repetitive business processes.",False,False,True,3,3,1822,0.8889,0.75,0.825,1.0,True,source_metadata,,False,,154,206.96,0.02,1421.38,1628.76,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.9932355500614332,2.4298083782196045,,,
+A new NovaDesk installation needs both browser access and administrative configuration. What prerequisites and post-installation checks are required?,difficult,technical,installation.pdf,installation.pdf,True,"**Prerequisites**
+
+- A supported modern web browser.
+- Network access to the NovaTech application environment.
+- An administrator account for the administrative configuration steps.
+
+**Post‐installation checks**
+
+- After the installation completes, run the recommended **health check** to confirm the system is functioning correctly.",False,False,True,3,3,1815,0.8205,0.7353,0.8147,1.0,True,source_metadata,,False,,333,231.51,0.03,2394.07,2626.13,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,6.242011547088623,,,
+NovaDesk is not starting after configuration changes. What troubleshooting steps should an administrator take?,difficult,technical,troubleshooting.txt | configuration.docx,configuration.docx,True,"- Check the system logs (execution log) for error messages that indicate which configuration element failed.
+- Identify any mis‐configured settings—such as authentication, database, notification, or logging options—that may be preventing NovaDesk from starting.
+- Correct the identified configuration issues.
+- Test the updated configuration in a non‐production environment before redeploying to production.
+- Follow the product‐specific configuration documentation when making changes to production settings.",False,False,True,3,3,1609,0.4333,0.4815,0.637,1.0,True,source_metadata,,False,,509,219.17,0.02,3711.01,3930.59,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.5534179649847877,1.5675551891326904,,,
+An employee is working remotely. What attendance-related responsibilities do they have?,difficult,hr,attendance_policy.docx,attendance_policy.docx,True,"- Record attendance using the company’s approved attendance system.
+- Remain available during the agreed‐upon working schedule.
+- Keep reliable communication with the team while working remotely.
+- If an unplanned absence occurs, notify the manager promptly and follow the applicable leave procedure.",False,False,True,3,3,1398,0.7917,0.8,0.86,1.0,True,source_metadata,,False,,300,170.91,0.03,2085.16,2256.48,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.6,3.6018126010894775,,,
+How does NovaTech's hybrid working model affect employees working remotely?,difficult,company,company_overview.pdf | attendance_policy.docx,attendance_policy.docx | company_overview.pdf,True,"NovaTech’s hybrid working model lets teams work either remotely or from a designated company office, depending on the employee’s role and the schedule approved by their manager.
+
+When employees are working remotely under this model they must:
+
+- Remain available during their agreed‐upon working schedule.
+- Maintain reliable communication with the team/manager.
+- Uphold security responsibilities for company information while working off‐site.",False,False,True,3,3,1652,0.9524,0.6346,0.7442,1.0,True,source_metadata,,False,,445,201.3,0.03,1981.89,2183.68,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,1.0,6.056658744812012,,,
+What security responsibilities apply when employees work remotely or handle company information?,difficult,company,policies.pdf | company_overview.pdf,policies.pdf,True,"- Employees must protect company information and must not share confidential credentials, private customer data, or internal documents with anyone who is not authorized.
+- Company systems should be accessed only through approved devices and security controls.
+- Employees must not intentionally install malicious software or bypass security controls.
+- When working remotely, employees are responsible for maintaining a secure working environment.",False,False,True,3,3,1552,0.8889,0.8696,0.9087,1.0,True,source_metadata,,False,,447,134.05,0.02,1896.48,2030.96,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.9659720099101166,6.685413360595703,,,
+A NovaDesk user cannot sign in and the application also has configuration problems. Which documentation should be consulted and what areas should be checked?,difficult,technical,troubleshooting.txt | configuration.docx,configuration.docx,True,"Consult the **NovaTech Technical Guide – Configuration** (the *configuration.docx* document) and, as needed, the **Installation** guide (the *installation.pdf* document).
+
+**Areas to check**
+
+- **Authentication settings** – verify how users sign in and ensure any recent administrative changes are correct.
+- **Other configuration sections** – review the application, database, notification, and logging settings for inconsistencies.
+- **Installation‐related items** – confirm system requirements, that the environment is properly configured, the administrator account exists, and the post‐installation health check passes.",False,False,True,3,3,1617,0.4615,0.6,0.72,1.0,True,source_metadata,,False,,623,238.23,0.02,2257.68,2496.42,Hybrid Dense + BM25 + Cross-Encoder Reranker,3,0.8942766167372609,3.3973944187164307,,,

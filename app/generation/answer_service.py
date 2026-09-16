@@ -30,12 +30,20 @@ The LLM generates the answer, but this service owns the source metadata.
 We do not rely on the LLM to generate source numbers or filenames.
 
 The original dense Retriever remains available as a fallback.
+
+Observability:
+
+The service also records lightweight query-level timing and
+retrieval diagnostics. These measurements are returned as metadata
+and do not change the retrieval or generation behavior.
 """
 
 from __future__ import annotations
 
-from typing import Any
 import re
+import time
+import unicodedata
+from typing import Any
 
 from app.embeddings.embedding_service import EmbeddingService
 from app.generation.llm import OllamaCloud
@@ -55,15 +63,14 @@ class AnswerService:
     End-to-end RAG answer service.
 
     Responsibilities:
-
     - Retrieve relevant chunks.
     - Build grounded context.
     - Send context + question to the LLM.
     - Return the generated answer.
     - Return authoritative source metadata from retrieval.
+    - Record query-level performance and retrieval diagnostics.
 
     Retrieval modes:
-
     - Hybrid + Cross-Encoder Reranker: default.
     - Dense-only Retriever: fallback/experimental mode.
 
@@ -110,11 +117,12 @@ class AnswerService:
         # ------------------------------------------------------------
         # Shared embedding service
         # ------------------------------------------------------------
-
+        #
         # Load the Sentence Transformer embedding model ONCE.
         #
         # Both Retriever and HybridRetriever receive this same
         # instance, avoiding duplicate model loading.
+        #
         self.embedding_service = EmbeddingService()
 
         # ------------------------------------------------------------
@@ -152,7 +160,6 @@ class AnswerService:
         # ------------------------------------------------------------
         # LLM
         # ------------------------------------------------------------
-
         self.llm = OllamaCloud()
 
     def build_context(
@@ -307,7 +314,6 @@ Content:
             # Preserve additional retrieval diagnostics when supplied
             # by HybridRetriever. These do not affect authoritative
             # source identity.
-
             if result.get("hybrid_score") is not None:
                 source["hybrid_score"] = result.get(
                     "hybrid_score"
@@ -340,8 +346,12 @@ Content:
         Clean up the LLM response without changing its factual content.
 
         The model is instructed not to create source citations.
+
         This method also removes common citation markers if an LLM
         produces them anyway.
+
+        Unicode whitespace is normalized so visually identical text
+        such as "annual\u202fleave" becomes "annual leave".
 
         We intentionally do NOT rewrite factual content.
         """
@@ -349,17 +359,53 @@ Content:
         if not answer:
             return ABSTENTION_MESSAGE
 
-        cleaned = answer.strip()
+        # ------------------------------------------------------------
+        # 1. Normalize Unicode characters
+        # ------------------------------------------------------------
+        #
+        # Some LLM responses contain Unicode compatibility characters
+        # or special whitespace characters such as:
+        #
+        #   \u00a0 = non-breaking space
+        #   \u202f = narrow no-break space
+        #
+        # These look like normal spaces to a human but can cause
+        # ordinary string checks such as:
+        #
+        #   "annual leave" in answer
+        #
+        # to fail.
+        #
+        cleaned = unicodedata.normalize(
+            "NFKC",
+            answer,
+        )
+
+        # Explicitly normalize common non-standard spaces.
+        cleaned = cleaned.replace(
+            "\u00a0",
+            " ",
+        )
+
+        cleaned = cleaned.replace(
+            "\u202f",
+            " ",
+        )
+
+        cleaned = cleaned.strip()
 
         if not cleaned:
             return ABSTENTION_MESSAGE
 
+        # ------------------------------------------------------------
+        # 2. Remove accidental citation markers
+        # ------------------------------------------------------------
+        #
         # If the model accidentally includes our citation marker
         # despite the prompt, remove only the marker.
         #
         # Source information is displayed separately from
         # authoritative metadata.
-
         cleaned = re.sub(
             r"【\s*\*Source\*\d+\s*】",
             "",
@@ -374,6 +420,10 @@ Content:
             flags=re.IGNORECASE,
         )
 
+        # ------------------------------------------------------------
+        # 3. Normalize horizontal whitespace
+        # ------------------------------------------------------------
+        #
         # Collapse excessive spaces/tabs while preserving normal
         # line breaks and Markdown formatting.
         cleaned = re.sub(
@@ -382,6 +432,14 @@ Content:
             cleaned,
         )
 
+        # Remove trailing spaces from lines.
+        cleaned = re.sub(
+            r"[ \t]+\n",
+            "\n",
+            cleaned,
+        )
+
+        # Normalize whitespace-only indentation between blank lines.
         cleaned = re.sub(
             r"\n[ \t]+\n",
             "\n\n",
@@ -427,6 +485,67 @@ Content:
 
         return "Hybrid Dense + BM25"
 
+    def _build_observability(
+        self,
+        sources: list[dict[str, Any]],
+        retrieved_count: int,
+        retrieval_ms: float,
+        context_ms: float,
+        generation_ms: float,
+        total_ms: float,
+        abstained: bool,
+    ) -> dict[str, Any]:
+        """
+        Build lightweight query-level observability metadata.
+
+        These values are diagnostic only. They do not affect
+        retrieval, reranking, generation, or source identity.
+        """
+
+        unique_filenames = {
+            source.get("filename")
+            for source in sources
+            if source.get("filename")
+        }
+
+        hybrid_scores = [
+            source["hybrid_score"]
+            for source in sources
+            if source.get("hybrid_score") is not None
+        ]
+
+        reranker_scores = [
+            source["reranker_score"]
+            for source in sources
+            if source.get("reranker_score") is not None
+        ]
+
+        observability = {
+            "retrieved_count": retrieved_count,
+            "unique_source_count": len(unique_filenames),
+            "top_hybrid_score": (
+                max(hybrid_scores)
+                if hybrid_scores
+                else None
+            ),
+            "top_reranker_score": (
+                max(reranker_scores)
+                if reranker_scores
+                else None
+            ),
+            "abstained": abstained,
+        }
+
+        return {
+            "timings_ms": {
+                "retrieval": round(retrieval_ms, 2),
+                "context_build": round(context_ms, 2),
+                "generation": round(generation_ms, 2),
+                "total": round(total_ms, 2),
+            },
+            "observability": observability,
+        }
+
     def ask(
         self,
         question: str,
@@ -435,16 +554,30 @@ Content:
         Answer a user question using the RAG pipeline.
 
         Returns:
-
             {
                 "question": str,
                 "answer": str,
                 "sources": list[dict],
                 "retrieved_count": int,
                 "top_k": int,
-                "retrieval_mode": str
+                "retrieval_mode": str,
+                "timings_ms": {
+                    "retrieval": float,
+                    "context_build": float,
+                    "generation": float,
+                    "total": float
+                },
+                "observability": {
+                    "retrieved_count": int,
+                    "unique_source_count": int,
+                    "top_hybrid_score": float | None,
+                    "top_reranker_score": float | None,
+                    "abstained": bool
+                }
             }
         """
+
+        total_start = time.perf_counter()
 
         question = question.strip()
 
@@ -456,15 +589,19 @@ Content:
         # ------------------------------------------------------------
         # 1. Retrieve relevant document chunks
         # ------------------------------------------------------------
+        retrieval_start = time.perf_counter()
 
         results = self._retrieve(
             question
         )
 
+        retrieval_ms = (
+            time.perf_counter() - retrieval_start
+        ) * 1000
+
         # ------------------------------------------------------------
         # 2. Build authoritative source metadata
         # ------------------------------------------------------------
-
         sources = self._build_sources(
             results
         )
@@ -472,16 +609,34 @@ Content:
         # ------------------------------------------------------------
         # 3. Build context
         # ------------------------------------------------------------
+        context_start = time.perf_counter()
 
         context = self.build_context(
             results
         )
 
+        context_ms = (
+            time.perf_counter() - context_start
+        ) * 1000
+
         # ------------------------------------------------------------
         # 4. Handle empty retrieval safely
         # ------------------------------------------------------------
-
         if not results or not context:
+            total_ms = (
+                time.perf_counter() - total_start
+            ) * 1000
+
+            diagnostics = self._build_observability(
+                sources=[],
+                retrieved_count=0,
+                retrieval_ms=retrieval_ms,
+                context_ms=context_ms,
+                generation_ms=0.0,
+                total_ms=total_ms,
+                abstained=True,
+            )
+
             return {
                 "question": question,
                 "answer": ABSTENTION_MESSAGE,
@@ -489,12 +644,12 @@ Content:
                 "retrieved_count": 0,
                 "top_k": self.top_k,
                 "retrieval_mode": self.get_retrieval_mode(),
+                **diagnostics,
             }
 
         # ------------------------------------------------------------
         # 5. Build grounded prompt
         # ------------------------------------------------------------
-
         user_prompt = build_user_prompt(
             question=question,
             context=context,
@@ -503,24 +658,51 @@ Content:
         # ------------------------------------------------------------
         # 6. Generate answer using Ollama Cloud
         # ------------------------------------------------------------
+        generation_start = time.perf_counter()
 
         answer = self.llm.chat(
             system_prompt=SYSTEM_PROMPT,
             user_prompt=user_prompt,
         )
 
+        generation_ms = (
+            time.perf_counter() - generation_start
+        ) * 1000
+
         # ------------------------------------------------------------
         # 7. Normalize answer
         # ------------------------------------------------------------
-
         answer = self._normalize_answer(
             answer
         )
 
         # ------------------------------------------------------------
-        # 8. Return answer + authoritative sources
+        # 8. Determine whether final answer abstained
         # ------------------------------------------------------------
+        abstained = (
+            answer == ABSTENTION_MESSAGE
+        )
 
+        # ------------------------------------------------------------
+        # 9. Build observability information
+        # ------------------------------------------------------------
+        total_ms = (
+            time.perf_counter() - total_start
+        ) * 1000
+
+        diagnostics = self._build_observability(
+            sources=sources,
+            retrieved_count=len(results),
+            retrieval_ms=retrieval_ms,
+            context_ms=context_ms,
+            generation_ms=generation_ms,
+            total_ms=total_ms,
+            abstained=abstained,
+        )
+
+        # ------------------------------------------------------------
+        # 10. Return answer + authoritative sources + diagnostics
+        # ------------------------------------------------------------
         return {
             "question": question,
             "answer": answer,
@@ -528,6 +710,7 @@ Content:
             "retrieved_count": len(results),
             "top_k": self.top_k,
             "retrieval_mode": self.get_retrieval_mode(),
+            **diagnostics,
         }
 
 
