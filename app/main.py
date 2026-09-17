@@ -61,30 +61,428 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM CSS
+# THEME STATE + CUSTOM FRONTEND CSS
 # ============================================================
 
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
+
+
+def toggle_theme():
+    st.session_state.theme = (
+        "dark" if st.session_state.theme == "light" else "light"
+    )
+
+
+if st.session_state.theme == "dark":
+    THEME = {
+        "bg": "#0b1220",
+        "surface": "#121c2d",
+        "surface2": "#17243a",
+        "surface3": "#1c2a42",
+        "text": "#e8eef8",
+        "heading": "#f8fbff",
+        "muted": "#9aaac2",
+        "border": "#2a3a55",
+        "primary": "#6f8fff",
+        "primary2": "#4e72ef",
+        "soft": "#162b50",
+        "success": "#35c79a",
+        "warning": "#f2bd68",
+        "danger": "#f07474",
+        "input": "#0f1929",
+        "input_text": "#f4f7fd",
+        "placeholder": "#8798b3",
+        "sidebar": "#0c1730",
+        "sidebar2": "#132443",
+    }
+else:
+    THEME = {
+        "bg": "#f5f8fc",
+        "surface": "#ffffff",
+        "surface2": "#f8faff",
+        "surface3": "#eef4fb",
+        "text": "#172b49",
+        "heading": "#071d3d",
+        "muted": "#4d6382",
+        "border": "#c5d3e4",
+        "primary": "#3568ee",
+        "primary2": "#2856d7",
+        "soft": "#edf4ff",
+        "success": "#159b73",
+        "warning": "#b87516",
+        "danger": "#c94c4c",
+        "input": "#ffffff",
+        "input_text": "#172b49",
+        "placeholder": "#7185a3",
+        "sidebar": "#0d1930",
+        "sidebar2": "#14274a",
+    }
+
 st.markdown(
-    """
+    f"""
     <style>
+    :root {{
+        --dm-bg:{THEME['bg']};
+        --dm-surface:{THEME['surface']};
+        --dm-surface2:{THEME['surface2']};
+        --dm-surface3:{THEME['surface3']};
+        --dm-text:{THEME['text']};
+        --dm-heading:{THEME['heading']};
+        --dm-muted:{THEME['muted']};
+        --dm-border:{THEME['border']};
+        --dm-primary:{THEME['primary']};
+        --dm-primary2:{THEME['primary2']};
+        --dm-soft:{THEME['soft']};
+        --dm-success:{THEME['success']};
+        --dm-warning:{THEME['warning']};
+        --dm-danger:{THEME['danger']};
+        --dm-input:{THEME['input']};
+        --dm-input-text:{THEME['input_text']};
+        --dm-placeholder:{THEME['placeholder']};
+        --dm-sidebar-bg:{'#ffffff' if st.session_state.theme == 'light' else THEME['sidebar']};
+        --dm-sidebar-text:{'#172b49' if st.session_state.theme == 'light' else '#eaf1ff'};
+        --dm-sidebar-muted:{'#4d6382' if st.session_state.theme == 'light' else '#a9b9d5'};
+        --dm-sidebar-value:{'#071d3d' if st.session_state.theme == 'light' else '#ffffff'};
+        --dm-sidebar-border:{'#d6e0ec' if st.session_state.theme == 'light' else 'rgba(255,255,255,.08)'};
+        --dm-sidebar-hover:{'#edf4ff' if st.session_state.theme == 'light' else '#132443'};
 
-    .main {
-        padding-top: 1rem;
-    }
+    }}
 
-    .block-container {
-        max-width: 1400px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
+    html, body, .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    [data-testid="stMainBlockContainer"] {{
+        background:var(--dm-bg) !important;
+        color:var(--dm-text) !important;
+    }}
 
-    .conversation-question {
-        padding: 0.8rem 1rem;
-        border-radius: 10px;
-        border: 1px solid rgba(128,128,128,0.20);
-        margin-bottom: 0.6rem;
-    }
+    [data-testid="stHeader"] {{
+        background:var(--dm-bg) !important;
+        border-bottom:1px solid var(--dm-border) !important;
+    }}
 
+    /* Keep ALL DocMind content below Streamlit's fixed top toolbar/header. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {{
+        max-width:1480px !important;
+        width:100% !important;
+        box-sizing:border-box !important;
+        padding-top:6.5rem !important;
+        padding-bottom:3rem !important;
+        margin-top:0 !important;
+    }}
+
+    /* Never allow the custom top area to collapse behind the toolbar. */
+    .dm-main-top-spacer {{
+        display:block !important;
+        height:0 !important;
+        min-height:0 !important;
+    }}
+
+    /* ---------- Sidebar ---------- */
+    [data-testid="stSidebar"] {{
+        background:var(--dm-sidebar-bg) !important;
+        border-right:1px solid var(--dm-sidebar-border) !important;
+    }}
+
+    [data-testid="stSidebar"] section,
+    [data-testid="stSidebar"] > div {{
+        background:var(--dm-sidebar-bg) !important;
+    }}
+
+    /* Sidebar uses a true light palette in Light mode and a dark palette in Dark mode. */
+    [data-testid="stSidebar"] * {{
+        color:var(--dm-sidebar-text) !important;
+    }}
+
+    [data-testid="stSidebar"] .stCaption,
+    [data-testid="stSidebar"] small {{
+        color:var(--dm-sidebar-muted) !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stMetricValue"] {{
+        color:var(--dm-sidebar-value) !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stMetricLabel"] {{
+        color:var(--dm-sidebar-muted) !important;
+    }}
+
+    .dm-brand {{
+        display:flex;
+        align-items:center;
+        gap:12px;
+        margin:3px 0 18px 1px;
+    }}
+
+    .dm-brand-icon {{
+        width:42px;height:42px;border-radius:12px;
+        display:flex;align-items:center;justify-content:center;
+        background:linear-gradient(135deg,#3568ee,#7895ff);
+        color:#fff !important;font-size:20px;
+        box-shadow:0 8px 24px rgba(53,104,238,.28);
+    }}
+
+    .dm-brand-title {{color:var(--dm-sidebar-text) !important;font-size:1.18rem;font-weight:800;line-height:1.05;}}
+    .dm-brand-sub {{color:var(--dm-sidebar-muted) !important;font-size:.71rem;margin-top:4px;}}
+
+    .dm-nav-label {{
+        color:var(--dm-sidebar-muted) !important;font-size:.68rem;font-weight:800;
+        text-transform:uppercase;letter-spacing:.08em;margin:10px 0 5px;
+    }}
+
+    /* Streamlit radio navigation */
+    [data-testid="stSidebar"] [data-testid="stRadio"] > label {{
+        color:var(--dm-sidebar-muted) !important;font-size:.7rem;font-weight:800 !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] {{
+        gap:4px !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radio"] {{
+        min-height:38px !important;
+        padding:7px 10px !important;
+        border-radius:9px !important;
+        background:transparent !important;
+        color:var(--dm-sidebar-text) !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radio"] p,
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radio"] span,
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radio"] div {{
+        color:var(--dm-sidebar-text) !important;
+        font-size:.82rem !important;
+        font-weight:650 !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radio"][aria-checked="true"] {{
+        background:var(--dm-sidebar-hover) !important;
+        border:1px solid var(--dm-sidebar-border) !important;
+    }}
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radio"]:hover {{
+        background:var(--dm-sidebar-hover) !important;
+    }}
+
+    [data-testid="stSidebar"] button {{
+        color:var(--dm-sidebar-text) !important;
+        border-color:var(--dm-sidebar-border) !important;
+    }}
+
+    [data-testid="stSidebar"] button:hover {{
+        border-color:var(--dm-primary) !important;
+    }}
+
+    .dm-theme-card {{
+        background:var(--dm-sidebar-hover);
+        border:1px solid var(--dm-sidebar-border);
+        border-radius:12px;padding:10px 11px 4px;margin:7px 0 13px;
+    }}
+
+    /* ---------- Header ---------- */
+    .dm-topbar {{display:flex;align-items:center;gap:12px;margin-bottom:13px;}}
+
+    .dm-search-box {{
+        background:var(--dm-surface) !important;
+        border:1px solid var(--dm-border) !important;
+        color:var(--dm-muted) !important;
+        border-radius:12px;padding:11px 15px;font-size:.83rem;
+        box-shadow:0 4px 18px rgba(35,61,110,.04);
+    }}
+/* ---------- Fake global search ---------- */
+.dm-fake-search {{
+    height:42px;
+    width:100%;
+    box-sizing:border-box;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0 15px;
+    background:var(--dm-input) !important;
+    border:1.5px solid var(--dm-border) !important;
+    border-radius:12px;
+    color:var(--dm-placeholder) !important;
+    font-size:.86rem;
+    box-shadow:0 4px 18px rgba(35,61,110,.06);
+}}
+
+.dm-search-icon {{
+    font-size:20px;
+    color:var(--dm-muted);
+}}
+    .dm-user-box {{color:var(--dm-muted) !important;text-align:right;font-size:.82rem;padding-top:6px;}}
+    .dm-user-box b {{color:var(--dm-heading) !important;}}
+
+    .dm-welcome {{color:var(--dm-heading) !important;font-size:1.72rem;font-weight:800;line-height:1.2;margin:4px 0;}}
+    .dm-subtitle {{color:var(--dm-muted) !important;font-size:.9rem;line-height:1.55;}}
+
+    .dm-page-title {{color:var(--dm-heading) !important;font-size:1.45rem;font-weight:800;margin:4px 0;}}
+    .dm-page-subtitle {{color:var(--dm-muted) !important;font-size:.84rem;margin-bottom:16px;}}
+
+    /* ---------- Cards ---------- */
+    .dm-metric-card {{
+        background:var(--dm-surface) !important;
+        border:1px solid var(--dm-border) !important;
+        border-radius:13px;padding:15px;min-height:98px;
+        box-shadow:0 7px 24px rgba(35,61,110,.055);
+    }}
+    .dm-metric-label {{color:var(--dm-muted) !important;font-size:.73rem;font-weight:650;margin-bottom:6px;}}
+    .dm-metric-value {{color:var(--dm-heading) !important;font-size:1.4rem;font-weight:800;}}
+    .dm-metric-delta {{color:var(--dm-success) !important;font-size:.69rem;margin-top:5px;}}
+
+    .dm-ask-card {{
+        background:linear-gradient(135deg,var(--dm-soft),var(--dm-surface2)) !important;
+        border:1px solid var(--dm-border) !important;border-radius:15px;
+        padding:18px;margin:6px 0 18px;
+    }}
+    .dm-ask-title {{color:var(--dm-heading) !important;font-size:1rem;font-weight:800;}}
+    .dm-ask-text {{color:var(--dm-muted) !important;font-size:.76rem;margin:4px 0 10px;}}
+    .dm-chip {{
+        display:inline-block;background:var(--dm-surface) !important;
+        border:1px solid var(--dm-border) !important;color:var(--dm-muted) !important;
+        border-radius:999px;padding:7px 10px;margin:3px 4px 0 0;font-size:.67rem;
+    }}
+
+    /* ---------- Typography ---------- */
+    .stMarkdown, .stMarkdown p, .stCaption, .stText,
+    .stSubheader, h1,h2,h3,h4,h5,h6,label,
+    [data-testid="stWidgetLabel"] p {{color:var(--dm-text) !important;}}
+    h1,h2,h3,h4,h5,h6 {{color:var(--dm-heading) !important;}}
+    .stCaption, [data-testid="stCaptionContainer"] * {{color:var(--dm-muted) !important;}}
+
+    /* ---------- Inputs ---------- */
+    .stTextInput input,.stTextArea textarea,.stNumberInput input,
+    input,textarea {{
+        background:var(--dm-input) !important;
+        color:var(--dm-input-text) !important;
+        -webkit-text-fill-color:var(--dm-input-text) !important;
+        border:1px solid var(--dm-border) !important;border-radius:11px !important;
+        caret-color:var(--dm-primary) !important;
+    }}
+    .stTextInput input::placeholder,.stTextArea textarea::placeholder,
+    input::placeholder,textarea::placeholder {{
+        color:var(--dm-placeholder) !important;
+        -webkit-text-fill-color:var(--dm-placeholder) !important;opacity:1 !important;
+    }}
+
+    /* ---------- Buttons ---------- */
+    .stButton > button,.stDownloadButton > button {{
+        min-height:40px !important;border-radius:10px !important;
+        border:1px solid var(--dm-border) !important;background:var(--dm-surface) !important;
+        color:var(--dm-text) !important;font-weight:700 !important;
+        box-shadow:0 3px 12px rgba(35,61,110,.04) !important;opacity:1 !important;
+    }}
+    .stButton > button *, .stDownloadButton > button * {{
+        color:inherit !important;fill:currentColor !important;opacity:1 !important;visibility:visible !important;
+    }}
+    .stButton > button:hover,.stDownloadButton > button:hover {{border-color:var(--dm-primary) !important;}}
+    .stButton > button[kind="primary"],.stButton > button[data-testid="baseButton-primary"] {{
+        background:linear-gradient(135deg,var(--dm-primary),var(--dm-primary2)) !important;
+        border-color:var(--dm-primary) !important;color:#fff !important;
+    }}
+    .stButton > button[kind="primary"] *,.stButton > button[data-testid="baseButton-primary"] * {{color:#fff !important;fill:#fff !important;}}
+
+    /* ---------- File uploader ---------- */
+    [data-testid="stFileUploader"] {{background:var(--dm-surface) !important;border-radius:13px !important;}}
+    [data-testid="stFileUploaderDropzone"] {{
+        background:var(--dm-surface2) !important;border:1px dashed var(--dm-border) !important;
+        border-radius:12px !important;
+    }}
+    [data-testid="stFileUploaderDropzone"] * {{color:var(--dm-text) !important;opacity:1 !important;visibility:visible !important;}}
+    [data-testid="stFileUploaderDropzone"] button {{background:var(--dm-primary) !important;border-color:var(--dm-primary) !important;color:#fff !important;}}
+    [data-testid="stFileUploaderDropzone"] button * {{color:#fff !important;fill:#fff !important;}}
+
+    /* ---------- Native Streamlit components ---------- */
+    [data-testid="stMetric"] {{background:var(--dm-surface) !important;border:1px solid var(--dm-border) !important;border-radius:12px !important;}}
+    [data-testid="stMetricLabel"] p,[data-testid="stMetricValue"],[data-testid="stMetricDelta"] {{color:var(--dm-heading) !important;}}
+    [data-testid="stExpander"] {{background:var(--dm-surface) !important;border-color:var(--dm-border) !important;}}
+    [data-testid="stExpander"] * {{color:var(--dm-text);}}
+    [data-testid="stAlert"] p,[data-testid="stAlert"] span {{color:inherit !important;}}
+    [data-baseweb="select"] {{background:var(--dm-input) !important;color:var(--dm-input-text) !important;}}
+    [data-baseweb="select"] * {{color:var(--dm-input-text) !important;}}
+    hr {{border-color:var(--dm-border) !important;}}
+    [data-testid="stDataFrame"] {{border:1px solid var(--dm-border) !important;border-radius:10px;overflow:hidden;}}
+
+    /* ---------- Visibility / layout failsafe ---------- */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stAppViewContainer"] > section,
+    [data-testid="stMain"],
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarContent"],
+    .block-container {{
+        visibility:visible !important;
+        opacity:1 !important;
+    }}
+    [data-testid="stMainBlockContainer"] {{
+        width:100% !important;
+        max-width:none !important;
+        min-width:0 !important;
+    }}
+    [data-testid="stVerticalBlock"],
+    [data-testid="stHorizontalBlock"],
+    [data-testid="column"] {{
+        visibility:visible !important;
+        opacity:1 !important;
+    }}
+    [data-testid="stMarkdownContainer"] {{
+        visibility:visible !important;
+        opacity:1 !important;
+    }}
+    .dm-search-box, .dm-user-box, .dm-welcome, .dm-subtitle,
+    .dm-page-title, .dm-page-subtitle, .dm-metric-card, .dm-ask-card,
+    .dm-brand, .dm-theme-card, .dm-nav-label {{
+        display:block !important;
+        visibility:visible !important;
+        opacity:1 !important;
+    }}
+
+    /* Chat */
+    [data-testid="stChatMessage"] {{background:var(--dm-surface) !important;border:1px solid var(--dm-border) !important;border-radius:13px !important;}}
+    [data-testid="stChatMessage"] p {{color:var(--dm-text) !important;}}
+
+    /* Theme toggle */
+    .dm-theme-note {{color:#a9b9d5 !important;font-size:.7rem;line-height:1.4;}}
+
+    /* High-contrast safeguards for Streamlit's light theme. */
+    [data-testid="stMain"] .stMarkdown,
+    [data-testid="stMain"] .stMarkdown p,
+    [data-testid="stMain"] .stMarkdown li,
+    [data-testid="stMain"] .stText,
+    [data-testid="stMain"] label,
+    [data-testid="stMain"] [data-testid="stWidgetLabel"] p {{
+        color:var(--dm-text) !important;
+        opacity:1 !important;
+        visibility:visible !important;
+    }}
+    [data-testid="stMain"] h1,
+    [data-testid="stMain"] h2,
+    [data-testid="stMain"] h3,
+    [data-testid="stMain"] h4,
+    [data-testid="stMain"] h5,
+    [data-testid="stMain"] h6 {{
+        color:var(--dm-heading) !important;
+        opacity:1 !important;
+        visibility:visible !important;
+    }}
+    [data-testid="stMain"] [data-testid="stAlert"] {{
+        opacity:1 !important;visibility:visible !important;
+    }}
+
+    @media (max-width:900px) {{
+        [data-testid="stAppViewContainer"] .block-container,
+        [data-testid="stMainBlockContainer"],
+        .block-container {{
+            padding-top:5.5rem !important;
+            padding-left:1rem !important;
+            padding-right:1rem !important;
+        }}
+        .dm-welcome {{font-size:1.4rem;}}
+    }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -93,6 +491,7 @@ st.markdown(
 
 # ============================================================
 # SESSION STATE
+# ============================================================
 # ============================================================
 
 if "last_result" not in st.session_state:
@@ -10270,201 +10669,127 @@ def render_evaluation_dashboard():
 
 with st.sidebar:
 
-    st.title(
-        "🧠 DocMind"
+    st.markdown(
+        """
+        <div class="dm-brand">
+            <div class="dm-brand-icon">◆</div>
+            <div>
+                <div class="dm-brand-title">DocMind</div>
+                <div class="dm-brand-sub">RAG Knowledge Assistant</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    st.caption(
-        "RAG Knowledge Assistant"
+    st.markdown('<div class="dm-nav-label">Main</div>', unsafe_allow_html=True)
+
+    page = st.radio(
+        "Main navigation",
+        [
+            "Dashboard",
+            "AI Chat",
+            "Knowledge Base",
+            "Documents",
+            "Search",
+            "Analytics",
+            "Evaluation",
+            "Retrieval",
+            "Conversations",
+            "Settings",
+        ],
+        index=0,
+        label_visibility="collapsed",
+        key="docmind_page",
     )
 
     st.divider()
 
-    # --------------------------------------------------------
-    # KNOWLEDGE BASE
-    # --------------------------------------------------------
+    st.markdown('<div class="dm-nav-label">Appearance</div>', unsafe_allow_html=True)
+    current_dark = st.session_state.theme == "dark"
+    theme_label = "☀️ Switch to Light" if current_dark else "🌙 Switch to Dark"
+    if st.button(
+        theme_label,
+        key="sidebar_theme_button",
+        width="stretch",
+        help="Change the entire DocMind interface theme.",
+    ):
+        toggle_theme()
+        st.rerun()
+
+    st.markdown(
+        f'<div class="dm-theme-note">Current theme: <b>{"Dark" if current_dark else "Light"}</b></div>',
+        unsafe_allow_html=True,
+    )
+
+    st.divider()
 
     try:
-
-        vector_store = (
-            get_vector_store()
-        )
-
-        indexed_chunks = (
-            vector_store.count()
-        )
+        vector_store = get_vector_store()
+        indexed_chunks = vector_store.count()
 
         try:
-
-            collection_data = (
-                vector_store.collection.get(
-                    include=[
-                        "metadatas"
-                    ]
-                )
-            )
-
-            metadatas = (
-                collection_data.get(
-                    "metadatas",
-                    [],
-                )
-            )
-
-            indexed_documents = len(
-                {
-                    metadata.get(
-                        "source"
-                    )
-                    for metadata in metadatas
-                    if metadata
-                    and metadata.get(
-                        "source"
-                    )
-                }
-            )
-
+            collection_data = vector_store.collection.get(include=["metadatas"])
+            metadatas = collection_data.get("metadatas", [])
+            indexed_documents = len({
+                metadata.get("source")
+                for metadata in metadatas
+                if metadata and metadata.get("source")
+            })
         except Exception:
-
             indexed_documents = 0
 
-        st.subheader(
-            "📊 Knowledge Base"
-        )
-
-        col1, col2 = (
-            st.columns(2)
-        )
-
+        st.markdown("#### 📚 Knowledge Base")
+        col1, col2 = st.columns(2)
         with col1:
-
-            st.metric(
-                "Documents",
-                indexed_documents,
-            )
-
+            st.metric("Documents", indexed_documents)
         with col2:
-
-            st.metric(
-                "Chunks",
-                indexed_chunks,
-            )
-
+            st.metric("Chunks", indexed_chunks)
     except Exception as exc:
-
-        st.error(
-            f"Knowledge base error: {exc}"
-        )
+        st.error(f"Knowledge base error: {exc}")
 
     st.divider()
 
-    # --------------------------------------------------------
-    # RETRIEVAL
-    # --------------------------------------------------------
-
-    st.subheader(
-        "⚙️ Retrieval"
-    )
-
+    st.markdown("#### ⚙️ Retrieval")
     top_k = st.slider(
         "Top-K chunks",
         min_value=1,
         max_value=10,
         value=3,
-        help=(
-            "Number of relevant document "
-            "chunks retrieved for each question."
-        ),
+        help="Number of relevant document chunks retrieved for each question.",
     )
-
-    st.caption(
-        f"Retrieving the top **{top_k}** "
-        "relevant chunks."
-    )
+    st.caption(f"Retrieving the top **{top_k}** relevant chunks.")
 
     st.divider()
 
-    # --------------------------------------------------------
-    # CONVERSATION
-    # --------------------------------------------------------
-
-    st.subheader(
-        "💬 Conversation"
-    )
-
-    conversation_count = len(
-        st.session_state.conversation_history
-    )
-
-    st.metric(
-        "Questions asked",
-        conversation_count,
-    )
-
+    st.markdown("#### 💬 Conversation")
+    conversation_count = len(st.session_state.conversation_history)
+    st.metric("Questions asked", conversation_count)
     if conversation_count > 0:
-
-        if st.button(
-            "🗑️ Clear Conversation",
-            width="stretch",
-        ):
-
+        if st.button("🗑️ Clear Conversation", width="stretch"):
             st.session_state.conversation_history = []
             st.session_state.last_result = None
-
             st.rerun()
 
     st.divider()
 
-    # --------------------------------------------------------
-    # SYSTEM STATUS
-    # --------------------------------------------------------
-
-    st.subheader(
-        "🟢 System Status"
-    )
-
-    st.success(
-        "RAG Pipeline Ready"
-    )
-
-    st.caption(
-        "✓ Local embeddings"
-    )
-
-    st.caption(
-        "✓ ChromaDB vector store"
-    )
-
-    st.caption(
-        "✓ Hybrid Dense + BM25 retrieval"
-    )
-
-    st.caption(
-        "✓ Cross-encoder reranking"
-    )
-
-    st.caption(
-        "✓ Grounded generation"
-    )
-
-    st.caption(
-        "✓ Source citations"
-    )
-
-    st.caption(
-        "✓ Conversation history"
-    )
-
-    st.caption(
-        "✓ Evaluation & analytics"
-    )
+    st.markdown("#### 🟢 System Status")
+    st.success("RAG Pipeline Ready")
+    for item in [
+        "✓ Local embeddings",
+        "✓ ChromaDB vector store",
+        "✓ Hybrid Dense + BM25 retrieval",
+        "✓ Cross-encoder reranking",
+        "✓ Grounded generation",
+        "✓ Source citations",
+        "✓ Conversation history",
+        "✓ Evaluation & analytics",
+    ]:
+        st.caption(item)
 
     st.divider()
-
     st.info(
-        "DocMind answers questions using "
-        "retrieved document content rather than "
-        "general model knowledge."
+        "DocMind answers questions using retrieved document content rather than general model knowledge."
     )
 
 
@@ -10472,1176 +10797,1233 @@ with st.sidebar:
 # HEADER
 # ============================================================
 
-st.title(
-    "🧠 DocMind — RAG Knowledge Assistant"
-)
+# This real layout spacer is intentional: it pushes the first DocMind
+# element below Streamlit's fixed header/Deploy toolbar.
+search_col, status_col, user_col = st.columns([6.0, 1.0, 1.2])
 
-st.write(
-    "Upload documents, retrieve relevant knowledge, "
-    "and ask grounded questions with source citations."
-)
+with search_col:
+    st.markdown(
+        """
+        <div class="dm-fake-search">
+            <span class="dm-search-icon">⌕</span>
+            <span>Search your documents, knowledge base, or ask a question...</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
+with status_col:
+    st.markdown(
+        '<div class="dm-user-box">● <b>RAG Ready</b></div>',
+        unsafe_allow_html=True,
+    )
+
+with user_col:
+    st.markdown(
+        '<div class="dm-user-box">🔔 &nbsp; 👤 <b>Admin</b></div>',
+        unsafe_allow_html=True,
+    )
+
+st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
+from datetime import datetime
+_current_hour = datetime.now().hour
+if 5 <= _current_hour < 12:
+    _greeting = "Good morning"
+elif 12 <= _current_hour < 18:
+    _greeting = "Good afternoon"
+else:
+    _greeting = "Good evening"
+
+st.markdown(
+    f'<div class="dm-welcome">{_greeting}, ReXy 👋</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<div class="dm-subtitle">Your knowledge at a glance. Search documents, ask grounded questions, and inspect retrieval evidence from one workspace.</div>',
+    unsafe_allow_html=True,
+)
+st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
 # ============================================================
 # TOP METRICS
 # ============================================================
 
 try:
+    document_manager = get_document_manager()
+    manager_stats = document_manager.get_statistics()
 
-    document_manager = (
-        get_document_manager()
-    )
-
-    manager_stats = (
-        document_manager.get_statistics()
-    )
-
-    managed_documents = (
-        manager_stats.get(
-            "document_count",
-            0,
-        )
-    )
-
-    managed_chunks = (
-        manager_stats.get(
-            "indexed_chunks",
-            0,
-        )
-    )
-
-    storage_bytes = (
-        manager_stats.get(
-            "total_size_bytes",
-            0,
-        )
-    )
-
-    storage_mb = (
-        storage_bytes
-        / (1024 * 1024)
-    )
+    managed_documents = manager_stats.get("document_count", 0)
+    managed_chunks = manager_stats.get("indexed_chunks", 0)
+    storage_bytes = manager_stats.get("total_size_bytes", 0)
+    storage_mb = storage_bytes / (1024 * 1024)
 
 except Exception:
-
     managed_documents = 0
     managed_chunks = 0
     storage_mb = 0
 
+metric_cols = st.columns(4)
 
-metric1, metric2, metric3 = (
-    st.columns(3)
-)
+metric_data = [
+    ("📄", "Total Documents", managed_documents, "Managed files"),
+    ("🧩", "Indexed Chunks", managed_chunks, "Available to retrieve"),
+    ("💾", "Storage", f"{storage_mb:.2f} MB", "Document storage"),
+    ("🟢", "Ingestion Status", "Ready", "All systems operational"),
+]
 
-with metric1:
-
-    st.metric(
-        "📄 Managed Documents",
-        managed_documents,
-    )
-
-with metric2:
-
-    st.metric(
-        "🧩 Indexed Chunks",
-        managed_chunks,
-    )
-
-with metric3:
-
-    st.metric(
-        "💾 Storage",
-        f"{storage_mb:.2f} MB",
-    )
-
-
-# ============================================================
-# TABS
-# ============================================================
-
-(
-    ask_tab,
-    evaluation_tab,
-    documents_tab,
-) = st.tabs(
-    [
-        "💬 Ask DocMind",
-        "📊 Evaluation & Analytics",
-        "📚 Document Management",
-    ]
-)
-
-
-# ============================================================
-# ASK DOCMIND
-# ============================================================
-
-with ask_tab:
-
-    # ========================================================
-    # CONVERSATION HISTORY
-    # ========================================================
-
-    if st.session_state.conversation_history:
-
-        st.subheader(
-            "💬 Conversation History"
+for col, (icon, label, value, delta) in zip(metric_cols, metric_data):
+    with col:
+        st.markdown(
+            f"""
+            <div class="dm-metric-card">
+                <div class="dm-metric-label">{icon} &nbsp; {label}</div>
+                <div class="dm-metric-value">{value}</div>
+                <div class="dm-metric-delta">✓ {delta}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
-        st.caption(
-            "Previous questions and grounded answers "
-            "from this browser session."
+st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+
+# ============================================================
+# APPLICATION NAVIGATION
+# ============================================================
+
+page_descriptions = {
+    "Dashboard": "A high-level view of your knowledge base and the main RAG workspace.",
+    "AI Chat": "Ask grounded questions and inspect answers, sources, and retrieval diagnostics.",
+    "Knowledge Base": "Manage indexed knowledge and inspect document/index statistics.",
+    "Documents": "Upload, index, re-index, inspect, and delete supported documents.",
+    "Search": "Use the existing RAG question workflow as your semantic knowledge search.",
+    "Analytics": "Explore the existing RAG evaluation and analytics datasets.",
+    "Evaluation": "Review recorded evaluation experiments and answer-quality results.",
+    "Retrieval": "Inspect retrieval settings and the latest retrieval diagnostics.",
+    "Conversations": "Review the current browser-session conversation history.",
+    "Settings": "Review appearance, retrieval controls, and current system status.",
+}
+
+st.markdown(
+    f'<div class="dm-page-title">{page}</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    f'<div class="dm-page-subtitle">{page_descriptions[page]}</div>',
+    unsafe_allow_html=True,
+)
+
+if page in {"Dashboard", "AI Chat", "Search", "Conversations"}:
+
+        st.markdown(
+            """
+            <div class="dm-ask-card">
+                <div class="dm-ask-title">🤖 Ask your knowledge base</div>
+                <div class="dm-ask-text">Get instant, accurate answers from your documents using RAG.</div>
+                <span class="dm-chip">⌕ What is the main topic of the project?</span>
+                <span class="dm-chip">⌕ Summarize the key findings</span>
+                <span class="dm-chip">⌁ List the important requirements</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
-        for index, conversation in enumerate(
-            st.session_state.conversation_history
-        ):
+        # ========================================================
+        # CONVERSATION HISTORY
+        # ========================================================
 
-            question_text = conversation.get(
-                "question",
-                "",
+        if st.session_state.conversation_history:
+
+            st.subheader(
+                "💬 Conversation History"
             )
 
-            answer_text = conversation.get(
+            st.caption(
+                "Previous questions and grounded answers "
+                "from this browser session."
+            )
+
+            for index, conversation in enumerate(
+                st.session_state.conversation_history
+            ):
+
+                question_text = conversation.get(
+                    "question",
+                    "",
+                )
+
+                answer_text = conversation.get(
+                    "answer",
+                    "No answer generated.",
+                )
+
+                sources = conversation.get(
+                    "sources",
+                    [],
+                )
+
+                with st.chat_message(
+                    "user"
+                ):
+
+                    st.markdown(
+                        question_text
+                    )
+
+                with st.chat_message(
+                    "assistant"
+                ):
+
+                    if answer_text.strip() == (
+                        "I don't know based on the available documents."
+                    ):
+
+                        st.warning(
+                            answer_text
+                        )
+
+                    else:
+
+                        st.markdown(
+                            answer_text
+                        )
+
+                    if sources:
+
+                        with st.expander(
+                            f"📚 Sources ({len(sources)})"
+                        ):
+
+                            for source in sources:
+
+                                render_source_card(
+                                    source
+                                )
+
+                    render_retrieval_details(
+                        conversation,
+                        expanded=False,
+                    )
+
+                if index < (
+                    len(
+                        st.session_state.conversation_history
+                    ) - 1
+                ):
+
+                    st.divider()
+
+            st.divider()
+
+        # ========================================================
+        # QUESTION INPUT
+        # ========================================================
+
+        st.subheader(
+            "Ask a question"
+        )
+
+        question = st.text_area(
+            "Question",
+            placeholder=(
+                "Example: How many annual leave "
+                "days do full-time employees receive?"
+            ),
+            height=100,
+            label_visibility="collapsed",
+        )
+
+        col1, col2, col3 = st.columns(
+            [1, 1, 4]
+        )
+
+        with col1:
+
+            ask_button = st.button(
+                "🔍 Ask",
+                type="primary",
+                width="stretch",
+            )
+
+        with col2:
+
+            clear_button = st.button(
+                "🧹 Clear Input",
+                width="stretch",
+            )
+
+        with col3:
+
+            clear_history_button = st.button(
+                "🗑️ Clear Conversation",
+                width="stretch",
+            )
+
+        if clear_button:
+
+            st.rerun()
+
+        if clear_history_button:
+
+            st.session_state.conversation_history = []
+            st.session_state.last_result = None
+
+            st.rerun()
+
+        if ask_button:
+
+            if not question.strip():
+
+                st.warning(
+                    "Please enter a question first."
+                )
+
+            else:
+
+                with st.spinner(
+                    "Retrieving relevant documents "
+                    "and generating answer..."
+                ):
+
+                    try:
+
+                        answer_service = (
+                            get_answer_service(
+                                top_k
+                            )
+                        )
+
+                        result = (
+                            answer_service.ask(
+                                question.strip()
+                            )
+                        )
+
+                        st.session_state.last_result = (
+                            result
+                        )
+
+                        add_to_conversation(
+                            result
+                        )
+
+                        st.rerun()
+
+                    except Exception as exc:
+
+                        st.error(
+                            f"Unable to answer the "
+                            f"question: {exc}"
+                        )
+
+        # ========================================================
+        # CURRENT ANSWER
+        # ========================================================
+
+        result = (
+            st.session_state.last_result
+        )
+
+        if result:
+
+            st.divider()
+
+            st.subheader(
+                "💡 Latest Answer"
+            )
+
+            answer = result.get(
                 "answer",
                 "No answer generated.",
             )
 
-            sources = conversation.get(
+            if answer.strip() == (
+                "I don't know based on the available documents."
+            ):
+
+                st.warning(
+                    answer
+                )
+
+            else:
+
+                st.markdown(
+                    answer
+                )
+
+            st.divider()
+
+            sources = result.get(
                 "sources",
                 [],
             )
 
-            with st.chat_message(
-                "user"
-            ):
+            st.subheader(
+                f"📚 Sources ({len(sources)})"
+            )
 
-                st.markdown(
-                    question_text
+            if sources:
+
+                for source in sources:
+
+                    render_source_card(
+                        source
+                    )
+
+            else:
+
+                st.info(
+                    "No source information was returned."
                 )
 
-            with st.chat_message(
-                "assistant"
+            render_retrieval_details(
+                result,
+                expanded=False,
+            )
+
+        # ========================================================
+        # EXAMPLES
+        # ========================================================
+
+        st.divider()
+
+        st.subheader(
+            "💭 Example Questions"
+        )
+
+        example_questions = [
+            "How many annual leave days do full-time employees receive?",
+            "What should I do if NovaDesk fails to start?",
+            "What are the main features of NovaDesk?",
+            "How do I install NovaDesk?",
+            "What is the company's attendance policy?",
+        ]
+
+        for example in example_questions:
+
+            if st.button(
+                example,
+                key=f"example_{example}",
+                width="stretch",
             ):
 
-                if answer_text.strip() == (
-                    "I don't know based on the available documents."
+                with st.spinner(
+                    "Retrieving documents and generating answer..."
                 ):
 
-                    st.warning(
-                        answer_text
-                    )
+                    try:
 
-                else:
-
-                    st.markdown(
-                        answer_text
-                    )
-
-                if sources:
-
-                    with st.expander(
-                        f"📚 Sources ({len(sources)})"
-                    ):
-
-                        for source in sources:
-
-                            render_source_card(
-                                source
+                        result = (
+                            get_answer_service(
+                                top_k
+                            ).ask(
+                                example
                             )
+                        )
 
-                render_retrieval_details(
-                    conversation,
-                    expanded=False,
+                        st.session_state.last_result = (
+                            result
+                        )
+
+                        add_to_conversation(
+                            result
+                        )
+
+                        st.rerun()
+
+                    except Exception as exc:
+
+                        st.error(
+                            f"Unable to answer example question: "
+                            f"{exc}"
+                        )
+
+        # ========================================================
+        # ABSTENTION TEST
+        # ========================================================
+
+        with st.expander(
+            "🧪 Test Unknown Question"
+        ):
+
+            st.write(
+                "This tests whether DocMind refuses "
+                "to invent information that is not "
+                "present in the knowledge base."
+            )
+
+            unknown_question = (
+                "What is the capital city of France?"
+            )
+
+            if st.button(
+                "Run Abstention Test",
+                width="stretch",
+            ):
+
+                with st.spinner(
+                    "Testing..."
+                ):
+
+                    try:
+
+                        result = (
+                            get_answer_service(
+                                top_k
+                            ).ask(
+                                unknown_question
+                            )
+                        )
+
+                        st.session_state.last_result = (
+                            result
+                        )
+
+                        add_to_conversation(
+                            result
+                        )
+
+                        st.rerun()
+
+                    except Exception as exc:
+
+                        st.error(
+                            f"Abstention test failed: {exc}"
+                        )
+
+        # ========================================================
+        # ARCHITECTURE
+        # ========================================================
+
+        with st.expander(
+            "🏗️ How DocMind Works"
+        ):
+
+            st.markdown(
+                """
+                **1. Document ingestion**
+
+                PDF, DOCX and TXT documents are loaded and cleaned.
+
+                **2. Chunking**
+
+                Documents are divided into smaller overlapping chunks.
+
+                **3. Embeddings**
+
+                Each chunk is converted into a semantic vector using
+                `all-MiniLM-L6-v2`.
+
+                **4. Vector storage**
+
+                Embeddings and metadata are stored in ChromaDB.
+
+                **5. Retrieval**
+
+                The question is processed using hybrid retrieval:
+
+                - Dense semantic retrieval
+                - BM25 lexical retrieval
+                - Weighted score fusion
+
+                **6. Reranking**
+
+                Candidate chunks are reranked using a cross-encoder
+                when enabled.
+
+                **7. Context building**
+
+                Retrieved chunks are combined into grounded context.
+
+                **8. Generation**
+
+                Ollama Cloud generates an answer using the retrieved
+                context.
+
+                **9. Citations**
+
+                Source filename, category, page and chunk information
+                are displayed with the answer.
+
+                **10. Observability**
+
+                DocMind records retrieval, context-building and
+                generation timings together with retrieval diagnostics.
+
+                **11. Abstention**
+
+                If the information cannot be supported by the available
+                documents, DocMind responds:
+
+                > I don't know based on the available documents.
+
+                **12. Conversation history**
+
+                Previous questions and answers are displayed for the
+                current Streamlit session. Each new question still
+                performs document retrieval independently.
+                """
+            )
+
+if page in {"Analytics", "Evaluation"}:
+
+        render_evaluation_dashboard()
+
+if page in {"Knowledge Base", "Documents"}:
+
+        st.subheader(
+            "📚 Document Management"
+        )
+
+        document_manager = (
+            get_document_manager()
+        )
+
+        # ========================================================
+        # ACTION MESSAGE
+        # ========================================================
+
+        if st.session_state.action_message:
+
+            message = (
+                st.session_state.action_message
+            )
+
+            message_type = (
+                message.get(
+                    "type",
+                    "info",
+                )
+            )
+
+            message_text = (
+                message.get(
+                    "text",
+                    "",
+                )
+            )
+
+            if message_type == "success":
+
+                st.success(
+                    message_text
                 )
 
-            if index < (
-                len(
-                    st.session_state.conversation_history
-                ) - 1
+            elif message_type == "error":
+
+                st.error(
+                    message_text
+                )
+
+            elif message_type == "warning":
+
+                st.warning(
+                    message_text
+                )
+
+            else:
+
+                st.info(
+                    message_text
+                )
+
+            st.session_state.action_message = None
+
+        # ========================================================
+        # STATISTICS
+        # ========================================================
+
+        try:
+
+            stats = (
+                document_manager.get_statistics()
+            )
+
+            document_count = (
+                stats.get(
+                    "document_count",
+                    0,
+                )
+            )
+
+            indexed_chunks = (
+                stats.get(
+                    "indexed_chunks",
+                    0,
+                )
+            )
+
+            total_size = (
+                stats.get(
+                    "total_size_bytes",
+                    0,
+                )
+            )
+
+            total_size_mb = (
+                total_size
+                / (1024 * 1024)
+            )
+
+        except Exception as exc:
+
+            st.error(
+                f"Could not load document statistics: "
+                f"{exc}"
+            )
+
+            document_count = 0
+            indexed_chunks = 0
+            total_size_mb = 0
+
+        stat1, stat2, stat3 = (
+            st.columns(3)
+        )
+
+        with stat1:
+
+            st.metric(
+                "📄 Documents",
+                document_count,
+            )
+
+        with stat2:
+
+            st.metric(
+                "🧩 Indexed Chunks",
+                indexed_chunks,
+            )
+
+        with stat3:
+
+            st.metric(
+                "💾 Storage",
+                f"{total_size_mb:.2f} MB",
+            )
+
+        st.divider()
+
+        # ========================================================
+        # UPLOAD
+        # ========================================================
+
+        st.subheader(
+            "⬆️ Upload a Document"
+        )
+
+        st.write(
+            "Upload a PDF, DOCX or TXT document. "
+            "The document will be saved, chunked, embedded, "
+            "and indexed automatically."
+        )
+
+        uploaded_file = st.file_uploader(
+            "Choose a document",
+            type=[
+                "pdf",
+                "docx",
+                "txt",
+            ],
+            help=(
+                "Supported formats: "
+                "PDF, DOCX and TXT."
+            ),
+        )
+
+        if uploaded_file:
+
+            file_size_mb = (
+                uploaded_file.size
+                / (1024 * 1024)
+            )
+
+            st.info(
+                f"📄 **Selected:** "
+                f"`{uploaded_file.name}`  \n"
+                f"📦 **Size:** "
+                f"{file_size_mb:.2f} MB"
+            )
+
+            upload_button = st.button(
+                "⬆️ Upload & Index",
+                type="primary",
+                width="stretch",
+            )
+
+            if upload_button:
+
+                with st.spinner(
+                    f"Uploading and indexing "
+                    f"`{uploaded_file.name}`..."
+                ):
+
+                    try:
+
+                        result = (
+                            document_manager
+                            .upload_and_index(
+                                uploaded_file
+                            )
+                        )
+
+                        filename = result.get(
+                            "filename",
+                            uploaded_file.name,
+                        )
+
+                        chunks = result.get(
+                            "chunks",
+                            0,
+                        )
+
+                        indexed = result.get(
+                            "indexed",
+                            chunks,
+                        )
+
+                        status = result.get(
+                            "status",
+                            "success",
+                        )
+
+                        if status == "success":
+
+                            st.session_state.action_message = {
+                                "type": "success",
+                                "text": (
+                                    f"✅ Document uploaded "
+                                    f"and indexed successfully!\n\n"
+                                    f"**File:** `{filename}`\n\n"
+                                    f"**Chunks created:** "
+                                    f"{chunks}\n\n"
+                                    f"**Chunks indexed:** "
+                                    f"{indexed}"
+                                ),
+                            }
+
+                        else:
+
+                            st.session_state.action_message = {
+                                "type": "warning",
+                                "text": (
+                                    f"⚠️ Document processing "
+                                    f"finished with status: "
+                                    f"`{status}`"
+                                ),
+                            }
+
+                        st.rerun()
+
+                    except FileExistsError as exc:
+
+                        st.session_state.action_message = {
+                            "type": "warning",
+                            "text": (
+                                f"⚠️ {exc}"
+                            ),
+                        }
+
+                        st.rerun()
+
+                    except Exception as exc:
+
+                        st.session_state.action_message = {
+                            "type": "error",
+                            "text": (
+                                f"❌ Upload failed for "
+                                f"`{uploaded_file.name}`.\n\n"
+                                f"**Reason:** {exc}"
+                            ),
+                        }
+
+                        st.rerun()
+
+        st.divider()
+
+        # ========================================================
+        # RE-INDEX ALL
+        # ========================================================
+
+        st.subheader(
+            "🔄 Re-index Documents"
+        )
+
+        st.write(
+            "Re-process all managed documents and rebuild "
+            "their embeddings in ChromaDB."
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            if st.button(
+                "🔄 Re-index All",
+                width="stretch",
             ):
+
+                with st.spinner(
+                    "Re-indexing all documents..."
+                ):
+
+                    try:
+
+                        result = (
+                            document_manager
+                            .reindex_all()
+                        )
+
+                        total = result.get(
+                            "total_documents",
+                            0,
+                        )
+
+                        success_count = result.get(
+                            "success_count",
+                            0,
+                        )
+
+                        failure_count = result.get(
+                            "failure_count",
+                            0,
+                        )
+
+                        failed = result.get(
+                            "failed",
+                            [],
+                        )
+
+                        status = result.get(
+                            "status",
+                            "success",
+                        )
+
+                        if status == "success":
+
+                            st.session_state.action_message = {
+                                "type": "success",
+                                "text": (
+                                    f"✅ All documents "
+                                    f"re-indexed successfully!\n\n"
+                                    f"**Documents:** {total}\n\n"
+                                    f"**Successful:** "
+                                    f"{success_count}"
+                                ),
+                            }
+
+                        else:
+
+                            failed_names = ", ".join(
+                                item.get(
+                                    "filename",
+                                    "Unknown",
+                                )
+                                for item in failed
+                            )
+
+                            st.session_state.action_message = {
+                                "type": "warning",
+                                "text": (
+                                    f"⚠️ Re-indexing "
+                                    f"completed partially.\n\n"
+                                    f"**Total:** {total}\n\n"
+                                    f"**Successful:** "
+                                    f"{success_count}\n\n"
+                                    f"**Failed:** "
+                                    f"{failure_count}\n\n"
+                                    f"**Failed files:** "
+                                    f"{failed_names}"
+                                ),
+                            }
+
+                        st.rerun()
+
+                    except Exception as exc:
+
+                        st.session_state.action_message = {
+                            "type": "error",
+                            "text": (
+                                f"❌ Re-index all failed.\n\n"
+                                f"**Reason:** {exc}"
+                            ),
+                        }
+
+                        st.rerun()
+
+        with col2:
+
+            if st.button(
+                "🔃 Refresh",
+                width="stretch",
+            ):
+
+                st.rerun()
+
+        st.divider()
+
+        # ========================================================
+        # DOCUMENT LIST
+        # ========================================================
+
+        st.subheader(
+            "📄 Your Documents"
+        )
+
+        try:
+
+            documents = (
+                document_manager.list_documents()
+            )
+
+        except Exception as exc:
+
+            documents = []
+
+            st.error(
+                f"Could not load documents: {exc}"
+            )
+
+        if not documents:
+
+            st.info(
+                "No managed documents found. "
+                "Upload your first document above."
+            )
+
+        else:
+
+            for index, document in enumerate(
+                documents
+            ):
+
+                filename = document.get(
+                    "filename",
+                    "Unknown",
+                )
+
+                extension = document.get(
+                    "extension",
+                    "",
+                )
+
+                size_bytes = document.get(
+                    "size_bytes",
+                    0,
+                )
+
+                size_kb = (
+                    size_bytes
+                    / 1024
+                )
+
+                st.markdown(
+                    f"### 📄 {filename}"
+                )
+
+                st.caption(
+                    f"{extension.upper()} • "
+                    f"{size_kb:.1f} KB"
+                )
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+
+                    if st.button(
+                        "🔄 Re-index",
+                        key=(
+                            f"reindex_"
+                            f"{index}_"
+                            f"{filename}"
+                        ),
+                        width="stretch",
+                    ):
+
+                        with st.spinner(
+                            f"Re-indexing {filename}..."
+                        ):
+
+                            try:
+
+                                result = (
+                                    document_manager
+                                    .reindex_document(
+                                        filename
+                                    )
+                                )
+
+                                chunks = result.get(
+                                    "chunks",
+                                    0,
+                                )
+
+                                removed = result.get(
+                                    "previous_chunks_removed",
+                                    0,
+                                )
+
+                                st.session_state.action_message = {
+                                    "type": "success",
+                                    "text": (
+                                        f"✅ `{filename}` "
+                                        f"re-indexed successfully!\n\n"
+                                        f"**Chunks indexed:** "
+                                        f"{chunks}\n\n"
+                                        f"**Previous chunks "
+                                        f"removed:** {removed}"
+                                    ),
+                                }
+
+                                st.rerun()
+
+                            except Exception as exc:
+
+                                st.session_state.action_message = {
+                                    "type": "error",
+                                    "text": (
+                                        f"❌ Re-indexing "
+                                        f"`{filename}` failed.\n\n"
+                                        f"**Reason:** {exc}"
+                                    ),
+                                }
+
+                                st.rerun()
+
+                with col2:
+
+                    if st.button(
+                        "🗑️ Delete",
+                        key=(
+                            f"delete_"
+                            f"{index}_"
+                            f"{filename}"
+                        ),
+                        width="stretch",
+                    ):
+
+                        with st.spinner(
+                            f"Deleting {filename}..."
+                        ):
+
+                            try:
+
+                                result = (
+                                    document_manager
+                                    .delete_document(
+                                        filename
+                                    )
+                                )
+
+                                deleted_chunks = (
+                                    result.get(
+                                        "deleted_chunks",
+                                        0,
+                                    )
+                                )
+
+                                st.session_state.action_message = {
+                                    "type": "success",
+                                    "text": (
+                                        f"🗑️ `{filename}` "
+                                        f"was deleted successfully!\n\n"
+                                        f"**Vectors removed:** "
+                                        f"{deleted_chunks}"
+                                    ),
+                                }
+
+                                st.rerun()
+
+                            except Exception as exc:
+
+                                st.session_state.action_message = {
+                                    "type": "error",
+                                    "text": (
+                                        f"❌ Deleting "
+                                        f"`{filename}` failed.\n\n"
+                                        f"**Reason:** {exc}"
+                                    ),
+                                }
+
+                                st.rerun()
 
                 st.divider()
 
-        st.divider()
+        # ========================================================
+        # SUPPORTED FORMATS
+        # ========================================================
 
-    # ========================================================
-    # QUESTION INPUT
-    # ========================================================
-
-    st.subheader(
-        "Ask a question"
-    )
-
-    question = st.text_area(
-        "Question",
-        placeholder=(
-            "Example: How many annual leave "
-            "days do full-time employees receive?"
-        ),
-        height=100,
-        label_visibility="collapsed",
-    )
-
-    col1, col2, col3 = st.columns(
-        [1, 1, 4]
-    )
-
-    with col1:
-
-        ask_button = st.button(
-            "🔍 Ask",
-            type="primary",
-            width="stretch",
-        )
-
-    with col2:
-
-        clear_button = st.button(
-            "🧹 Clear Input",
-            width="stretch",
-        )
-
-    with col3:
-
-        clear_history_button = st.button(
-            "🗑️ Clear Conversation",
-            width="stretch",
-        )
-
-    if clear_button:
-
-        st.rerun()
-
-    if clear_history_button:
-
-        st.session_state.conversation_history = []
-        st.session_state.last_result = None
-
-        st.rerun()
-
-    if ask_button:
-
-        if not question.strip():
-
-            st.warning(
-                "Please enter a question first."
-            )
-
-        else:
-
-            with st.spinner(
-                "Retrieving relevant documents "
-                "and generating answer..."
-            ):
-
-                try:
-
-                    answer_service = (
-                        get_answer_service(
-                            top_k
-                        )
-                    )
-
-                    result = (
-                        answer_service.ask(
-                            question.strip()
-                        )
-                    )
-
-                    st.session_state.last_result = (
-                        result
-                    )
-
-                    add_to_conversation(
-                        result
-                    )
-
-                    st.rerun()
-
-                except Exception as exc:
-
-                    st.error(
-                        f"Unable to answer the "
-                        f"question: {exc}"
-                    )
-
-    # ========================================================
-    # CURRENT ANSWER
-    # ========================================================
-
-    result = (
-        st.session_state.last_result
-    )
-
-    if result:
-
-        st.divider()
-
-        st.subheader(
-            "💡 Latest Answer"
-        )
-
-        answer = result.get(
-            "answer",
-            "No answer generated.",
-        )
-
-        if answer.strip() == (
-            "I don't know based on the available documents."
+        with st.expander(
+            "📋 Supported Formats"
         ):
-
-            st.warning(
-                answer
-            )
-
-        else:
 
             st.markdown(
-                answer
+                """
+                **PDF**
+
+                `.pdf`
+
+                **Microsoft Word**
+
+                `.docx`
+
+                **Plain Text**
+
+                `.txt`
+
+                Documents are automatically:
+
+                1. Saved to the document directory
+                2. Parsed
+                3. Cleaned
+                4. Chunked
+                5. Embedded
+                6. Stored in ChromaDB
+                7. Available for RAG questions
+                """
             )
 
-        st.divider()
-
-        sources = result.get(
-            "sources",
-            [],
-        )
-
-        st.subheader(
-            f"📚 Sources ({len(sources)})"
-        )
-
-        if sources:
-
-            for source in sources:
-
-                render_source_card(
-                    source
-                )
-
-        else:
-
-            st.info(
-                "No source information was returned."
-            )
-
-        render_retrieval_details(
-            result,
-            expanded=False,
-        )
-
-    # ========================================================
-    # EXAMPLES
-    # ========================================================
-
-    st.divider()
-
-    st.subheader(
-        "💭 Example Questions"
-    )
-
-    example_questions = [
-        "How many annual leave days do full-time employees receive?",
-        "What should I do if NovaDesk fails to start?",
-        "What are the main features of NovaDesk?",
-        "How do I install NovaDesk?",
-        "What is the company's attendance policy?",
-    ]
-
-    for example in example_questions:
-
-        if st.button(
-            example,
-            key=f"example_{example}",
-            width="stretch",
-        ):
-
-            with st.spinner(
-                "Retrieving documents and generating answer..."
-            ):
-
-                try:
-
-                    result = (
-                        get_answer_service(
-                            top_k
-                        ).ask(
-                            example
-                        )
-                    )
-
-                    st.session_state.last_result = (
-                        result
-                    )
-
-                    add_to_conversation(
-                        result
-                    )
-
-                    st.rerun()
-
-                except Exception as exc:
-
-                    st.error(
-                        f"Unable to answer example question: "
-                        f"{exc}"
-                    )
-
-    # ========================================================
-    # ABSTENTION TEST
-    # ========================================================
-
-    with st.expander(
-        "🧪 Test Unknown Question"
-    ):
-
-        st.write(
-            "This tests whether DocMind refuses "
-            "to invent information that is not "
-            "present in the knowledge base."
-        )
-
-        unknown_question = (
-            "What is the capital city of France?"
-        )
-
-        if st.button(
-            "Run Abstention Test",
-            width="stretch",
-        ):
-
-            with st.spinner(
-                "Testing..."
-            ):
-
-                try:
-
-                    result = (
-                        get_answer_service(
-                            top_k
-                        ).ask(
-                            unknown_question
-                        )
-                    )
-
-                    st.session_state.last_result = (
-                        result
-                    )
-
-                    add_to_conversation(
-                        result
-                    )
-
-                    st.rerun()
-
-                except Exception as exc:
-
-                    st.error(
-                        f"Abstention test failed: {exc}"
-                    )
-
-    # ========================================================
-    # ARCHITECTURE
-    # ========================================================
-
-    with st.expander(
-        "🏗️ How DocMind Works"
-    ):
-
-        st.markdown(
-            """
-            **1. Document ingestion**
-
-            PDF, DOCX and TXT documents are loaded and cleaned.
-
-            **2. Chunking**
-
-            Documents are divided into smaller overlapping chunks.
-
-            **3. Embeddings**
-
-            Each chunk is converted into a semantic vector using
-            `all-MiniLM-L6-v2`.
-
-            **4. Vector storage**
-
-            Embeddings and metadata are stored in ChromaDB.
-
-            **5. Retrieval**
-
-            The question is processed using hybrid retrieval:
-
-            - Dense semantic retrieval
-            - BM25 lexical retrieval
-            - Weighted score fusion
-
-            **6. Reranking**
-
-            Candidate chunks are reranked using a cross-encoder
-            when enabled.
-
-            **7. Context building**
-
-            Retrieved chunks are combined into grounded context.
-
-            **8. Generation**
-
-            Ollama Cloud generates an answer using the retrieved
-            context.
-
-            **9. Citations**
-
-            Source filename, category, page and chunk information
-            are displayed with the answer.
-
-            **10. Observability**
-
-            DocMind records retrieval, context-building and
-            generation timings together with retrieval diagnostics.
-
-            **11. Abstention**
-
-            If the information cannot be supported by the available
-            documents, DocMind responds:
-
-            > I don't know based on the available documents.
-
-            **12. Conversation history**
-
-            Previous questions and answers are displayed for the
-            current Streamlit session. Each new question still
-            performs document retrieval independently.
-            """
-        )
-
-
-# ============================================================
-# EVALUATION & ANALYTICS
-# ============================================================
-
-with evaluation_tab:
-
-    render_evaluation_dashboard()
-
-
-# ============================================================
-# DOCUMENT MANAGEMENT
-# ============================================================
-
-with documents_tab:
-
-    st.subheader(
-        "📚 Document Management"
-    )
-
-    document_manager = (
-        get_document_manager()
-    )
-
-    # ========================================================
-    # ACTION MESSAGE
-    # ========================================================
-
-    if st.session_state.action_message:
-
-        message = (
-            st.session_state.action_message
-        )
-
-        message_type = (
-            message.get(
-                "type",
-                "info",
-            )
-        )
-
-        message_text = (
-            message.get(
-                "text",
-                "",
-            )
-        )
-
-        if message_type == "success":
-
-            st.success(
-                message_text
-            )
-
-        elif message_type == "error":
-
-            st.error(
-                message_text
-            )
-
-        elif message_type == "warning":
-
-            st.warning(
-                message_text
-            )
-
-        else:
-
-            st.info(
-                message_text
-            )
-
-        st.session_state.action_message = None
-
-    # ========================================================
-    # STATISTICS
-    # ========================================================
-
-    try:
-
-        stats = (
-            document_manager.get_statistics()
-        )
-
-        document_count = (
-            stats.get(
-                "document_count",
-                0,
-            )
-        )
-
-        indexed_chunks = (
-            stats.get(
-                "indexed_chunks",
-                0,
-            )
-        )
-
-        total_size = (
-            stats.get(
-                "total_size_bytes",
-                0,
-            )
-        )
-
-        total_size_mb = (
-            total_size
-            / (1024 * 1024)
-        )
-
-    except Exception as exc:
-
-        st.error(
-            f"Could not load document statistics: "
-            f"{exc}"
-        )
-
-        document_count = 0
-        indexed_chunks = 0
-        total_size_mb = 0
-
-    stat1, stat2, stat3 = (
-        st.columns(3)
-    )
-
-    with stat1:
-
-        st.metric(
-            "📄 Documents",
-            document_count,
-        )
-
-    with stat2:
-
-        st.metric(
-            "🧩 Indexed Chunks",
-            indexed_chunks,
-        )
-
-    with stat3:
-
-        st.metric(
-            "💾 Storage",
-            f"{total_size_mb:.2f} MB",
-        )
-
-    st.divider()
-
-    # ========================================================
-    # UPLOAD
-    # ========================================================
-
-    st.subheader(
-        "⬆️ Upload a Document"
-    )
-
-    st.write(
-        "Upload a PDF, DOCX or TXT document. "
-        "The document will be saved, chunked, embedded, "
-        "and indexed automatically."
-    )
-
-    uploaded_file = st.file_uploader(
-        "Choose a document",
-        type=[
-            "pdf",
-            "docx",
-            "txt",
-        ],
-        help=(
-            "Supported formats: "
-            "PDF, DOCX and TXT."
-        ),
-    )
-
-    if uploaded_file:
-
-        file_size_mb = (
-            uploaded_file.size
-            / (1024 * 1024)
-        )
-
-        st.info(
-            f"📄 **Selected:** "
-            f"`{uploaded_file.name}`  \n"
-            f"📦 **Size:** "
-            f"{file_size_mb:.2f} MB"
-        )
-
-        upload_button = st.button(
-            "⬆️ Upload & Index",
-            type="primary",
-            width="stretch",
-        )
-
-        if upload_button:
-
-            with st.spinner(
-                f"Uploading and indexing "
-                f"`{uploaded_file.name}`..."
-            ):
-
-                try:
-
-                    result = (
-                        document_manager
-                        .upload_and_index(
-                            uploaded_file
-                        )
-                    )
-
-                    filename = result.get(
-                        "filename",
-                        uploaded_file.name,
-                    )
-
-                    chunks = result.get(
-                        "chunks",
-                        0,
-                    )
-
-                    indexed = result.get(
-                        "indexed",
-                        chunks,
-                    )
-
-                    status = result.get(
-                        "status",
-                        "success",
-                    )
-
-                    if status == "success":
-
-                        st.session_state.action_message = {
-                            "type": "success",
-                            "text": (
-                                f"✅ Document uploaded "
-                                f"and indexed successfully!\n\n"
-                                f"**File:** `{filename}`\n\n"
-                                f"**Chunks created:** "
-                                f"{chunks}\n\n"
-                                f"**Chunks indexed:** "
-                                f"{indexed}"
-                            ),
-                        }
-
-                    else:
-
-                        st.session_state.action_message = {
-                            "type": "warning",
-                            "text": (
-                                f"⚠️ Document processing "
-                                f"finished with status: "
-                                f"`{status}`"
-                            ),
-                        }
-
-                    st.rerun()
-
-                except FileExistsError as exc:
-
-                    st.session_state.action_message = {
-                        "type": "warning",
-                        "text": (
-                            f"⚠️ {exc}"
-                        ),
-                    }
-
-                    st.rerun()
-
-                except Exception as exc:
-
-                    st.session_state.action_message = {
-                        "type": "error",
-                        "text": (
-                            f"❌ Upload failed for "
-                            f"`{uploaded_file.name}`.\n\n"
-                            f"**Reason:** {exc}"
-                        ),
-                    }
-
-                    st.rerun()
-
-    st.divider()
-
-    # ========================================================
-    # RE-INDEX ALL
-    # ========================================================
-
-    st.subheader(
-        "🔄 Re-index Documents"
-    )
-
-    st.write(
-        "Re-process all managed documents and rebuild "
-        "their embeddings in ChromaDB."
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        if st.button(
-            "🔄 Re-index All",
-            width="stretch",
-        ):
-
-            with st.spinner(
-                "Re-indexing all documents..."
-            ):
-
-                try:
-
-                    result = (
-                        document_manager
-                        .reindex_all()
-                    )
-
-                    total = result.get(
-                        "total_documents",
-                        0,
-                    )
-
-                    success_count = result.get(
-                        "success_count",
-                        0,
-                    )
-
-                    failure_count = result.get(
-                        "failure_count",
-                        0,
-                    )
-
-                    failed = result.get(
-                        "failed",
-                        [],
-                    )
-
-                    status = result.get(
-                        "status",
-                        "success",
-                    )
-
-                    if status == "success":
-
-                        st.session_state.action_message = {
-                            "type": "success",
-                            "text": (
-                                f"✅ All documents "
-                                f"re-indexed successfully!\n\n"
-                                f"**Documents:** {total}\n\n"
-                                f"**Successful:** "
-                                f"{success_count}"
-                            ),
-                        }
-
-                    else:
-
-                        failed_names = ", ".join(
-                            item.get(
-                                "filename",
-                                "Unknown",
-                            )
-                            for item in failed
-                        )
-
-                        st.session_state.action_message = {
-                            "type": "warning",
-                            "text": (
-                                f"⚠️ Re-indexing "
-                                f"completed partially.\n\n"
-                                f"**Total:** {total}\n\n"
-                                f"**Successful:** "
-                                f"{success_count}\n\n"
-                                f"**Failed:** "
-                                f"{failure_count}\n\n"
-                                f"**Failed files:** "
-                                f"{failed_names}"
-                            ),
-                        }
-
-                    st.rerun()
-
-                except Exception as exc:
-
-                    st.session_state.action_message = {
-                        "type": "error",
-                        "text": (
-                            f"❌ Re-index all failed.\n\n"
-                            f"**Reason:** {exc}"
-                        ),
-                    }
-
-                    st.rerun()
-
-    with col2:
-
-        if st.button(
-            "🔃 Refresh",
-            width="stretch",
-        ):
-
-            st.rerun()
-
-    st.divider()
-
-    # ========================================================
-    # DOCUMENT LIST
-    # ========================================================
-
-    st.subheader(
-        "📄 Your Documents"
-    )
-
-    try:
-
-        documents = (
-            document_manager.list_documents()
-        )
-
-    except Exception as exc:
-
-        documents = []
-
-        st.error(
-            f"Could not load documents: {exc}"
-        )
-
-    if not documents:
-
-        st.info(
-            "No managed documents found. "
-            "Upload your first document above."
-        )
-
+if page == "Retrieval":
+    st.markdown("### Retrieval configuration")
+    st.info(f"The active retrieval setting is Top-K = {top_k}.")
+    st.markdown("""
+    **Existing retrieval pipeline**
+
+    Dense semantic retrieval + BM25 lexical retrieval → weighted hybrid fusion → optional cross-encoder reranking → Top-K context → grounded generation.
+    """)
+    if st.session_state.last_result:
+        render_retrieval_details(st.session_state.last_result, expanded=True)
     else:
+        st.info("Ask a question from AI Chat first to populate live retrieval diagnostics.")
 
-        for index, document in enumerate(
-            documents
-        ):
+if page == "Settings":
+    st.markdown("### Appearance")
+    settings_col1, settings_col2 = st.columns(2)
+    with settings_col1:
+        st.metric("Current theme", "Dark" if st.session_state.theme == "dark" else "Light")
+        if st.button("☀️ Switch to Light" if st.session_state.theme == "dark" else "🌙 Switch to Dark", key="settings_theme", width="stretch"):
+            toggle_theme()
+            st.rerun()
+    with settings_col2:
+        st.metric("RAG status", "Ready")
+        st.caption("The interface theme is stored in Streamlit session state and reapplied on reruns.")
 
-            filename = document.get(
-                "filename",
-                "Unknown",
-            )
+    st.markdown("### Retrieval")
+    st.write(f"Active Top-K chunks: **{top_k}**")
+    st.caption("The Top-K control remains available in the sidebar from every page.")
 
-            extension = document.get(
-                "extension",
-                "",
-            )
-
-            size_bytes = document.get(
-                "size_bytes",
-                0,
-            )
-
-            size_kb = (
-                size_bytes
-                / 1024
-            )
-
-            st.markdown(
-                f"### 📄 {filename}"
-            )
-
-            st.caption(
-                f"{extension.upper()} • "
-                f"{size_kb:.1f} KB"
-            )
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                if st.button(
-                    "🔄 Re-index",
-                    key=(
-                        f"reindex_"
-                        f"{index}_"
-                        f"{filename}"
-                    ),
-                    width="stretch",
-                ):
-
-                    with st.spinner(
-                        f"Re-indexing {filename}..."
-                    ):
-
-                        try:
-
-                            result = (
-                                document_manager
-                                .reindex_document(
-                                    filename
-                                )
-                            )
-
-                            chunks = result.get(
-                                "chunks",
-                                0,
-                            )
-
-                            removed = result.get(
-                                "previous_chunks_removed",
-                                0,
-                            )
-
-                            st.session_state.action_message = {
-                                "type": "success",
-                                "text": (
-                                    f"✅ `{filename}` "
-                                    f"re-indexed successfully!\n\n"
-                                    f"**Chunks indexed:** "
-                                    f"{chunks}\n\n"
-                                    f"**Previous chunks "
-                                    f"removed:** {removed}"
-                                ),
-                            }
-
-                            st.rerun()
-
-                        except Exception as exc:
-
-                            st.session_state.action_message = {
-                                "type": "error",
-                                "text": (
-                                    f"❌ Re-indexing "
-                                    f"`{filename}` failed.\n\n"
-                                    f"**Reason:** {exc}"
-                                ),
-                            }
-
-                            st.rerun()
-
-            with col2:
-
-                if st.button(
-                    "🗑️ Delete",
-                    key=(
-                        f"delete_"
-                        f"{index}_"
-                        f"{filename}"
-                    ),
-                    width="stretch",
-                ):
-
-                    with st.spinner(
-                        f"Deleting {filename}..."
-                    ):
-
-                        try:
-
-                            result = (
-                                document_manager
-                                .delete_document(
-                                    filename
-                                )
-                            )
-
-                            deleted_chunks = (
-                                result.get(
-                                    "deleted_chunks",
-                                    0,
-                                )
-                            )
-
-                            st.session_state.action_message = {
-                                "type": "success",
-                                "text": (
-                                    f"🗑️ `{filename}` "
-                                    f"was deleted successfully!\n\n"
-                                    f"**Vectors removed:** "
-                                    f"{deleted_chunks}"
-                                ),
-                            }
-
-                            st.rerun()
-
-                        except Exception as exc:
-
-                            st.session_state.action_message = {
-                                "type": "error",
-                                "text": (
-                                    f"❌ Deleting "
-                                    f"`{filename}` failed.\n\n"
-                                    f"**Reason:** {exc}"
-                                ),
-                            }
-
-                            st.rerun()
-
-            st.divider()
-
-    # ========================================================
-    # SUPPORTED FORMATS
-    # ========================================================
-
-    with st.expander(
-        "📋 Supported Formats"
-    ):
-
-        st.markdown(
-            """
-            **PDF**
-
-            `.pdf`
-
-            **Microsoft Word**
-
-            `.docx`
-
-            **Plain Text**
-
-            `.txt`
-
-            Documents are automatically:
-
-            1. Saved to the document directory
-            2. Parsed
-            3. Cleaned
-            4. Chunked
-            5. Embedded
-            6. Stored in ChromaDB
-            7. Available for RAG questions
-            """
-        )
-
+    st.markdown("### System")
+    for item in [
+        "Local embeddings",
+        "Persistent ChromaDB",
+        "Hybrid Dense + BM25 retrieval",
+        "Optional cross-encoder reranking",
+        "Grounded Ollama Cloud generation",
+        "Application-controlled citations",
+        "Conversation history",
+        "Evaluation and analytics",
+    ]:
+        st.markdown(f"✓ {item}")
 
 # ============================================================
 # FOOTER
