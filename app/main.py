@@ -3,6 +3,7 @@ import sys
 
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 
 # ============================================================
@@ -56,7 +57,7 @@ st.set_page_config(
     page_title="DocMind — RAG Knowledge Assistant",
     page_icon="🧠",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
 )
 
 
@@ -65,7 +66,7 @@ st.set_page_config(
 # ============================================================
 
 if "theme" not in st.session_state:
-    st.session_state.theme = "light"
+    st.session_state.theme = "dark"
 
 
 def toggle_theme():
@@ -76,47 +77,47 @@ def toggle_theme():
 
 if st.session_state.theme == "dark":
     THEME = {
-        "bg": "#0b1220",
-        "surface": "#121c2d",
-        "surface2": "#17243a",
-        "surface3": "#1c2a42",
-        "text": "#e8eef8",
-        "heading": "#f8fbff",
-        "muted": "#9aaac2",
-        "border": "#2a3a55",
-        "primary": "#6f8fff",
-        "primary2": "#4e72ef",
-        "soft": "#162b50",
-        "success": "#35c79a",
-        "warning": "#f2bd68",
-        "danger": "#f07474",
-        "input": "#0f1929",
-        "input_text": "#f4f7fd",
-        "placeholder": "#8798b3",
-        "sidebar": "#0c1730",
-        "sidebar2": "#132443",
+        "bg": "#101412",
+        "surface": "#171d1a",
+        "surface2": "#1d2521",
+        "surface3": "#232d28",
+        "text": "#e9f1ed",
+        "heading": "#f7fbf9",
+        "muted": "#9eaea5",
+        "border": "#2d3933",
+        "primary": "#35c98a",
+        "primary2": "#1ea86f",
+        "soft": "#183128",
+        "success": "#42d79a",
+        "warning": "#e9b85f",
+        "danger": "#ef7373",
+        "input": "#121815",
+        "input_text": "#f4f8f6",
+        "placeholder": "#84968c",
+        "sidebar": "#111714",
+        "sidebar2": "#1a241f",
     }
 else:
     THEME = {
-        "bg": "#f5f8fc",
+        "bg": "#ffffff",
         "surface": "#ffffff",
-        "surface2": "#f8faff",
-        "surface3": "#eef4fb",
-        "text": "#172b49",
-        "heading": "#071d3d",
-        "muted": "#4d6382",
-        "border": "#c5d3e4",
-        "primary": "#3568ee",
-        "primary2": "#2856d7",
-        "soft": "#edf4ff",
-        "success": "#159b73",
-        "warning": "#b87516",
-        "danger": "#c94c4c",
+        "surface2": "#f7faf8",
+        "surface3": "#eef5f1",
+        "text": "#24312b",
+        "heading": "#111a16",
+        "muted": "#65756d",
+        "border": "#d9e2dd",
+        "primary": "#159a68",
+        "primary2": "#0f7f55",
+        "soft": "#eaf7f1",
+        "success": "#12845c",
+        "warning": "#a86d12",
+        "danger": "#bd4747",
         "input": "#ffffff",
-        "input_text": "#172b49",
-        "placeholder": "#7185a3",
-        "sidebar": "#0d1930",
-        "sidebar2": "#14274a",
+        "input_text": "#24312b",
+        "placeholder": "#788a81",
+        "sidebar": "#ffffff",
+        "sidebar2": "#f3f7f5",
     }
 
 st.markdown(
@@ -141,11 +142,11 @@ st.markdown(
         --dm-input-text:{THEME['input_text']};
         --dm-placeholder:{THEME['placeholder']};
         --dm-sidebar-bg:{'#ffffff' if st.session_state.theme == 'light' else THEME['sidebar']};
-        --dm-sidebar-text:{'#172b49' if st.session_state.theme == 'light' else '#eaf1ff'};
-        --dm-sidebar-muted:{'#4d6382' if st.session_state.theme == 'light' else '#a9b9d5'};
-        --dm-sidebar-value:{'#071d3d' if st.session_state.theme == 'light' else '#ffffff'};
-        --dm-sidebar-border:{'#d6e0ec' if st.session_state.theme == 'light' else 'rgba(255,255,255,.08)'};
-        --dm-sidebar-hover:{'#edf4ff' if st.session_state.theme == 'light' else '#132443'};
+        --dm-sidebar-text:{'#24312b' if st.session_state.theme == 'light' else '#edf6f1'};
+        --dm-sidebar-muted:{'#66776e' if st.session_state.theme == 'light' else '#9fb0a7'};
+        --dm-sidebar-value:{'#111a16' if st.session_state.theme == 'light' else '#ffffff'};
+        --dm-sidebar-border:{'#dde5e1' if st.session_state.theme == 'light' else 'rgba(255,255,255,.09)'};
+        --dm-sidebar-hover:{'#eef8f3' if st.session_state.theme == 'light' else '#1a241f'};
 
     }}
 
@@ -167,10 +168,10 @@ st.markdown(
     [data-testid="stMainBlockContainer"] .block-container,
     .main .block-container,
     .block-container {{
-        max-width:1480px !important;
+        max-width:1600px !important;
         width:100% !important;
         box-sizing:border-box !important;
-        padding-top:6.5rem !important;
+        padding-top:4.4rem !important;
         padding-bottom:3rem !important;
         margin-top:0 !important;
     }}
@@ -221,9 +222,9 @@ st.markdown(
     .dm-brand-icon {{
         width:42px;height:42px;border-radius:12px;
         display:flex;align-items:center;justify-content:center;
-        background:linear-gradient(135deg,#3568ee,#7895ff);
+        background:linear-gradient(135deg,#35c98a,#159a68);
         color:#fff !important;font-size:20px;
-        box-shadow:0 8px 24px rgba(53,104,238,.28);
+        box-shadow:0 8px 24px rgba(21,154,104,.24);
     }}
 
     .dm-brand-title {{color:var(--dm-sidebar-text) !important;font-size:1.18rem;font-weight:800;line-height:1.05;}}
@@ -293,155 +294,27 @@ st.markdown(
         border-radius:12px;padding:11px 15px;font-size:.83rem;
         box-shadow:0 4px 18px rgba(35,61,110,.04);
     }}
-/* ---------- Fake global search ---------- */
-.dm-fake-search {{
-    height:42px;
-    width:100%;
-    box-sizing:border-box;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:0 15px;
-    background:var(--dm-input) !important;
-    border:1.5px solid var(--dm-border) !important;
-    border-radius:12px;
-    color:var(--dm-placeholder) !important;
-    font-size:.86rem;
-    box-shadow:0 4px 18px rgba(35,61,110,.06);
-}}
-
-.dm-search-icon {{
-    font-size:20px;
-    color:var(--dm-muted);
-}}
-    .dm-user-box {{color:var(--dm-muted) !important;text-align:right;font-size:.82rem;padding-top:6px;}}
-    .dm-user-box b {{color:var(--dm-heading) !important;}}
-
-    .dm-welcome {{color:var(--dm-heading) !important;font-size:1.72rem;font-weight:800;line-height:1.2;margin:4px 0;}}
-    .dm-subtitle {{color:var(--dm-muted) !important;font-size:.9rem;line-height:1.55;}}
-
-    .dm-page-title {{color:var(--dm-heading) !important;font-size:1.45rem;font-weight:800;margin:4px 0;}}
-    .dm-page-subtitle {{color:var(--dm-muted) !important;font-size:.84rem;margin-bottom:16px;}}
-
-    /* ---------- Cards ---------- */
-    .dm-metric-card {{
-        background:var(--dm-surface) !important;
-        border:1px solid var(--dm-border) !important;
-        border-radius:13px;padding:15px;min-height:98px;
-        box-shadow:0 7px 24px rgba(35,61,110,.055);
-    }}
-    .dm-metric-label {{color:var(--dm-muted) !important;font-size:.73rem;font-weight:650;margin-bottom:6px;}}
-    .dm-metric-value {{color:var(--dm-heading) !important;font-size:1.4rem;font-weight:800;}}
-    .dm-metric-delta {{color:var(--dm-success) !important;font-size:.69rem;margin-top:5px;}}
-
-    .dm-ask-card {{
-        background:linear-gradient(135deg,var(--dm-soft),var(--dm-surface2)) !important;
-        border:1px solid var(--dm-border) !important;border-radius:15px;
-        padding:18px;margin:6px 0 18px;
-    }}
-    .dm-ask-title {{color:var(--dm-heading) !important;font-size:1rem;font-weight:800;}}
-    .dm-ask-text {{color:var(--dm-muted) !important;font-size:.76rem;margin:4px 0 10px;}}
-    .dm-chip {{
-        display:inline-block;background:var(--dm-surface) !important;
-        border:1px solid var(--dm-border) !important;color:var(--dm-muted) !important;
-        border-radius:999px;padding:7px 10px;margin:3px 4px 0 0;font-size:.67rem;
+/* ---------- Boxed AI chat ---------- */
+    .dm-chat-box-title {{
+        color: var(--dm-heading);
+        font-size: 1.12rem;
+        font-weight: 800;
+        margin: 0 0 2px 0;
     }}
 
-    /* ---------- Typography ---------- */
-    .stMarkdown, .stMarkdown p, .stCaption, .stText,
-    .stSubheader, h1,h2,h3,h4,h5,h6,label,
-    [data-testid="stWidgetLabel"] p {{color:var(--dm-text) !important;}}
-    h1,h2,h3,h4,h5,h6 {{color:var(--dm-heading) !important;}}
-    .stCaption, [data-testid="stCaptionContainer"] * {{color:var(--dm-muted) !important;}}
-
-    /* ---------- Inputs ---------- */
-    .stTextInput input,.stTextArea textarea,.stNumberInput input,
-    input,textarea {{
-        background:var(--dm-input) !important;
-        color:var(--dm-input-text) !important;
-        -webkit-text-fill-color:var(--dm-input-text) !important;
-        border:1px solid var(--dm-border) !important;border-radius:11px !important;
-        caret-color:var(--dm-primary) !important;
-    }}
-    .stTextInput input::placeholder,.stTextArea textarea::placeholder,
-    input::placeholder,textarea::placeholder {{
-        color:var(--dm-placeholder) !important;
-        -webkit-text-fill-color:var(--dm-placeholder) !important;opacity:1 !important;
+    .dm-chat-box-subtitle {{
+        color: var(--dm-muted);
+        font-size: .78rem;
+        margin-bottom: 10px;
     }}
 
-    /* ---------- Buttons ---------- */
-    .stButton > button,.stDownloadButton > button {{
-        min-height:40px !important;border-radius:10px !important;
-        border:1px solid var(--dm-border) !important;background:var(--dm-surface) !important;
-        color:var(--dm-text) !important;font-weight:700 !important;
-        box-shadow:0 3px 12px rgba(35,61,110,.04) !important;opacity:1 !important;
-    }}
-    .stButton > button *, .stDownloadButton > button * {{
-        color:inherit !important;fill:currentColor !important;opacity:1 !important;visibility:visible !important;
-    }}
-    .stButton > button:hover,.stDownloadButton > button:hover {{border-color:var(--dm-primary) !important;}}
-    .stButton > button[kind="primary"],.stButton > button[data-testid="baseButton-primary"] {{
-        background:linear-gradient(135deg,var(--dm-primary),var(--dm-primary2)) !important;
-        border-color:var(--dm-primary) !important;color:#fff !important;
-    }}
-    .stButton > button[kind="primary"] *,.stButton > button[data-testid="baseButton-primary"] * {{color:#fff !important;fill:#fff !important;}}
-
-    /* ---------- File uploader ---------- */
-    [data-testid="stFileUploader"] {{background:var(--dm-surface) !important;border-radius:13px !important;}}
-    [data-testid="stFileUploaderDropzone"] {{
-        background:var(--dm-surface2) !important;border:1px dashed var(--dm-border) !important;
-        border-radius:12px !important;
-    }}
-    [data-testid="stFileUploaderDropzone"] * {{color:var(--dm-text) !important;opacity:1 !important;visibility:visible !important;}}
-    [data-testid="stFileUploaderDropzone"] button {{background:var(--dm-primary) !important;border-color:var(--dm-primary) !important;color:#fff !important;}}
-    [data-testid="stFileUploaderDropzone"] button * {{color:#fff !important;fill:#fff !important;}}
-
-    /* ---------- Native Streamlit components ---------- */
-    [data-testid="stMetric"] {{background:var(--dm-surface) !important;border:1px solid var(--dm-border) !important;border-radius:12px !important;}}
-    [data-testid="stMetricLabel"] p,[data-testid="stMetricValue"],[data-testid="stMetricDelta"] {{color:var(--dm-heading) !important;}}
-    [data-testid="stExpander"] {{background:var(--dm-surface) !important;border-color:var(--dm-border) !important;}}
-    [data-testid="stExpander"] * {{color:var(--dm-text);}}
-    [data-testid="stAlert"] p,[data-testid="stAlert"] span {{color:inherit !important;}}
-    [data-baseweb="select"] {{background:var(--dm-input) !important;color:var(--dm-input-text) !important;}}
-    [data-baseweb="select"] * {{color:var(--dm-input-text) !important;}}
-    hr {{border-color:var(--dm-border) !important;}}
-    [data-testid="stDataFrame"] {{border:1px solid var(--dm-border) !important;border-radius:10px;overflow:hidden;}}
-
-    /* ---------- Visibility / layout failsafe ---------- */
-    [data-testid="stAppViewContainer"],
-    [data-testid="stAppViewContainer"] > section,
-    [data-testid="stMain"],
-    [data-testid="stMainBlockContainer"],
-    [data-testid="stSidebar"],
-    [data-testid="stSidebarContent"],
-    .block-container {{
-        visibility:visible !important;
-        opacity:1 !important;
-    }}
-    [data-testid="stMainBlockContainer"] {{
-        width:100% !important;
-        max-width:none !important;
-        min-width:0 !important;
-    }}
-    [data-testid="stVerticalBlock"],
-    [data-testid="stHorizontalBlock"],
-    [data-testid="column"] {{
-        visibility:visible !important;
-        opacity:1 !important;
-    }}
-    [data-testid="stMarkdownContainer"] {{
-        visibility:visible !important;
-        opacity:1 !important;
-    }}
-    .dm-search-box, .dm-user-box, .dm-welcome, .dm-subtitle,
-    .dm-page-title, .dm-page-subtitle, .dm-metric-card, .dm-ask-card,
-    .dm-brand, .dm-theme-card, .dm-nav-label {{
-        display:block !important;
-        visibility:visible !important;
-        opacity:1 !important;
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {{
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 16px !important;
+        background: var(--dm-surface) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
     }}
 
-    /* Chat */
     [data-testid="stChatMessage"] {{background:var(--dm-surface) !important;border:1px solid var(--dm-border) !important;border-radius:13px !important;}}
     [data-testid="stChatMessage"] p {{color:var(--dm-text) !important;}}
 
@@ -483,7 +356,181 @@ st.markdown(
         }}
         .dm-welcome {{font-size:1.4rem;}}
     }}
-    </style>
+    
+    /* ===== FINAL VISIBILITY + RESPONSIVE LAYOUT FIXES ===== */
+
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {{
+        max-width: 1600px !important;
+        width: 100% !important;
+        padding-top: 4.8rem !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        padding-bottom: 1rem !important;
+    }}
+
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {{
+        gap: 1rem !important;
+        align-items: stretch !important;
+    }}
+
+    /* Right Documents panel: wider and readable. */
+    div[data-testid="column"]:has(.dm-right-panel-marker) {{
+        min-width: 340px !important;
+        width: 340px !important;
+        flex: 0 0 340px !important;
+        padding: 8px 8px 10px 14px !important;
+    }}
+
+    /* Upload box uses the actual app palette instead of a white slab. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] {{
+        background: var(--dm-surface2) !important;
+        border: 1px dashed var(--dm-border) !important;
+        border-radius: 12px !important;
+        min-height: 116px !important;
+        padding: 14px !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] *,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploader"] * {{
+        color: var(--dm-text) !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button {{
+        background: var(--dm-primary) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--dm-primary) !important;
+        border-radius: 9px !important;
+        min-height: 38px !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button * {{
+        color: #ffffff !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker) .stButton > button {{
+        background: var(--dm-surface2) !important;
+        color: var(--dm-text) !important;
+        border: 1px solid var(--dm-border) !important;
+        min-height: 38px !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker) .stButton > button:hover {{
+        border-color: var(--dm-primary) !important;
+        color: var(--dm-primary) !important;
+    }}
+
+    /* Chat: remove the oversized empty area. */
+    .dm-empty-state {{
+        min-height: 235px !important;
+        padding: 24px 22px !important;
+    }}
+
+    .dm-empty-icon {{
+        margin-bottom: 10px !important;
+    }}
+
+    /* Example questions must be readable in full. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    .stButton > button {{
+        min-height: 48px !important;
+        height: auto !important;
+        white-space: normal !important;
+        line-height: 1.25 !important;
+        padding: 9px 11px !important;
+        background: var(--dm-surface2) !important;
+        color: var(--dm-text) !important;
+        border: 1px solid var(--dm-border) !important;
+        opacity: 1 !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    .stButton > button p {{
+        color: var(--dm-text) !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }}
+
+    /* Chat input follows dark/light palette and stays clearly visible. */
+    [data-testid="stChatInput"] {{
+        background: var(--dm-input) !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 12px !important;
+        box-shadow: none !important;
+        overflow: hidden !important;
+        margin-top: 10px !important;
+    }}
+
+    [data-testid="stChatInput"] > div,
+    [data-testid="stChatInput"] textarea,
+    [data-testid="stChatInput"] textarea:focus {{
+        background: var(--dm-input) !important;
+        color: var(--dm-input-text) !important;
+        caret-color: var(--dm-primary) !important;
+    }}
+
+    [data-testid="stChatInput"] textarea {{
+        min-height: 52px !important;
+        padding: 14px 52px 12px 14px !important;
+        border: 0 !important;
+        outline: none !important;
+    }}
+
+    [data-testid="stChatInput"] textarea::placeholder {{
+        color: var(--dm-placeholder) !important;
+        opacity: 1 !important;
+    }}
+
+    [data-testid="stChatInput"] button {{
+        background: var(--dm-primary) !important;
+        color: #ffffff !important;
+        border-radius: 9px !important;
+        opacity: 1 !important;
+    }}
+
+    [data-testid="stChatInput"] button svg {{
+        color: #ffffff !important;
+        fill: #ffffff !important;
+    }}
+
+    [data-testid="stChatMessage"] {{
+        padding: 12px 14px !important;
+        margin-bottom: 9px !important;
+    }}
+
+    @media (max-width: 1200px) {{
+        div[data-testid="column"]:has(.dm-right-panel-marker) {{
+            min-width: 300px !important;
+            width: 300px !important;
+            flex-basis: 300px !important;
+        }}
+    }}
+
+    @media (max-width: 900px) {{
+        div[data-testid="column"]:has(.dm-right-panel-marker) {{
+            min-width: 100% !important;
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            position: static !important;
+        }}
+
+        .dm-empty-state {{
+            min-height: 200px !important;
+        }}
+    }}
+
+</style>
     """,
     unsafe_allow_html=True,
 )
@@ -10663,1376 +10710,5209 @@ def render_evaluation_dashboard():
 
 
 
+
 # ============================================================
-# SIDEBAR
+# DOCMIND WORKSPACE STATE
+# ============================================================
+
+if "docmind_view" not in st.session_state:
+    st.session_state.docmind_view = "AI Chat"
+
+if "conversation_title" not in st.session_state:
+    st.session_state.conversation_title = "New conversation"
+
+if "last_error" not in st.session_state:
+    st.session_state.last_error = None
+
+if "scroll_chat_to_bottom" not in st.session_state:
+    st.session_state.scroll_chat_to_bottom = False
+
+
+def reset_chat():
+    """Start a new browser-session conversation without touching indexed data."""
+    st.session_state.conversation_history = []
+    st.session_state.last_result = None
+    st.session_state.conversation_title = "New conversation"
+    st.session_state.last_error = None
+    st.session_state.scroll_chat_to_bottom = False
+    st.session_state.docmind_view = "AI Chat"
+
+
+def ask_question(question: str, top_k_value: int):
+    """Run the existing RAG pipeline once for one submitted question."""
+    question = (question or "").strip()
+    if not question:
+        return False
+
+    try:
+        with st.status("Working with your knowledge base…", expanded=False) as status:
+            status.update(
+                label="🔎 Searching your documents…",
+                state="running",
+            )
+
+            answer_service = get_answer_service(top_k_value)
+            result = answer_service.ask(question)
+
+            status.update(
+                label="✓ Answer ready",
+                state="complete",
+            )
+
+        st.session_state.last_result = result
+        st.session_state.last_error = None
+        add_to_conversation(result)
+        st.session_state.scroll_chat_to_bottom = True
+
+        if st.session_state.conversation_title == "New conversation":
+            compact = " ".join(question.split())
+            st.session_state.conversation_title = (
+                compact[:42] + "…" if len(compact) > 42 else compact
+            )
+
+        return True
+
+    except Exception as exc:
+        st.session_state.last_error = str(exc)
+        st.session_state.action_message = {
+            "type": "error",
+            "text": (
+                "Something went wrong while generating the answer. "
+                "Please try again."
+            ),
+        }
+        return False
+
+
+
+def scroll_chat_history_to_bottom():
+    """
+    Reveal the newest answer in the main page scroller.
+
+    The prompt composer remains pinned; sidebar scrollers are not touched.
+    """
+    components.html(
+        """
+        <script>
+        (() => {
+            const scrollNewestIntoView = () => {
+                const doc = window.parent.document;
+
+                const root =
+                    doc.querySelector(
+                        '.st-key-dm_conversation_viewport'
+                    );
+
+                if (!root) return;
+
+                const scroller = root.closest('[data-testid="stMain"]');
+                if (!scroller) return;
+                const composer = doc.querySelector('.st-key-dm_center_composer');
+                const reserve = (composer?.getBoundingClientRect().height || 150) + 24;
+                const bottom = root.getBoundingClientRect().bottom;
+                const visibleBottom = scroller.getBoundingClientRect().bottom - reserve;
+                if (bottom > visibleBottom) {
+                    scroller.scrollTop += bottom - visibleBottom;
+                }
+            };
+
+            setTimeout(scrollNewestIntoView, 80);
+            setTimeout(scrollNewestIntoView, 220);
+            setTimeout(scrollNewestIntoView, 450);
+        })();
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
+
+
+def render_chat_message(question, answer, sources, result=None):
+    """Render one conversation turn with grounded evidence."""
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    with st.chat_message("assistant"):
+        if answer.strip() == "I don't know based on the available documents.":
+            st.warning(answer)
+        else:
+            st.markdown(answer)
+
+        if sources:
+            st.markdown("**Sources**")
+            source_cols = st.columns(min(len(sources), 3))
+
+            for idx, source in enumerate(sources):
+                with source_cols[idx % len(source_cols)]:
+                    filename = source.get("filename", "Unknown")
+                    page = source.get("page")
+                    chunk = source.get("chunk_number", "?")
+                    distance = source.get("distance")
+
+                    page_text = (
+                        "Page N/A"
+                        if page in (None, -1)
+                        else f"Page {page}"
+                    )
+
+                    distance_text = "N/A"
+                    try:
+                        if distance is not None:
+                            distance_text = f"{float(distance):.4f}"
+                    except (TypeError, ValueError):
+                        pass
+
+                    with st.container(border=True):
+                        st.markdown(f"📄 **{filename}**")
+                        st.caption(
+                            f"{page_text} • Chunk {chunk} • "
+                            f"Distance {distance_text}"
+                        )
+
+        if result:
+            render_retrieval_details(result, expanded=False)
+
+
+def render_right_documents(document_manager, current_result):
+    """Render the persistent document sidebar shown in the target UI."""
+    # Marker lets CSS style the complete Streamlit column as a real
+    # right-hand sidebar, matching the native left sidebar palette.
+    st.markdown(
+        '<div class="dm-right-panel-marker" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<div class="dm-right-section-title">Upload</div>',
+        unsafe_allow_html=True,
+    )
+
+    uploaded_file = st.file_uploader(
+        "Upload Documents",
+        type=["pdf", "docx", "txt"],
+        key="workspace_uploader",
+        help="Supported formats: PDF, DOCX and TXT.",
+        label_visibility="collapsed",
+    )
+
+    if uploaded_file is not None:
+        size_mb = uploaded_file.size / (1024 * 1024)
+
+        st.markdown(
+            f"""
+            <div class="dm-upload-selected">
+                <div class="dm-upload-file">
+                    <span>📄</span>
+                    <span>{uploaded_file.name}</span>
+                </div>
+                <div class="dm-upload-meta">
+                    {size_mb:.2f} MB • Ready to index
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    submit_upload = st.button(
+        "Submit",
+        width="stretch",
+        key="workspace_upload_submit",
+        disabled=uploaded_file is None,
+    )
+
+    if submit_upload and uploaded_file is not None:
+        try:
+            with st.status(
+                "Processing document…",
+                expanded=False,
+            ) as status:
+                result = document_manager.upload_and_index(uploaded_file)
+
+                status.update(
+                    label="Document indexed",
+                    state="complete",
+                )
+
+            chunks = result.get("chunks", 0)
+            indexed = result.get("indexed", chunks)
+            status_value = result.get("status", "success")
+
+            if status_value == "success":
+                st.session_state.action_message = {
+                    "type": "success",
+                    "text": (
+                        f"**{result.get('filename', uploaded_file.name)}** "
+                        f"is ready. {chunks} chunks created, "
+                        f"{indexed} indexed."
+                    ),
+                }
+            else:
+                st.session_state.action_message = {
+                    "type": "warning",
+                    "text": (
+                        "Document processing finished with status "
+                        f"`{status_value}`."
+                    ),
+                }
+
+            st.rerun()
+
+        except FileExistsError as exc:
+            st.warning(str(exc))
+
+        except Exception as exc:
+            st.error(
+                "Couldn't process this document. "
+                "Please check that the file is supported and try again."
+            )
+            with st.expander("Technical details"):
+                st.code(str(exc))
+
+    st.markdown(
+        '<div class="dm-right-section-title">Uploaded Documents</div>',
+        unsafe_allow_html=True,
+    )
+
+    # Use the real document manager as the single source of truth.
+    try:
+        documents = document_manager.list_documents()
+    except Exception as exc:
+        documents = []
+        st.caption(f"Document list unavailable: {exc}")
+
+    if not documents:
+        st.markdown(
+            '<div class="dm-right-empty">No documents uploaded yet.</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        for idx, document in enumerate(documents):
+            filename = document.get("filename", "Unknown")
+            extension = document.get("extension", "").upper()
+            size_bytes = document.get("size_bytes", 0) or 0
+
+            if size_bytes >= 1024 * 1024:
+                size_text = f"{size_bytes / (1024 * 1024):.2f} MB"
+            else:
+                size_text = f"{size_bytes / 1024:.1f} KB"
+
+            st.markdown(
+                f"""
+                <div class="dm-doc-row">
+                    <div class="dm-doc-main">
+                        <span class="dm-doc-icon">▤</span>
+                        <div class="dm-doc-name-wrap">
+                            <div class="dm-doc-name">{filename}</div>
+                            <div class="dm-doc-meta">{extension or 'FILE'} • {size_text}</div>
+                        </div>
+                    </div>
+                    <span class="dm-status ready">Ready</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.markdown(
+        '<div class="dm-right-section-title">Indexed Knowledge Base</div>',
+        unsafe_allow_html=True,
+    )
+
+    try:
+        stats = document_manager.get_statistics()
+        document_count = stats.get("document_count", len(documents))
+        indexed_chunks = stats.get("indexed_chunks", 0)
+    except Exception:
+        document_count = len(documents)
+        indexed_chunks = 0
+
+    st.markdown(
+        f"""
+        <div class="dm-kb-summary">
+            <span>{document_count} document{"s" if document_count != 1 else ""}</span>
+            <span>{indexed_chunks} chunks</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if not documents:
+        st.markdown(
+            '<div class="dm-right-empty">Upload a document to build your index.</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        for idx, document in enumerate(documents):
+            filename = document.get("filename", "Unknown")
+
+            # Prefer explicit chunk counts returned by the manager. If they
+            # are unavailable, keep the UI honest rather than inventing one.
+            chunk_value = document.get("chunks")
+            if chunk_value is None:
+                chunk_value = document.get("chunk_count")
+
+            chunk_text = (
+                f"{chunk_value} chunks"
+                if chunk_value is not None
+                else "Indexed"
+            )
+
+            st.markdown(
+                f"""
+                <div class="dm-indexed-row">
+                    <div class="dm-indexed-main">
+                        <span class="dm-index-check">✓</span>
+                        <div>
+                            <div class="dm-doc-name">{filename}</div>
+                            <div class="dm-doc-meta">{chunk_text}</div>
+                        </div>
+                    </div>
+                    <span class="dm-status indexed">Indexed</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            action_col1, action_col2 = st.columns(2)
+
+            with action_col1:
+                if st.button(
+                    "Re-index",
+                    key=f"workspace_reindex_{idx}_{filename}",
+                    width="stretch",
+                ):
+                    try:
+                        with st.spinner(f"Re-indexing {filename}…"):
+                            document_manager.reindex_document(filename)
+
+                        st.rerun()
+
+                    except Exception as exc:
+                        st.error(
+                            f"Re-indexing failed: {exc}"
+                        )
+
+            with action_col2:
+                if st.button(
+                    "Delete",
+                    key=f"workspace_delete_{idx}_{filename}",
+                    width="stretch",
+                ):
+                    try:
+                        with st.spinner(f"Deleting {filename}…"):
+                            document_manager.delete_document(filename)
+
+                        st.rerun()
+
+                    except Exception as exc:
+                        st.error(
+                            f"Couldn't delete this document: {exc}"
+                        )
+
+    st.markdown(
+        '<div class="dm-right-section-title">Retrieved for This Answer</div>',
+        unsafe_allow_html=True,
+    )
+
+    if not current_result:
+        st.markdown(
+            '<div class="dm-right-empty">'
+            'Ask a question to see the sources used for the answer.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    retrieved_sources = current_result.get("sources", []) or []
+
+    if not retrieved_sources:
+        st.markdown(
+            '<div class="dm-right-empty">'
+            'No source information was returned for this answer.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    for source in retrieved_sources:
+        filename = source.get("filename", "Unknown")
+        page = source.get("page")
+        chunk = source.get("chunk_number", "?")
+        distance = source.get("distance")
+
+        page_text = (
+            "Page N/A"
+            if page in (None, -1)
+            else f"Page {page}"
+        )
+
+        try:
+            distance_text = f"{float(distance):.2f}"
+        except (TypeError, ValueError):
+            distance_text = "N/A"
+
+        st.markdown(
+            f"""
+            <div class="dm-retrieved-card">
+                <div class="dm-retrieved-title">
+                    <span class="dm-retrieved-check">●</span>
+                    <span>{filename}</span>
+                </div>
+                <div class="dm-retrieved-meta">
+                    {page_text} • Chunk {chunk}
+                </div>
+                <div class="dm-retrieved-score">
+                    <span>Relevance: <b>High</b></span>
+                    <span>Distance: <b>{distance_text}</b></span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+# ============================================================
+# SIDEBAR — CONVERSATIONS + NAVIGATION
 # ============================================================
 
 with st.sidebar:
-
     st.markdown(
         """
         <div class="dm-brand">
             <div class="dm-brand-icon">◆</div>
             <div>
                 <div class="dm-brand-title">DocMind</div>
-                <div class="dm-brand-sub">RAG Knowledge Assistant</div>
+                <div class="dm-brand-sub">AI document intelligence</div>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    st.markdown('<div class="dm-nav-label">Main</div>', unsafe_allow_html=True)
-
-    page = st.radio(
-        "Main navigation",
-        [
-            "Dashboard",
-            "AI Chat",
-            "Knowledge Base",
-            "Documents",
-            "Search",
-            "Analytics",
-            "Evaluation",
-            "Retrieval",
-            "Conversations",
-            "Settings",
-        ],
-        index=0,
-        label_visibility="collapsed",
-        key="docmind_page",
-    )
-
-    st.divider()
-
-    st.markdown('<div class="dm-nav-label">Appearance</div>', unsafe_allow_html=True)
-    current_dark = st.session_state.theme == "dark"
-    theme_label = "☀️ Switch to Light" if current_dark else "🌙 Switch to Dark"
     if st.button(
-        theme_label,
-        key="sidebar_theme_button",
+        "＋ New Chat",
+        type="primary",
         width="stretch",
-        help="Change the entire DocMind interface theme.",
+        key="new_chat_button",
     ):
-        toggle_theme()
+        reset_chat()
         st.rerun()
 
     st.markdown(
-        f'<div class="dm-theme-note">Current theme: <b>{"Dark" if current_dark else "Light"}</b></div>',
+        '<div class="dm-nav-label">CHATS</div>',
         unsafe_allow_html=True,
     )
 
-    st.divider()
+    if st.session_state.conversation_history:
+        # This is intentionally session-only. No fake persistent history
+        # or artificial dates are generated.
+        for idx, conversation in enumerate(
+            st.session_state.conversation_history
+        ):
+            question_text = conversation.get(
+                "question",
+                "Untitled",
+            )
 
-    try:
-        vector_store = get_vector_store()
-        indexed_chunks = vector_store.count()
+            title = " ".join(question_text.split())
 
-        try:
-            collection_data = vector_store.collection.get(include=["metadatas"])
-            metadatas = collection_data.get("metadatas", [])
-            indexed_documents = len({
-                metadata.get("source")
-                for metadata in metadatas
-                if metadata and metadata.get("source")
-            })
-        except Exception:
-            indexed_documents = 0
+            if len(title) > 34:
+                title = title[:34] + "…"
 
-        st.markdown("#### 📚 Knowledge Base")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("Documents", indexed_documents)
-        with col2:
-            st.metric("Chunks", indexed_chunks)
-    except Exception as exc:
-        st.error(f"Knowledge base error: {exc}")
+            if st.button(
+                title,
+                key=f"history_nav_{idx}",
+                width="stretch",
+                help="View this conversation turn.",
+            ):
+                st.session_state.docmind_view = "AI Chat"
+                st.session_state.last_result = conversation
+                st.session_state.conversation_title = title
+                st.rerun()
 
-    st.divider()
+    else:
+        st.caption("No conversations in this session yet.")
 
-    st.markdown("#### ⚙️ Retrieval")
+    st.markdown(
+        '<div class="dm-nav-label">ANALYTICS & EVALUATION</div>',
+        unsafe_allow_html=True,
+    )
+
+    if st.button(
+        "📊 Analytics & Evaluation",
+        width="stretch",
+        key="analytics_eval_nav",
+    ):
+        st.session_state.docmind_view = "Analytics & Evaluation"
+        st.rerun()
+
+    st.markdown(
+        '<div class="dm-nav-label">KNOWLEDGE</div>',
+        unsafe_allow_html=True,
+    )
+
+    if st.button(
+        "📚 Knowledge Base",
+        width="stretch",
+        key="knowledge_nav",
+    ):
+        st.session_state.docmind_view = "Knowledge Base"
+        st.rerun()
+
+    st.markdown(
+        '<div class="dm-nav-label">RETRIEVAL</div>',
+        unsafe_allow_html=True,
+    )
+
     top_k = st.slider(
         "Top-K chunks",
         min_value=1,
         max_value=10,
         value=3,
-        help="Number of relevant document chunks retrieved for each question.",
+        key="workspace_top_k",
+        help="Number of relevant chunks retrieved for each question.",
     )
-    st.caption(f"Retrieving the top **{top_k}** relevant chunks.")
+
+    st.caption(f"Retrieving top {top_k} relevant chunks.")
 
     st.divider()
 
-    st.markdown("#### 💬 Conversation")
-    conversation_count = len(st.session_state.conversation_history)
-    st.metric("Questions asked", conversation_count)
-    if conversation_count > 0:
-        if st.button("🗑️ Clear Conversation", width="stretch"):
-            st.session_state.conversation_history = []
-            st.session_state.last_result = None
+    current_dark = st.session_state.theme == "dark"
+
+    theme_label = (
+        "☀️ Light mode"
+        if current_dark
+        else "🌙 Dark mode"
+    )
+
+    if st.button(
+        theme_label,
+        width="stretch",
+        key="workspace_theme",
+    ):
+        toggle_theme()
+        st.rerun()
+
+    if st.session_state.conversation_history:
+        if st.button(
+            "🗑️ Clear session",
+            width="stretch",
+            key="clear_session_sidebar",
+        ):
+            reset_chat()
             st.rerun()
 
     st.divider()
 
-    st.markdown("#### 🟢 System Status")
-    st.success("RAG Pipeline Ready")
-    for item in [
-        "✓ Local embeddings",
-        "✓ ChromaDB vector store",
-        "✓ Hybrid Dense + BM25 retrieval",
-        "✓ Cross-encoder reranking",
-        "✓ Grounded generation",
-        "✓ Source citations",
-        "✓ Conversation history",
-        "✓ Evaluation & analytics",
-    ]:
-        st.caption(item)
-
-    st.divider()
-    st.info(
-        "DocMind answers questions using retrieved document content rather than general model knowledge."
+    st.caption(
+        "Session history is temporary and is not used "
+        "as a replacement for document retrieval."
     )
 
 
 # ============================================================
-# HEADER
-# ============================================================
-
-# This real layout spacer is intentional: it pushes the first DocMind
-# element below Streamlit's fixed header/Deploy toolbar.
-search_col, status_col, user_col = st.columns([6.0, 1.0, 1.2])
-
-with search_col:
-    st.markdown(
-        """
-        <div class="dm-fake-search">
-            <span class="dm-search-icon">⌕</span>
-            <span>Search your documents, knowledge base, or ask a question...</span>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-with status_col:
-    st.markdown(
-        '<div class="dm-user-box">● <b>RAG Ready</b></div>',
-        unsafe_allow_html=True,
-    )
-
-with user_col:
-    st.markdown(
-        '<div class="dm-user-box">🔔 &nbsp; 👤 <b>Admin</b></div>',
-        unsafe_allow_html=True,
-    )
-
-st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-
-from datetime import datetime
-_current_hour = datetime.now().hour
-if 5 <= _current_hour < 12:
-    _greeting = "Good morning"
-elif 12 <= _current_hour < 18:
-    _greeting = "Good afternoon"
-else:
-    _greeting = "Good evening"
-
-st.markdown(
-    f'<div class="dm-welcome">{_greeting}, ReXy 👋</div>',
-    unsafe_allow_html=True,
-)
-st.markdown(
-    '<div class="dm-subtitle">Your knowledge at a glance. Search documents, ask grounded questions, and inspect retrieval evidence from one workspace.</div>',
-    unsafe_allow_html=True,
-)
-st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-
-# ============================================================
-# TOP METRICS
+# THREE-PANEL WORKSPACE
 # ============================================================
 
 try:
-    document_manager = get_document_manager()
-    manager_stats = document_manager.get_statistics()
-
-    managed_documents = manager_stats.get("document_count", 0)
-    managed_chunks = manager_stats.get("indexed_chunks", 0)
-    storage_bytes = manager_stats.get("total_size_bytes", 0)
-    storage_mb = storage_bytes / (1024 * 1024)
-
+    workspace_document_manager = get_document_manager()
 except Exception:
-    managed_documents = 0
-    managed_chunks = 0
-    storage_mb = 0
+    workspace_document_manager = None
 
-metric_cols = st.columns(4)
-
-metric_data = [
-    ("📄", "Total Documents", managed_documents, "Managed files"),
-    ("🧩", "Indexed Chunks", managed_chunks, "Available to retrieve"),
-    ("💾", "Storage", f"{storage_mb:.2f} MB", "Document storage"),
-    ("🟢", "Ingestion Status", "Ready", "All systems operational"),
-]
-
-for col, (icon, label, value, delta) in zip(metric_cols, metric_data):
-    with col:
-        st.markdown(
-            f"""
-            <div class="dm-metric-card">
-                <div class="dm-metric-label">{icon} &nbsp; {label}</div>
-                <div class="dm-metric-value">{value}</div>
-                <div class="dm-metric-delta">✓ {delta}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+center_panel, right_panel = st.columns(
+    [3.15, 1.15],
+    gap="small",
+)
 
 
 # ============================================================
-# APPLICATION NAVIGATION
+# CENTER PANEL
 # ============================================================
 
-page_descriptions = {
-    "Dashboard": "A high-level view of your knowledge base and the main RAG workspace.",
-    "AI Chat": "Ask grounded questions and inspect answers, sources, and retrieval diagnostics.",
-    "Knowledge Base": "Manage indexed knowledge and inspect document/index statistics.",
-    "Documents": "Upload, index, re-index, inspect, and delete supported documents.",
-    "Search": "Use the existing RAG question workflow as your semantic knowledge search.",
-    "Analytics": "Explore the existing RAG evaluation and analytics datasets.",
-    "Evaluation": "Review recorded evaluation experiments and answer-quality results.",
-    "Retrieval": "Inspect retrieval settings and the latest retrieval diagnostics.",
-    "Conversations": "Review the current browser-session conversation history.",
-    "Settings": "Review appearance, retrieval controls, and current system status.",
-}
-
-st.markdown(
-    f'<div class="dm-page-title">{page}</div>',
-    unsafe_allow_html=True,
-)
-st.markdown(
-    f'<div class="dm-page-subtitle">{page_descriptions[page]}</div>',
-    unsafe_allow_html=True,
-)
-
-if page in {"Dashboard", "AI Chat", "Search", "Conversations"}:
-
-        st.markdown(
-            """
-            <div class="dm-ask-card">
-                <div class="dm-ask-title">🤖 Ask your knowledge base</div>
-                <div class="dm-ask-text">Get instant, accurate answers from your documents using RAG.</div>
-                <span class="dm-chip">⌕ What is the main topic of the project?</span>
-                <span class="dm-chip">⌕ Summarize the key findings</span>
-                <span class="dm-chip">⌁ List the important requirements</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        # ========================================================
-        # CONVERSATION HISTORY
-        # ========================================================
-
-        if st.session_state.conversation_history:
-
-            st.subheader(
-                "💬 Conversation History"
-            )
-
-            st.caption(
-                "Previous questions and grounded answers "
-                "from this browser session."
-            )
-
-            for index, conversation in enumerate(
-                st.session_state.conversation_history
-            ):
-
-                question_text = conversation.get(
-                    "question",
-                    "",
-                )
-
-                answer_text = conversation.get(
-                    "answer",
-                    "No answer generated.",
-                )
-
-                sources = conversation.get(
-                    "sources",
-                    [],
-                )
-
-                with st.chat_message(
-                    "user"
-                ):
-
-                    st.markdown(
-                        question_text
-                    )
-
-                with st.chat_message(
-                    "assistant"
-                ):
-
-                    if answer_text.strip() == (
-                        "I don't know based on the available documents."
-                    ):
-
-                        st.warning(
-                            answer_text
-                        )
-
-                    else:
-
-                        st.markdown(
-                            answer_text
-                        )
-
-                    if sources:
-
-                        with st.expander(
-                            f"📚 Sources ({len(sources)})"
-                        ):
-
-                            for source in sources:
-
-                                render_source_card(
-                                    source
-                                )
-
-                    render_retrieval_details(
-                        conversation,
-                        expanded=False,
-                    )
-
-                if index < (
-                    len(
-                        st.session_state.conversation_history
-                    ) - 1
-                ):
-
-                    st.divider()
-
-            st.divider()
-
-        # ========================================================
-        # QUESTION INPUT
-        # ========================================================
-
-        st.subheader(
-            "Ask a question"
-        )
-
-        question = st.text_area(
-            "Question",
-            placeholder=(
-                "Example: How many annual leave "
-                "days do full-time employees receive?"
-            ),
-            height=100,
-            label_visibility="collapsed",
-        )
-
-        col1, col2, col3 = st.columns(
-            [1, 1, 4]
-        )
-
-        with col1:
-
-            ask_button = st.button(
-                "🔍 Ask",
-                type="primary",
-                width="stretch",
-            )
-
-        with col2:
-
-            clear_button = st.button(
-                "🧹 Clear Input",
-                width="stretch",
-            )
-
-        with col3:
-
-            clear_history_button = st.button(
-                "🗑️ Clear Conversation",
-                width="stretch",
-            )
-
-        if clear_button:
-
-            st.rerun()
-
-        if clear_history_button:
-
-            st.session_state.conversation_history = []
-            st.session_state.last_result = None
-
-            st.rerun()
-
-        if ask_button:
-
-            if not question.strip():
-
-                st.warning(
-                    "Please enter a question first."
-                )
-
-            else:
-
-                with st.spinner(
-                    "Retrieving relevant documents "
-                    "and generating answer..."
-                ):
-
-                    try:
-
-                        answer_service = (
-                            get_answer_service(
-                                top_k
-                            )
-                        )
-
-                        result = (
-                            answer_service.ask(
-                                question.strip()
-                            )
-                        )
-
-                        st.session_state.last_result = (
-                            result
-                        )
-
-                        add_to_conversation(
-                            result
-                        )
-
-                        st.rerun()
-
-                    except Exception as exc:
-
-                        st.error(
-                            f"Unable to answer the "
-                            f"question: {exc}"
-                        )
-
-        # ========================================================
-        # CURRENT ANSWER
-        # ========================================================
-
-        result = (
-            st.session_state.last_result
-        )
-
-        if result:
-
-            st.divider()
-
-            st.subheader(
-                "💡 Latest Answer"
-            )
-
-            answer = result.get(
-                "answer",
-                "No answer generated.",
-            )
-
-            if answer.strip() == (
-                "I don't know based on the available documents."
-            ):
-
-                st.warning(
-                    answer
-                )
-
-            else:
-
-                st.markdown(
-                    answer
-                )
-
-            st.divider()
-
-            sources = result.get(
-                "sources",
-                [],
-            )
-
-            st.subheader(
-                f"📚 Sources ({len(sources)})"
-            )
-
-            if sources:
-
-                for source in sources:
-
-                    render_source_card(
-                        source
-                    )
-
-            else:
-
-                st.info(
-                    "No source information was returned."
-                )
-
-            render_retrieval_details(
-                result,
-                expanded=False,
-            )
-
-        # ========================================================
-        # EXAMPLES
-        # ========================================================
-
-        st.divider()
-
-        st.subheader(
-            "💭 Example Questions"
-        )
-
-        example_questions = [
-            "How many annual leave days do full-time employees receive?",
-            "What should I do if NovaDesk fails to start?",
-            "What are the main features of NovaDesk?",
-            "How do I install NovaDesk?",
-            "What is the company's attendance policy?",
-        ]
-
-        for example in example_questions:
-
-            if st.button(
-                example,
-                key=f"example_{example}",
-                width="stretch",
-            ):
-
-                with st.spinner(
-                    "Retrieving documents and generating answer..."
-                ):
-
-                    try:
-
-                        result = (
-                            get_answer_service(
-                                top_k
-                            ).ask(
-                                example
-                            )
-                        )
-
-                        st.session_state.last_result = (
-                            result
-                        )
-
-                        add_to_conversation(
-                            result
-                        )
-
-                        st.rerun()
-
-                    except Exception as exc:
-
-                        st.error(
-                            f"Unable to answer example question: "
-                            f"{exc}"
-                        )
-
-        # ========================================================
-        # ABSTENTION TEST
-        # ========================================================
-
-        with st.expander(
-            "🧪 Test Unknown Question"
+with center_panel:
+    if st.session_state.docmind_view == "Analytics & Evaluation":
+        with st.container(
+            height=700,
+            border=False,
+            key="analytics_scroll_container",
         ):
-
-            st.write(
-                "This tests whether DocMind refuses "
-                "to invent information that is not "
-                "present in the knowledge base."
+            st.markdown(
+                '<div class="dm-analytics-scroll-marker" aria-hidden="true"></div>',
+                unsafe_allow_html=True,
             )
-
-            unknown_question = (
-                "What is the capital city of France?"
-            )
-
-            if st.button(
-                "Run Abstention Test",
-                width="stretch",
-            ):
-
-                with st.spinner(
-                    "Testing..."
-                ):
-
-                    try:
-
-                        result = (
-                            get_answer_service(
-                                top_k
-                            ).ask(
-                                unknown_question
-                            )
-                        )
-
-                        st.session_state.last_result = (
-                            result
-                        )
-
-                        add_to_conversation(
-                            result
-                        )
-
-                        st.rerun()
-
-                    except Exception as exc:
-
-                        st.error(
-                            f"Abstention test failed: {exc}"
-                        )
-
-        # ========================================================
-        # ARCHITECTURE
-        # ========================================================
-
-        with st.expander(
-            "🏗️ How DocMind Works"
-        ):
 
             st.markdown(
-                """
-                **1. Document ingestion**
-
-                PDF, DOCX and TXT documents are loaded and cleaned.
-
-                **2. Chunking**
-
-                Documents are divided into smaller overlapping chunks.
-
-                **3. Embeddings**
-
-                Each chunk is converted into a semantic vector using
-                `all-MiniLM-L6-v2`.
-
-                **4. Vector storage**
-
-                Embeddings and metadata are stored in ChromaDB.
-
-                **5. Retrieval**
-
-                The question is processed using hybrid retrieval:
-
-                - Dense semantic retrieval
-                - BM25 lexical retrieval
-                - Weighted score fusion
-
-                **6. Reranking**
-
-                Candidate chunks are reranked using a cross-encoder
-                when enabled.
-
-                **7. Context building**
-
-                Retrieved chunks are combined into grounded context.
-
-                **8. Generation**
-
-                Ollama Cloud generates an answer using the retrieved
-                context.
-
-                **9. Citations**
-
-                Source filename, category, page and chunk information
-                are displayed with the answer.
-
-                **10. Observability**
-
-                DocMind records retrieval, context-building and
-                generation timings together with retrieval diagnostics.
-
-                **11. Abstention**
-
-                If the information cannot be supported by the available
-                documents, DocMind responds:
-
-                > I don't know based on the available documents.
-
-                **12. Conversation history**
-
-                Previous questions and answers are displayed for the
-                current Streamlit session. Each new question still
-                performs document retrieval independently.
-                """
+                '<div class="dm-center-title">'
+                'Analytics & Evaluation'
+                '</div>',
+                unsafe_allow_html=True,
             )
 
-if page in {"Analytics", "Evaluation"}:
-
-        render_evaluation_dashboard()
-
-if page in {"Knowledge Base", "Documents"}:
-
-        st.subheader(
-            "📚 Document Management"
-        )
-
-        document_manager = (
-            get_document_manager()
-        )
-
-        # ========================================================
-        # ACTION MESSAGE
-        # ========================================================
-
-        if st.session_state.action_message:
-
-            message = (
-                st.session_state.action_message
+            st.markdown(
+                '<div class="dm-center-subtitle">'
+                'Measure retrieval, generation, answer quality, '
+                'and recorded RAG experiments.'
+                '</div>',
+                unsafe_allow_html=True,
             )
 
-            message_type = (
-                message.get(
-                    "type",
-                    "info",
-                )
+            render_evaluation_dashboard()
+
+    elif st.session_state.docmind_view == "Knowledge Base":
+        with st.container(
+            height=700,
+            border=False,
+            key="knowledge_scroll_container",
+        ):
+            st.markdown(
+                '<div class="dm-kb-scroll-marker" aria-hidden="true"></div>',
+                unsafe_allow_html=True,
             )
-
-            message_text = (
-                message.get(
-                    "text",
-                    "",
-                )
+    
+            st.markdown(
+                '<div class="dm-center-title">Knowledge Base</div>',
+                unsafe_allow_html=True,
             )
-
-            if message_type == "success":
-
-                st.success(
-                    message_text
-                )
-
-            elif message_type == "error":
-
-                st.error(
-                    message_text
-                )
-
-            elif message_type == "warning":
-
-                st.warning(
-                    message_text
-                )
-
-            else:
-
-                st.info(
-                    message_text
-                )
-
-            st.session_state.action_message = None
-
-        # ========================================================
-        # STATISTICS
-        # ========================================================
-
-        try:
-
-            stats = (
-                document_manager.get_statistics()
+    
+            st.markdown(
+                '<div class="dm-center-subtitle">'
+                'Inspect the indexed document collection without '
+                're-running embeddings.'
+                '</div>',
+                unsafe_allow_html=True,
             )
-
-            document_count = (
-                stats.get(
+    
+            try:
+                kb_stats = workspace_document_manager.get_statistics()
+    
+                kb_docs = kb_stats.get(
                     "document_count",
                     0,
                 )
-            )
-
-            indexed_chunks = (
-                stats.get(
+    
+                kb_chunks = kb_stats.get(
                     "indexed_chunks",
                     0,
                 )
-            )
-
-            total_size = (
-                stats.get(
-                    "total_size_bytes",
-                    0,
+    
+                kb_size = (
+                    kb_stats.get(
+                        "total_size_bytes",
+                        0,
+                    )
+                    / (1024 * 1024)
                 )
-            )
-
-            total_size_mb = (
-                total_size
-                / (1024 * 1024)
-            )
-
-        except Exception as exc:
-
-            st.error(
-                f"Could not load document statistics: "
-                f"{exc}"
-            )
-
-            document_count = 0
-            indexed_chunks = 0
-            total_size_mb = 0
-
-        stat1, stat2, stat3 = (
-            st.columns(3)
-        )
-
-        with stat1:
-
-            st.metric(
-                "📄 Documents",
-                document_count,
-            )
-
-        with stat2:
-
-            st.metric(
-                "🧩 Indexed Chunks",
-                indexed_chunks,
-            )
-
-        with stat3:
-
-            st.metric(
-                "💾 Storage",
-                f"{total_size_mb:.2f} MB",
-            )
-
-        st.divider()
-
-        # ========================================================
-        # UPLOAD
-        # ========================================================
-
-        st.subheader(
-            "⬆️ Upload a Document"
-        )
-
-        st.write(
-            "Upload a PDF, DOCX or TXT document. "
-            "The document will be saved, chunked, embedded, "
-            "and indexed automatically."
-        )
-
-        uploaded_file = st.file_uploader(
-            "Choose a document",
-            type=[
-                "pdf",
-                "docx",
-                "txt",
-            ],
-            help=(
-                "Supported formats: "
-                "PDF, DOCX and TXT."
-            ),
-        )
-
-        if uploaded_file:
-
-            file_size_mb = (
-                uploaded_file.size
-                / (1024 * 1024)
-            )
-
+    
+            except Exception:
+                kb_docs = 0
+                kb_chunks = 0
+                kb_size = 0
+    
+            c1, c2, c3 = st.columns(3)
+    
+            c1.metric("Documents", kb_docs)
+            c2.metric("Indexed chunks", kb_chunks)
+            c3.metric("Storage", f"{kb_size:.2f} MB")
+    
+            st.markdown("#### Knowledge-base status")
+    
             st.info(
-                f"📄 **Selected:** "
-                f"`{uploaded_file.name}`  \n"
-                f"📦 **Size:** "
-                f"{file_size_mb:.2f} MB"
+                "DocMind uses local embeddings, persistent ChromaDB, "
+                "hybrid dense + BM25 retrieval, optional cross-encoder "
+                "reranking, and grounded Ollama Cloud generation."
             )
-
-            upload_button = st.button(
-                "⬆️ Upload & Index",
-                type="primary",
-                width="stretch",
-            )
-
-            if upload_button:
-
-                with st.spinner(
-                    f"Uploading and indexing "
-                    f"`{uploaded_file.name}`..."
-                ):
-
-                    try:
-
-                        result = (
-                            document_manager
-                            .upload_and_index(
-                                uploaded_file
-                            )
-                        )
-
-                        filename = result.get(
+    
+            if workspace_document_manager:
+                try:
+                    kb_documents = (
+                        workspace_document_manager
+                        .list_documents()
+                    )
+                except Exception:
+                    kb_documents = []
+    
+                if kb_documents:
+                    for document in kb_documents:
+                        filename = document.get(
                             "filename",
-                            uploaded_file.name,
+                            "Unknown",
                         )
-
-                        chunks = result.get(
-                            "chunks",
-                            0,
+    
+                        extension = document.get(
+                            "extension",
+                            "",
+                        ).upper()
+    
+                        size = (
+                            document.get(
+                                "size_bytes",
+                                0,
+                            )
+                            / 1024
                         )
+    
+                        with st.container(border=True):
+                            st.markdown(
+                                f"📄 **{filename}**"
+                            )
+    
+                            st.caption(
+                                f"{extension} • "
+                                f"{size:.1f} KB • Ready"
+                            )
+                else:
+                    st.info(
+                        "No managed documents are available yet."
+                    )
+    else:
+        history = st.session_state.conversation_history
 
-                        indexed = result.get(
-                            "indexed",
-                            chunks,
-                        )
-
-                        status = result.get(
-                            "status",
-                            "success",
-                        )
-
-                        if status == "success":
-
-                            st.session_state.action_message = {
-                                "type": "success",
-                                "text": (
-                                    f"✅ Document uploaded "
-                                    f"and indexed successfully!\n\n"
-                                    f"**File:** `{filename}`\n\n"
-                                    f"**Chunks created:** "
-                                    f"{chunks}\n\n"
-                                    f"**Chunks indexed:** "
-                                    f"{indexed}"
-                                ),
-                            }
-
-                        else:
-
-                            st.session_state.action_message = {
-                                "type": "warning",
-                                "text": (
-                                    f"⚠️ Document processing "
-                                    f"finished with status: "
-                                    f"`{status}`"
-                                ),
-                            }
-
-                        st.rerun()
-
-                    except FileExistsError as exc:
-
-                        st.session_state.action_message = {
-                            "type": "warning",
-                            "text": (
-                                f"⚠️ {exc}"
-                            ),
-                        }
-
-                        st.rerun()
-
-                    except Exception as exc:
-
-                        st.session_state.action_message = {
-                            "type": "error",
-                            "text": (
-                                f"❌ Upload failed for "
-                                f"`{uploaded_file.name}`.\n\n"
-                                f"**Reason:** {exc}"
-                            ),
-                        }
-
-                        st.rerun()
-
-        st.divider()
-
-        # ========================================================
-        # RE-INDEX ALL
-        # ========================================================
-
-        st.subheader(
-            "🔄 Re-index Documents"
+        # Isolated marker: older chat CSS does not target this version.
+        st.markdown(
+            '<div class="dm-agent-v2-column-marker" aria-hidden="true"></div>',
+            unsafe_allow_html=True,
         )
 
-        st.write(
-            "Re-process all managed documents and rebuild "
-            "their embeddings in ChromaDB."
-        )
+        with st.container(key="dm_center_chat", border=False):
+            with st.container(key="dm_center_header", border=False):
+                # --------------------------------------------------------
+                # Fixed DocMind identity area
+                # --------------------------------------------------------
+                st.markdown(
+                    """
+                    <div class="dm-agent-v2-header">
+                        <div class="dm-agent-v2-brand">
+                            <div class="dm-agent-v2-logo">◆</div>
+                            <div class="dm-agent-v2-title">DocMind</div>
+                        </div>
+                        <div class="dm-agent-v2-subtitle">
+                            AI-powered document intelligence.
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
-        col1, col2 = st.columns(2)
-
-        with col1:
-
-            if st.button(
-                "🔄 Re-index All",
-                width="stretch",
+            # --------------------------------------------------------
+            # ONLY this middle conversation area scrolls.
+            # --------------------------------------------------------
+            with st.container(
+                border=False,
+                key="dm_conversation_viewport",
             ):
-
-                with st.spinner(
-                    "Re-indexing all documents..."
-                ):
-
-                    try:
-
-                        result = (
-                            document_manager
-                            .reindex_all()
+                if history:
+                    for idx, conversation in enumerate(history):
+                        render_chat_message(
+                            conversation.get("question", ""),
+                            conversation.get(
+                                "answer",
+                                "No answer generated.",
+                            ),
+                            conversation.get("sources", []) or [],
+                            conversation,
                         )
 
-                        total = result.get(
-                            "total_documents",
-                            0,
-                        )
-
-                        success_count = result.get(
-                            "success_count",
-                            0,
-                        )
-
-                        failure_count = result.get(
-                            "failure_count",
-                            0,
-                        )
-
-                        failed = result.get(
-                            "failed",
-                            [],
-                        )
-
-                        status = result.get(
-                            "status",
-                            "success",
-                        )
-
-                        if status == "success":
-
-                            st.session_state.action_message = {
-                                "type": "success",
-                                "text": (
-                                    f"✅ All documents "
-                                    f"re-indexed successfully!\n\n"
-                                    f"**Documents:** {total}\n\n"
-                                    f"**Successful:** "
-                                    f"{success_count}"
-                                ),
-                            }
-
-                        else:
-
-                            failed_names = ", ".join(
-                                item.get(
-                                    "filename",
-                                    "Unknown",
-                                )
-                                for item in failed
+                        if idx < len(history) - 1:
+                            st.markdown(
+                                '<div class="dm-agent-v2-turn-gap"></div>',
+                                unsafe_allow_html=True,
                             )
 
-                            st.session_state.action_message = {
-                                "type": "warning",
-                                "text": (
-                                    f"⚠️ Re-indexing "
-                                    f"completed partially.\n\n"
-                                    f"**Total:** {total}\n\n"
-                                    f"**Successful:** "
-                                    f"{success_count}\n\n"
-                                    f"**Failed:** "
-                                    f"{failure_count}\n\n"
-                                    f"**Failed files:** "
-                                    f"{failed_names}"
-                                ),
-                            }
+                    if st.session_state.scroll_chat_to_bottom:
+                        scroll_chat_history_to_bottom()
+                        st.session_state.scroll_chat_to_bottom = False
 
-                        st.rerun()
+                else:
+                    st.markdown(
+                        """
+                        <div class="dm-agent-v2-empty">
+                            <div class="dm-agent-v2-empty-icon">🧠</div>
+                            <div class="dm-agent-v2-empty-title">
+                                Ask questions about your documents
+                            </div>
+                            <div class="dm-agent-v2-empty-text">
+                                Upload your knowledge base, then ask grounded
+                                questions. DocMind retrieves evidence before
+                                generating an answer.
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
-                    except Exception as exc:
+                    st.markdown(
+                        '<div class="dm-agent-v2-example-title">Try a question</div>',
+                        unsafe_allow_html=True,
+                    )
 
-                        st.session_state.action_message = {
-                            "type": "error",
-                            "text": (
-                                f"❌ Re-index all failed.\n\n"
-                                f"**Reason:** {exc}"
-                            ),
-                        }
+                    examples = [
+                        "What is the main topic of the project?",
+                        "Summarize the key findings.",
+                        "List the important requirements.",
+                    ]
 
-                        st.rerun()
+                    example_cols = st.columns(3)
 
-        with col2:
+                    for idx, example in enumerate(examples):
+                        with example_cols[idx]:
+                            if st.button(
+                                example,
+                                key=f"workspace_example_{idx}",
+                                width="stretch",
+                            ):
+                                if ask_question(example, top_k):
+                                    st.rerun()
 
-            if st.button(
-                "🔃 Refresh",
-                width="stretch",
-            ):
+                # --------------------------------------------------------
+                # Retrieval status and errors scroll with the answer.
+                # --------------------------------------------------------
+                if history:
+                    latest = history[-1]
+                    retrieved_count = latest.get("retrieved_count", 0) or 0
+                    source_count = len(latest.get("sources", []) or [])
 
-                st.rerun()
+                    st.markdown(
+                        f"""
+                        <div class="dm-agent-v2-pipeline">
+                            <span>⌕ Searching documents</span>
+                            <span class="dm-agent-v2-arrow">→</span>
+                            <span>▤ {retrieved_count} retrieved chunks</span>
+                            <span class="dm-agent-v2-arrow">→</span>
+                            <span>✓ Answer ready</span>
+                        </div>
+                        <div class="dm-agent-v2-grounding">
+                            ✓ Answer generated from {source_count}
+                            source{"s" if source_count != 1 else ""}.
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
-        st.divider()
+                if st.session_state.last_error:
+                    st.error(
+                        "Something went wrong while generating the answer. "
+                        "Please try again."
+                    )
 
-        # ========================================================
-        # DOCUMENT LIST
-        # ========================================================
+                    with st.expander("Technical details"):
+                        st.code(st.session_state.last_error)
 
-        st.subheader(
-            "📄 Your Documents"
-        )
-
-        try:
-
-            documents = (
-                document_manager.list_documents()
-            )
-
-        except Exception as exc:
-
-            documents = []
-
-            st.error(
-                f"Could not load documents: {exc}"
-            )
-
-        if not documents:
-
-            st.info(
-                "No managed documents found. "
-                "Upload your first document above."
-            )
-
-        else:
-
-            for index, document in enumerate(
-                documents
-            ):
-
-                filename = document.get(
-                    "filename",
-                    "Unknown",
-                )
-
-                extension = document.get(
-                    "extension",
-                    "",
-                )
-
-                size_bytes = document.get(
-                    "size_bytes",
-                    0,
-                )
-
-                size_kb = (
-                    size_bytes
-                    / 1024
+            with st.container(key="dm_center_composer", border=False):
+                # --------------------------------------------------------
+                # Composer is OUTSIDE the scrolling history, so it stays
+                # fixed in place while messages move upward.
+                # --------------------------------------------------------
+                submitted_question = st.chat_input(
+                    "Ask anything about your documents…",
+                    key="agent_v2_input",
+                    max_chars=4000,
                 )
 
                 st.markdown(
-                    f"### 📄 {filename}"
+                    """
+                    <div class="dm-agent-v2-disclaimer">
+                        DocMind can make mistakes. Verify important information.
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
                 )
 
-                st.caption(
-                    f"{extension.upper()} • "
-                    f"{size_kb:.1f} KB"
+        # Pin only the composer to the viewport, aligned to the center column.
+        components.html(
+            """
+            <script>
+            (() => {
+                const win = window.parent;
+                const doc = win.document;
+                let frame = 0;
+                const fit = () => {
+                    const panel = doc.querySelector('.st-key-dm_center_chat');
+                    const composer = panel?.querySelector('.st-key-dm_center_composer');
+                    if (!panel || !composer) return;
+                    const rect = panel.getBoundingClientRect();
+                    const viewport = win.visualViewport;
+                    const left = Math.max(rect.left, viewport?.offsetLeft || 0);
+                    const right = Math.min(rect.right,
+                        (viewport?.offsetLeft || 0) + (viewport?.width || win.innerWidth));
+                    if (right <= left) return;
+                    const set = (node, name, value) => {
+                        if (node.style.getPropertyValue(name) !== value) {
+                            node.style.setProperty(name, value);
+                        }
+                    };
+                    set(panel, '--dm-composer-left', left + 'px');
+                    set(panel, '--dm-composer-width', (right - left) + 'px');
+                    set(panel, '--dm-composer-bottom', Math.max(0,
+                        win.innerHeight - ((viewport?.offsetTop || 0) +
+                        (viewport?.height || win.innerHeight))) + 'px');
+                    panel.dataset.composerPinned = 'true';
+                    set(panel, '--dm-composer-space',
+                        Math.ceil(composer.getBoundingClientRect().height + 32) + 'px');
+                    // The column remains in the layout as a width placeholder.
+                    // Only its inner Documents dock is fixed to the viewport.
+                    const dock = doc.querySelector('.st-key-dm_documents_dock');
+                    const column = dock?.closest('[data-testid="stColumn"], [data-testid="column"]');
+                    if (dock && column) {
+                        if (win.matchMedia('(min-width: 901px)').matches) {
+                            const bounds = column.getBoundingClientRect();
+                            const style = win.getComputedStyle(column);
+                            const padLeft = parseFloat(style.paddingLeft) || 0;
+                            const padRight = parseFloat(style.paddingRight) || 0;
+                            const header = doc.querySelector('[data-testid="stHeader"]');
+                            const top = Math.max(0, header?.getBoundingClientRect().bottom || 56) + 12;
+                            set(dock, '--dm-doc-left', (bounds.left + padLeft) + 'px');
+                            set(dock, '--dm-doc-width', Math.max(0, bounds.width - padLeft - padRight) + 'px');
+                            set(dock, '--dm-doc-top', top + 'px');
+                            set(dock, '--dm-doc-height', Math.max(100,
+                                (viewport?.height || win.innerHeight) + (viewport?.offsetTop || 0) - top - 12) + 'px');
+                            dock.dataset.viewportPinned = 'true';
+                        } else {
+                            delete dock.dataset.viewportPinned;
+                        }
+                    }
+                };
+                const schedule = () => {
+                    win.cancelAnimationFrame(frame);
+                    frame = win.requestAnimationFrame(fit);
+                };
+                const observer = new win.ResizeObserver(schedule);
+                const panel = doc.querySelector('.st-key-dm_center_chat');
+                if (panel) {
+                    observer.observe(panel);
+                    if (panel.parentElement) observer.observe(panel.parentElement);
+                    const composer = panel.querySelector('.st-key-dm_center_composer');
+                    if (composer) observer.observe(composer);
+                }
+                const documentsColumn = doc.querySelector('.st-key-dm_documents_dock')
+                    ?.closest('[data-testid="stColumn"], [data-testid="column"]');
+                if (documentsColumn) observer.observe(documentsColumn);
+                win.addEventListener('resize', schedule);
+                doc.addEventListener('scroll', schedule, true);
+                win.visualViewport?.addEventListener('resize', schedule);
+                win.visualViewport?.addEventListener('scroll', schedule);
+                const timers = [0, 100, 350, 800].map(delay => win.setTimeout(schedule, delay));
+                window.addEventListener('pagehide', () => {
+                    observer.disconnect();
+                    win.removeEventListener('resize', schedule);
+                    doc.removeEventListener('scroll', schedule, true);
+                    win.visualViewport?.removeEventListener('resize', schedule);
+                    win.visualViewport?.removeEventListener('scroll', schedule);
+                    win.cancelAnimationFrame(frame);
+                    timers.forEach(timer => win.clearTimeout(timer));
+                }, {once: true});
+            })();
+            </script>
+            """,
+            height=0,
+            width=0,
+        )
+
+        if submitted_question:
+            if ask_question(submitted_question, top_k):
+                st.rerun()
+
+
+# ============================================================
+# RIGHT DOCUMENT INTELLIGENCE PANEL
+# ============================================================
+
+with right_panel:
+    with st.container(key="dm_documents_dock", border=False):
+        st.markdown(
+            '<div class="dm-right-panel-title">Documents</div>',
+            unsafe_allow_html=True,
+        )
+
+        if workspace_document_manager:
+            # Independent scrolling Documents sidebar.
+            with st.container(
+                height=640,
+                border=False,
+                key="right_documents_scroll_container",
+            ):
+                render_right_documents(
+                    workspace_document_manager,
+                    st.session_state.last_result,
                 )
-
-                col1, col2 = st.columns(2)
-
-                with col1:
-
-                    if st.button(
-                        "🔄 Re-index",
-                        key=(
-                            f"reindex_"
-                            f"{index}_"
-                            f"{filename}"
-                        ),
-                        width="stretch",
-                    ):
-
-                        with st.spinner(
-                            f"Re-indexing {filename}..."
-                        ):
-
-                            try:
-
-                                result = (
-                                    document_manager
-                                    .reindex_document(
-                                        filename
-                                    )
-                                )
-
-                                chunks = result.get(
-                                    "chunks",
-                                    0,
-                                )
-
-                                removed = result.get(
-                                    "previous_chunks_removed",
-                                    0,
-                                )
-
-                                st.session_state.action_message = {
-                                    "type": "success",
-                                    "text": (
-                                        f"✅ `{filename}` "
-                                        f"re-indexed successfully!\n\n"
-                                        f"**Chunks indexed:** "
-                                        f"{chunks}\n\n"
-                                        f"**Previous chunks "
-                                        f"removed:** {removed}"
-                                    ),
-                                }
-
-                                st.rerun()
-
-                            except Exception as exc:
-
-                                st.session_state.action_message = {
-                                    "type": "error",
-                                    "text": (
-                                        f"❌ Re-indexing "
-                                        f"`{filename}` failed.\n\n"
-                                        f"**Reason:** {exc}"
-                                    ),
-                                }
-
-                                st.rerun()
-
-                with col2:
-
-                    if st.button(
-                        "🗑️ Delete",
-                        key=(
-                            f"delete_"
-                            f"{index}_"
-                            f"{filename}"
-                        ),
-                        width="stretch",
-                    ):
-
-                        with st.spinner(
-                            f"Deleting {filename}..."
-                        ):
-
-                            try:
-
-                                result = (
-                                    document_manager
-                                    .delete_document(
-                                        filename
-                                    )
-                                )
-
-                                deleted_chunks = (
-                                    result.get(
-                                        "deleted_chunks",
-                                        0,
-                                    )
-                                )
-
-                                st.session_state.action_message = {
-                                    "type": "success",
-                                    "text": (
-                                        f"🗑️ `{filename}` "
-                                        f"was deleted successfully!\n\n"
-                                        f"**Vectors removed:** "
-                                        f"{deleted_chunks}"
-                                    ),
-                                }
-
-                                st.rerun()
-
-                            except Exception as exc:
-
-                                st.session_state.action_message = {
-                                    "type": "error",
-                                    "text": (
-                                        f"❌ Deleting "
-                                        f"`{filename}` failed.\n\n"
-                                        f"**Reason:** {exc}"
-                                    ),
-                                }
-
-                                st.rerun()
-
-                st.divider()
-
-        # ========================================================
-        # SUPPORTED FORMATS
-        # ========================================================
-
-        with st.expander(
-            "📋 Supported Formats"
-        ):
-
-            st.markdown(
-                """
-                **PDF**
-
-                `.pdf`
-
-                **Microsoft Word**
-
-                `.docx`
-
-                **Plain Text**
-
-                `.txt`
-
-                Documents are automatically:
-
-                1. Saved to the document directory
-                2. Parsed
-                3. Cleaned
-                4. Chunked
-                5. Embedded
-                6. Stored in ChromaDB
-                7. Available for RAG questions
-                """
+        else:
+            st.error(
+                "Document services are unavailable right now. "
+                "Please refresh the application."
             )
 
-if page == "Retrieval":
-    st.markdown("### Retrieval configuration")
-    st.info(f"The active retrieval setting is Top-K = {top_k}.")
-    st.markdown("""
-    **Existing retrieval pipeline**
-
-    Dense semantic retrieval + BM25 lexical retrieval → weighted hybrid fusion → optional cross-encoder reranking → Top-K context → grounded generation.
-    """)
-    if st.session_state.last_result:
-        render_retrieval_details(st.session_state.last_result, expanded=True)
-    else:
-        st.info("Ask a question from AI Chat first to populate live retrieval diagnostics.")
-
-if page == "Settings":
-    st.markdown("### Appearance")
-    settings_col1, settings_col2 = st.columns(2)
-    with settings_col1:
-        st.metric("Current theme", "Dark" if st.session_state.theme == "dark" else "Light")
-        if st.button("☀️ Switch to Light" if st.session_state.theme == "dark" else "🌙 Switch to Dark", key="settings_theme", width="stretch"):
-            toggle_theme()
-            st.rerun()
-    with settings_col2:
-        st.metric("RAG status", "Ready")
-        st.caption("The interface theme is stored in Streamlit session state and reapplied on reruns.")
-
-    st.markdown("### Retrieval")
-    st.write(f"Active Top-K chunks: **{top_k}**")
-    st.caption("The Top-K control remains available in the sidebar from every page.")
-
-    st.markdown("### System")
-    for item in [
-        "Local embeddings",
-        "Persistent ChromaDB",
-        "Hybrid Dense + BM25 retrieval",
-        "Optional cross-encoder reranking",
-        "Grounded Ollama Cloud generation",
-        "Application-controlled citations",
-        "Conversation history",
-        "Evaluation and analytics",
-    ]:
-        st.markdown(f"✓ {item}")
 
 # ============================================================
-# FOOTER
+# WORKSPACE-ONLY STYLING
 # ============================================================
 
-st.divider()
+st.markdown(
+    """
+    <style>
 
-st.caption(
-    "DocMind — RAG Knowledge Assistant | "
-    "Hybrid Retrieval + Reranking + "
-    "Grounded Generation + Source Attribution"
+    /* Main layout */
+    [data-testid="stMainBlockContainer"] .block-container {
+        padding-left:1.25rem !important;
+        padding-right:1.25rem !important;
+    }
+
+    /* Main buttons: readable in both themes. */
+    [data-testid="stMain"] .stButton > button {
+        min-height:40px !important;
+        border-radius:10px !important;
+        border:1px solid var(--dm-border) !important;
+        background:var(--dm-surface2) !important;
+        color:var(--dm-text) !important;
+        font-weight:650 !important;
+        box-shadow:none !important;
+    }
+    [data-testid="stMain"] .stButton > button:hover {
+        border-color:var(--dm-primary) !important;
+        background:var(--dm-soft) !important;
+        color:var(--dm-heading) !important;
+    }
+    [data-testid="stMain"] .stButton > button[kind="primary"],
+    [data-testid="stMain"] .stButton > button[data-testid="baseButton-primary"] {
+        background:linear-gradient(135deg,var(--dm-primary),var(--dm-primary2)) !important;
+        color:#fff !important;
+        border-color:var(--dm-primary) !important;
+    }
+
+    /* Sidebar compactness and contrast */
+    [data-testid="stSidebar"] .stButton > button {
+        background:transparent !important;
+        color:var(--dm-sidebar-text) !important;
+        border:1px solid var(--dm-sidebar-border) !important;
+        min-height:38px !important;
+        border-radius:9px !important;
+        font-weight:650 !important;
+    }
+    [data-testid="stSidebar"] .stButton > button:hover {
+        background:var(--dm-sidebar-hover) !important;
+        border-color:var(--dm-primary) !important;
+    }
+    [data-testid="stSidebar"] .stButton > button[kind="primary"],
+    [data-testid="stSidebar"] .stButton > button[data-testid="baseButton-primary"] {
+        background:linear-gradient(135deg,var(--dm-primary),var(--dm-primary2)) !important;
+        color:#fff !important;
+        border-color:transparent !important;
+    }
+    [data-testid="stSidebar"] hr { margin:.8rem 0 !important; }
+
+    /* Center conversation workspace */
+    .dm-chat-box-title {
+        color:var(--dm-heading) !important;
+        font-size:1.12rem;
+        font-weight:800;
+        margin:0 0 2px 0;
+    }
+    .dm-chat-box-subtitle {
+        color:var(--dm-muted) !important;
+        font-size:.78rem;
+        margin-bottom:8px;
+    }
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        border:1px solid var(--dm-border) !important;
+        border-radius:14px !important;
+        background:var(--dm-surface) !important;
+        box-shadow:0 8px 28px rgba(0,0,0,.06) !important;
+        padding:2px !important;
+    }
+    .dm-empty-state {
+        min-height:215px;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        text-align:center;
+        padding:24px 24px 18px;
+        border:0;
+        border-radius:12px;
+        background:transparent;
+    }
+    .dm-empty-icon {
+        width:52px;height:52px;border-radius:14px;
+        display:flex;align-items:center;justify-content:center;
+        background:var(--dm-soft);
+        border:1px solid var(--dm-border);
+        font-size:23px;margin-bottom:12px;
+    }
+    .dm-empty-title {
+        color:var(--dm-heading);font-size:1.08rem;font-weight:800;
+    }
+    .dm-empty-text {
+        color:var(--dm-muted);max-width:560px;line-height:1.5;
+        margin-top:5px;font-size:.86rem;
+    }
+    [data-testid="stChatMessage"] {
+        border:0 !important;
+        border-bottom:1px solid var(--dm-border) !important;
+        border-radius:0 !important;
+        background:transparent !important;
+        padding:12px 4px !important;
+    }
+    [data-testid="stChatMessage"]:last-child { border-bottom:0 !important; }
+    [data-testid="stChatMessageContent"],
+    [data-testid="stChatMessageContent"] p { color:var(--dm-text) !important; }
+    [data-testid="stChatInput"] {
+        border:1px solid var(--dm-border) !important;
+        background:var(--dm-input) !important;
+        border-radius:12px !important;
+        box-shadow:none !important;
+    }
+    [data-testid="stChatInput"]:focus-within { border-color:var(--dm-primary) !important; }
+    [data-testid="stChatInput"] textarea {
+        background:transparent !important;color:var(--dm-input-text) !important;
+    }
+    [data-testid="stChatInput"] textarea::placeholder { color:var(--dm-placeholder) !important; }
+
+    /* Right Documents sidebar */
+    .dm-right-panel-title {
+        color:var(--dm-sidebar-text) !important;
+        font-size:1.05rem;font-weight:800;padding:1px 0 7px 2px;
+    }
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        background:var(--dm-sidebar-bg) !important;
+        border-left:1px solid var(--dm-sidebar-border) !important;
+        border-radius:0 !important;
+        padding:12px 12px 16px 16px !important;
+        min-height:calc(100vh - 5.5rem) !important;
+        position:sticky !important;
+        top:4.2rem !important;
+        box-sizing:border-box !important;
+    }
+    .dm-right-panel-marker { display:none !important; }
+    .dm-right-section-title {
+        color:var(--dm-sidebar-text) !important;
+        font-size:.78rem;font-weight:800;margin:14px 0 7px;
+    }
+    .dm-right-empty {
+        color:var(--dm-sidebar-muted) !important;font-size:.7rem;
+        line-height:1.45;padding:7px 0 2px;
+    }
+    .dm-upload-selected {
+        background:var(--dm-sidebar-hover) !important;
+        border:1px solid var(--dm-sidebar-border) !important;
+        border-radius:9px;padding:8px 9px;margin:6px 0;
+    }
+    .dm-upload-file {display:flex;gap:7px;align-items:center;color:var(--dm-sidebar-text)!important;font-size:.72rem;font-weight:700;overflow:hidden;}
+    .dm-upload-file span:last-child {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .dm-upload-meta {color:var(--dm-sidebar-muted)!important;font-size:.63rem;margin-top:3px;}
+    .dm-doc-row,.dm-indexed-row {display:flex;align-items:center;justify-content:space-between;gap:7px;padding:8px 0;border-bottom:1px solid var(--dm-sidebar-border);}
+    .dm-doc-main,.dm-indexed-main {display:flex;align-items:center;gap:7px;min-width:0;}
+    .dm-doc-icon {color:var(--dm-sidebar-muted)!important;font-size:15px;flex:0 0 auto;}
+    .dm-index-check {color:var(--dm-success)!important;font-size:14px;flex:0 0 auto;}
+    .dm-doc-name-wrap {min-width:0;}
+    .dm-doc-name {color:var(--dm-sidebar-text)!important;font-size:.7rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:175px;}
+    .dm-doc-meta {color:var(--dm-sidebar-muted)!important;font-size:.61rem;margin-top:2px;}
+    .dm-status {flex:0 0 auto;border-radius:999px;padding:3px 7px;font-size:.56rem;font-weight:800;border:1px solid transparent;}
+    .dm-status.ready,.dm-status.indexed {color:var(--dm-success)!important;background:rgba(53,201,138,.10);border-color:rgba(53,201,138,.28);}
+    .dm-kb-summary {display:flex;justify-content:space-between;gap:8px;color:var(--dm-sidebar-muted)!important;font-size:.63rem;margin:-1px 0 3px;}
+    .dm-retrieved-card {background:rgba(53,201,138,.08)!important;border:1px solid rgba(53,201,138,.32)!important;border-radius:10px;padding:9px;margin:7px 0;}
+    .dm-retrieved-title {display:flex;align-items:center;gap:7px;color:var(--dm-sidebar-text)!important;font-size:.71rem;font-weight:800;}
+    .dm-retrieved-check {color:var(--dm-success)!important;font-size:.76rem;}
+    .dm-retrieved-meta {color:var(--dm-sidebar-text)!important;opacity:.86;font-size:.63rem;margin-top:4px;}
+    .dm-retrieved-score {display:flex;flex-wrap:wrap;gap:7px;color:var(--dm-sidebar-muted)!important;font-size:.59rem;margin-top:5px;}
+    .dm-retrieved-score b {color:var(--dm-success)!important;}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker) [data-testid="stFileUploader"] {background:transparent!important;margin:0!important;}
+    div[data-testid="column"]:has(.dm-right-panel-marker) [data-testid="stFileUploaderDropzone"] {
+        background:var(--dm-sidebar-hover)!important;
+        border:1px dashed var(--dm-sidebar-border)!important;
+        border-radius:10px!important;min-height:76px!important;padding:8px!important;
+    }
+    div[data-testid="column"]:has(.dm-right-panel-marker) [data-testid="stFileUploaderDropzone"] * {color:var(--dm-sidebar-muted)!important;}
+    div[data-testid="column"]:has(.dm-right-panel-marker) [data-testid="stFileUploaderDropzone"] button {
+        background:var(--dm-soft)!important;border:1px solid var(--dm-border)!important;
+        color:var(--dm-primary)!important;padding:5px 9px!important;min-height:30px!important;
+    }
+    div[data-testid="column"]:has(.dm-right-panel-marker) .stButton > button {
+        min-height:32px!important;font-size:.65rem!important;
+        background:var(--dm-sidebar-hover)!important;color:var(--dm-sidebar-text)!important;
+        border-color:var(--dm-sidebar-border)!important;box-shadow:none!important;
+    }
+    div[data-testid="column"]:has(.dm-right-panel-marker) .stButton > button:hover {
+        border-color:var(--dm-primary)!important;color:var(--dm-primary)!important;
+    }
+
+    /* Independent scroll containers */
+    div[data-testid="stVerticalBlockBorderWrapper"] { scrollbar-width:thin; scrollbar-color:var(--dm-border) transparent; }
+    div[data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar {width:7px;}
+    div[data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar-track {background:transparent;}
+    div[data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar-thumb {background:var(--dm-border);border-radius:999px;}
+
+    .dm-center-title {font-size:1.45rem;font-weight:800;color:var(--dm-heading);margin:0 0 3px;}
+    .dm-center-subtitle {color:var(--dm-muted);font-size:.82rem;margin-bottom:15px;}
+
+    @media (max-width:1100px) {
+        div[data-testid="column"]:has(.dm-right-panel-marker) {position:static!important;min-height:0!important;margin-top:14px;}
+        .dm-empty-state {min-height:190px;}
+    }
+
+    /* =========================================================
+       FINAL DOCUMENT UPLOADER THEME
+       Keep the uploader visually integrated with the right sidebar.
+       ========================================================= */
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploader"] {{
+        background: transparent !important;
+        border: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] {{
+        background: var(--dm-sidebar-hover) !important;
+        border: 1px dashed var(--dm-sidebar-border) !important;
+        border-radius: 12px !important;
+        min-height: 96px !important;
+        padding: 12px !important;
+        box-shadow: none !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"]:hover {{
+        background: var(--dm-surface2) !important;
+        border-color: var(--dm-primary) !important;
+    }}
+
+    /* Force every nested uploader surface to inherit the dark sidebar
+       instead of Streamlit's default white/light surface. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] > div,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] section,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzoneInstructions"] {{
+        background: transparent !important;
+        color: var(--dm-sidebar-text) !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] span,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] small,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] p,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] div {{
+        color: var(--dm-sidebar-muted) !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] svg {{
+        color: var(--dm-primary) !important;
+        fill: none !important;
+        opacity: 1 !important;
+    }}
+
+    /* Emerald browse/upload button in dark mode. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button {{
+        background: var(--dm-primary) !important;
+        border: 1px solid var(--dm-primary) !important;
+        color: #ffffff !important;
+        border-radius: 9px !important;
+        min-height: 34px !important;
+        padding: 6px 12px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button *,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button p,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button span {{
+        color: #ffffff !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button:hover {{
+        background: var(--dm-primary-hover) !important;
+        border-color: var(--dm-primary-hover) !important;
+        color: #ffffff !important;
+    }}
+
+    /* Uploaded-file rows generated by Streamlit should also stay dark. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderFile"] {{
+        background: var(--dm-sidebar-hover) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        color: var(--dm-sidebar-text) !important;
+        border-radius: 10px !important;
+    }}
+
+    /* Light mode: white uploader, neutral border, emerald action. */
+
+    [data-testid="stFileUploaderDropzone"] {{
+        background: #ffffff !important;
+        border-color: #d9e2df !important;
+    }}
+
+    [data-testid="stFileUploaderDropzone"]:hover {{
+        background: #f7faf9 !important;
+        border-color: var(--dm-primary) !important;
+    }}
+
+
+    /* =========================================================
+       COMPACT UPLOADER — MATCH RE-INDEX BUTTON / SIDEBAR THEME
+       ========================================================= */
+
+    /* Remove the large white drop-zone appearance. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    div[data-testid="stFileUploader"] {{
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        margin: 0 0 8px 0 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    section[data-testid="stFileUploaderDropzone"],
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] {{
+        background-color: {THEME['surface2']} !important;
+        background: {THEME['surface2']} !important;
+        border: 1px solid {THEME['border']} !important;
+        border-radius: 10px !important;
+        min-height: 46px !important;
+        height: auto !important;
+        padding: 6px 8px !important;
+        box-shadow: none !important;
+    }}
+
+    /* Collapse the large instruction area so this looks like an action control,
+       not a white upload card. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzoneInstructions"] {{
+        display: none !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    section[data-testid="stFileUploaderDropzone"] > div {{
+        background: transparent !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+    }}
+
+    /* Native file-picker button — same visual language as Re-index. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button {{
+        width: 100% !important;
+        min-height: 38px !important;
+        margin: 0 !important;
+        padding: 7px 12px !important;
+        background: {THEME['surface2']} !important;
+        color: {THEME['text']} !important;
+        border: 1px solid {THEME['border']} !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button *,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button p,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button span {{
+        color: {THEME['text']} !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button:hover {{
+        background: {THEME['surface3']} !important;
+        color: {THEME['primary']} !important;
+        border-color: {THEME['primary']} !important;
+    }}
+
+    /* Selected-file row follows the same compact dark surface. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderFile"] {{
+        background: {THEME['surface2']} !important;
+        color: {THEME['text']} !important;
+        border: 1px solid {THEME['border']} !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+    }}
+
+    /* Submit button directly after the uploader matches Re-index too. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    .stButton > button[kind="secondary"],
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    .stButton > button {{
+        background: {THEME['surface2']} !important;
+        color: {THEME['text']} !important;
+        border: 1px solid {THEME['border']} !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    .stButton > button:not(:disabled):hover {{
+        background: {THEME['surface3']} !important;
+        color: {THEME['primary']} !important;
+        border-color: {THEME['primary']} !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    .stButton > button:disabled {{
+        background: {THEME['surface2']} !important;
+        color: {THEME['muted']} !important;
+        border-color: {THEME['border']} !important;
+        opacity: .55 !important;
+    }}
+
+    .dm-upload-selected {{
+        background: {THEME['surface2']} !important;
+        border: 1px solid {THEME['border']} !important;
+        border-radius: 9px !important;
+        padding: 8px 10px !important;
+        margin: 6px 0 8px !important;
+    }}
+
+
+    /* =========================================================
+       FINAL UPLOAD STYLE REQUEST
+       Dark mode: black upload box + New Chat-style green button.
+       Light mode: white upload box + same green action button.
+       ========================================================= */
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    div[data-testid="stFileUploader"] {{
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        margin: 0 0 8px 0 !important;
+    }}
+
+    /* Force the entire native dropzone to black in dark mode. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    section[data-testid="stFileUploaderDropzone"],
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] {{
+        background-color: #050806 !important;
+        background: #050806 !important;
+        border: 1px solid {THEME['border']} !important;
+        border-radius: 10px !important;
+        min-height: 56px !important;
+        height: auto !important;
+        padding: 8px !important;
+        box-shadow: none !important;
+    }}
+
+    /* Also force nested Streamlit uploader surfaces to black. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    section[data-testid="stFileUploaderDropzone"] > div,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] > div,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzoneInstructions"] {{
+        background-color: #050806 !important;
+        background: #050806 !important;
+    }}
+
+    /* Keep the large helper text hidden for the compact layout. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzoneInstructions"] {{
+        display: none !important;
+    }}
+
+    /* Upload/Browse button = same visual treatment as + New Chat. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button {{
+        width: 100% !important;
+        min-height: 40px !important;
+        margin: 0 !important;
+        padding: 8px 14px !important;
+        background: {THEME['primary']} !important;
+        background-color: {THEME['primary']} !important;
+        color: #ffffff !important;
+        border: 1px solid {THEME['primary']} !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        font-weight: 700 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button *,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button p,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button span,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button svg {{
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button:hover {{
+        background: {THEME['primary_hover']} !important;
+        background-color: {THEME['primary_hover']} !important;
+        border-color: {THEME['primary_hover']} !important;
+        color: #ffffff !important;
+    }}
+
+    /* Light mode stays white, while its Upload button remains green. */
+
+    [data-testid="stFileUploaderDropzone"],
+
+    [data-testid="stFileUploaderDropzone"] > div {{
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+    }}
+
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
+
+
+# ============================================================
+# FINAL NON-OVERLAPPING SPACING SAFEGUARD
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /*
+      Keep the existing visual design intact while making every panel size
+      itself from its border box. This prevents padding from being added on
+      top of the declared width/height and pushing content into a neighbour.
+    */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] *,
+    [data-testid="stSidebar"],
+    [data-testid="stSidebar"] * {
+        box-sizing: border-box !important;
+    }
+
+    /* Reserve real space for Streamlit's fixed toolbar. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {
+        width: 100% !important;
+        max-width: 1600px !important;
+        padding-top: 4.65rem !important;
+        padding-bottom: .75rem !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+    }
+
+    /* Use the visible dynamic viewport so the bottom composer cannot escape. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        height: calc(100dvh - 5.4rem) !important;
+        max-height: calc(100dvh - 5.4rem) !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        align-items: stretch !important;
+        overflow: hidden !important;
+    }
+
+    /* Allow Streamlit's flex columns to shrink without overlapping. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker),
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+    div[data-testid="column"]:has(.dm-right-panel-marker),
+    div[data-testid="column"]:has(.dm-analytics-scroll-marker),
+    div[data-testid="column"]:has(.dm-kb-scroll-marker) {
+        min-width: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        padding-bottom: 0 !important;
+    }
+
+    /* Keep the AI heading, conversation, and composer in separate regions. */
+    .dm-agent-v2-header {
+        flex-shrink: 0 !important;
+        padding-left: .5rem !important;
+        padding-right: .5rem !important;
+    }
+
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        min-width: 0 !important;
+        padding: .25rem .75rem .8rem .35rem !important;
+        scroll-padding-bottom: .8rem !important;
+    }
+
+    .st-key-agent_v2_scroll > div,
+    div[class*="st-key-agent_v2_scroll"] > div,
+    .st-key-agent_v2_scroll [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"] [data-testid="stVerticalBlock"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .st-key-agent_v2_scroll p,
+    .st-key-agent_v2_scroll li,
+    div[class*="st-key-agent_v2_scroll"] p,
+    div[class*="st-key-agent_v2_scroll"] li,
+    .dm-doc-name,
+    .dm-retrieved-title span {
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+    }
+
+    .st-key-agent_v2_scroll pre,
+    .st-key-agent_v2_scroll table,
+    div[class*="st-key-agent_v2_scroll"] pre,
+    div[class*="st-key-agent_v2_scroll"] table {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    /*
+      The composer remains at the bottom because it is the non-shrinking final
+      flex item. Relative positioning prevents it from covering chat content.
+    */
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        flex: 0 0 auto !important;
+        position: relative !important;
+        inset: auto !important;
+        width: auto !important;
+        max-width: calc(100% - 1.3rem) !important;
+        margin: .35rem .65rem 0 !important;
+        padding: .4rem 0 .1rem !important;
+    }
+
+    .st-key-agent_v2_input [data-testid="stChatInput"],
+    div[class*="st-key-agent_v2_input"] [data-testid="stChatInput"],
+    .st-key-agent_v2_input textarea,
+    div[class*="st-key-agent_v2_input"] textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-agent_v2_input textarea,
+    div[class*="st-key-agent_v2_input"] textarea {
+        padding: 15px 56px 13px 15px !important;
+    }
+
+    .dm-agent-v2-disclaimer {
+        flex-shrink: 0 !important;
+        padding-left: .65rem !important;
+        padding-right: .65rem !important;
+    }
+
+    /* Preserve comfortable spacing in the independently scrolling panel. */
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        min-width: 0 !important;
+        width: 100% !important;
+        padding-left: .1rem !important;
+        padding-right: .45rem !important;
+        padding-bottom: .75rem !important;
+    }
+
+    @media (max-width: 900px) {
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stMainBlockContainer"] .block-container,
+        .main .block-container,
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+        div[data-testid="column"]:has(.dm-right-panel-marker) {
+            width: 100% !important;
+            min-width: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        .st-key-agent_v2_scroll,
+        div[class*="st-key-agent_v2_scroll"] {
+            padding-left: .15rem !important;
+            padding-right: .35rem !important;
+        }
+
+        .st-key-agent_v2_input,
+        div[class*="st-key-agent_v2_input"] {
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stMainBlockContainer"] .block-container,
+        .main .block-container,
+        .block-container {
+            padding-left: .7rem !important;
+            padding-right: .7rem !important;
+        }
+
+        .dm-agent-v2-header {
+            padding-left: .25rem !important;
+            padding-right: .25rem !important;
+        }
+
+        .st-key-agent_v2_input textarea,
+        div[class*="st-key-agent_v2_input"] textarea {
+            padding-right: 52px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL UI OVERRIDES
+# ============================================================
+
+UPLOAD_BG = "#050806" if st.session_state.theme == "dark" else "#ffffff"
+UPLOAD_BORDER = "#26352f" if st.session_state.theme == "dark" else "#d8e0dc"
+UPLOAD_TEXT = "#f4faf7" if st.session_state.theme == "dark" else "#172b25"
+
+st.markdown(
+    f"""
+    <style>
+    /* Remove leftover top spacing after deleting RAG Assistant. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {{
+        padding-top: 4.1rem !important;
+    }}
+
+    /* ========================================================
+       CHATGPT-LIKE FIXED ASSISTANT
+       The overall bot area stays fixed.
+       Only the dedicated conversation history scrolls.
+       ======================================================== */
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {{
+        height: 610px !important;
+        min-height: 610px !important;
+        max-height: 610px !important;
+        overflow: hidden !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 14px !important;
+        background: var(--dm-surface) !important;
+        box-shadow: none !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    > div {{
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+    }}
+
+    .dm-empty-state {{
+        min-height: 250px !important;
+        max-height: 250px !important;
+        padding: 32px 24px 20px !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    [data-testid="stChatInput"] {{
+        margin-top: 10px !important;
+        margin-bottom: 0 !important;
+        flex-shrink: 0 !important;
+    }}
+
+    /* Dedicated conversation scroller. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-message-scroll-marker) {{
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-message-scroll-marker)
+   ::-webkit-scrollbar {{
+        width: 7px !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-message-scroll-marker)
+   ::-webkit-scrollbar-thumb {{
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }}
+
+    /* ========================================================
+       UPLOAD AREA
+       Dark mode: TRUE BLACK.
+       Light mode: WHITE.
+       Upload button: same green treatment as New Chat.
+       ======================================================== */
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploader"] {{
+        background: transparent !important;
+        border: 0 !important;
+        padding: 0 !important;
+        margin: 0 0 8px 0 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    section[data-testid="stFileUploaderDropzone"],
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"],
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] > div,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] section {{
+        background: {UPLOAD_BG} !important;
+        background-color: {UPLOAD_BG} !important;
+        box-shadow: none !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    section[data-testid="stFileUploaderDropzone"],
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] {{
+        border: 1px solid {UPLOAD_BORDER} !important;
+        border-radius: 10px !important;
+        min-height: 58px !important;
+        height: auto !important;
+        padding: 8px !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzoneInstructions"] {{
+        display: none !important;
+    }}
+
+    /* Green Upload button — same family as + New Chat. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button {{
+        width: 100% !important;
+        min-height: 40px !important;
+        margin: 0 !important;
+        padding: 8px 14px !important;
+        background: linear-gradient(
+            135deg,
+            var(--dm-primary),
+            var(--dm-primary2)
+        ) !important;
+        background-color: var(--dm-primary) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--dm-primary) !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        font-weight: 700 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button *,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button p,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button span {{
+        color: #ffffff !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button svg {{
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+        opacity: 1 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] button:hover {{
+        filter: brightness(.94) !important;
+        border-color: var(--dm-primary) !important;
+        color: #ffffff !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderFile"],
+    .dm-upload-selected {{
+        background: {UPLOAD_BG} !important;
+        color: {UPLOAD_TEXT} !important;
+        border: 1px solid {UPLOAD_BORDER} !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+    }}
+
+    /* Make sure nested uploader text/icons never create a white surface. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] div,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] span,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploaderDropzone"] p {{
+        background-color: transparent !important;
+    }}
+
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL FIXED-VIEWPORT + UPLOADER OVERRIDES
+# ============================================================
+
+DOCMIND_UPLOAD_BG = (
+    "#050806"
+    if st.session_state.theme == "dark"
+    else "#ffffff"
+)
+DOCMIND_UPLOAD_TEXT = (
+    "#f4faf7"
+    if st.session_state.theme == "dark"
+    else "#172b25"
+)
+DOCMIND_UPLOAD_MUTED = (
+    "#93a59e"
+    if st.session_state.theme == "dark"
+    else "#63756e"
+)
+DOCMIND_UPLOAD_BORDER = (
+    "#25342e"
+    if st.session_state.theme == "dark"
+    else "#d5dfda"
+)
+
+st.markdown(
+    f"""
+    <style>
+    /* ========================================================
+       1. FIX THE COMPLETE APPLICATION TO THE VIEWPORT
+       No browser/page scrolling.
+       ======================================================== */
+
+    html,
+    body,
+    .stApp,
+    [data-testid="stAppViewContainer"] {{
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stMain"] {{
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {{
+        height: calc(100vh - 3.9rem) !important;
+        max-height: calc(100vh - 3.9rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        padding-top: 1.35rem !important;
+        padding-bottom: .8rem !important;
+        box-sizing: border-box !important;
+    }}
+
+    /* Left sidebar remains fixed, but its CONTENT scrolls independently. */
+    [data-testid="stSidebar"] {{
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stSidebar"] > div,
+    [data-testid="stSidebarContent"] {{
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }}
+
+    /* The two-column workspace itself never scrolls the page. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {{
+        height: calc(100vh - 6rem) !important;
+        max-height: calc(100vh - 6rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        align-items: stretch !important;
+    }}
+
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker)
+    > div[data-testid="column"] {{
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }}
+
+    /* ========================================================
+       2. CENTER CONTENT SCROLL RULES
+       Analytics/Evaluation and Knowledge Base scroll internally.
+       Chatbot shell stays fixed.
+       ======================================================== */
+
+    div[data-testid="column"]:has(.dm-analytics-scroll-marker),
+    div[data-testid="column"]:has(.dm-kb-scroll-marker) {{
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-right: 8px !important;
+        scrollbar-width: thin !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-analytics-scroll-marker)
+    ::-webkit-scrollbar,
+    div[data-testid="column"]:has(.dm-kb-scroll-marker)
+    ::-webkit-scrollbar {{
+        width: 7px !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-analytics-scroll-marker)
+    ::-webkit-scrollbar-thumb,
+    div[data-testid="column"]:has(.dm-kb-scroll-marker)
+    ::-webkit-scrollbar-thumb {{
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }}
+
+    /* Fixed ChatGPT-like chatbot shell. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {{
+        height: calc(100vh - 6.35rem) !important;
+        max-height: calc(100vh - 6.35rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        display: block !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 14px !important;
+        background: var(--dm-surface) !important;
+    }}
+
+    /* Never let the empty assistant/welcome state create a scrollbar. */
+    .dm-empty-state {{
+        min-height: 225px !important;
+        max-height: 225px !important;
+        padding: 28px 22px 18px !important;
+        overflow: hidden !important;
+    }}
+
+    /* ONLY the real completed conversation container can scroll. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-message-scroll-marker) {{
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-message-scroll-marker)
+    ::-webkit-scrollbar {{
+        width: 7px !important;
+    }}
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-message-scroll-marker)
+    ::-webkit-scrollbar-thumb {{
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }}
+
+    /* Keep the chat composer visible as a fixed part of the bot shell. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    [data-testid="stChatInput"] {{
+        flex: 0 0 auto !important;
+        margin-top: 8px !important;
+        margin-bottom: 0 !important;
+    }}
+
+    /* ========================================================
+       3. RIGHT DOCUMENT SIDEBAR
+       The column is fixed; its native container scrolls.
+       ======================================================== */
+
+    div[data-testid="column"]:has(.dm-right-panel-marker) {{
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+        position: relative !important;
+        top: auto !important;
+    }}
+
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {{
+        height: calc(100vh - 9.2rem) !important;
+        max-height: calc(100vh - 9.2rem) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }}
+
+    /* ========================================================
+       4. FILE UPLOADER — FORCE BLACK IN DARK MODE
+       This deliberately targets several Streamlit DOM variants.
+       ======================================================== */
+
+    [data-testid="stFileUploader"],
+    .stFileUploader,
+    div[class*="stFileUploader"] {{
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }}
+
+    /* Force the actual native uploader/dropzone AND every internal
+       non-button surface to the DocMind upload background. */
+    [data-testid="stFileUploader"] section,
+    .stFileUploader section,
+    div[class*="stFileUploader"] section {{
+        background: {DOCMIND_UPLOAD_BG} !important;
+        background-color: {DOCMIND_UPLOAD_BG} !important;
+        border: 1px solid {DOCMIND_UPLOAD_BORDER} !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+        color: {DOCMIND_UPLOAD_TEXT} !important;
+    }}
+
+    [data-testid="stFileUploader"] section > div,
+    [data-testid="stFileUploader"] section > div > div,
+    .stFileUploader section > div,
+    div[class*="stFileUploader"] section > div {{
+        background: {DOCMIND_UPLOAD_BG} !important;
+        background-color: {DOCMIND_UPLOAD_BG} !important;
+        color: {DOCMIND_UPLOAD_TEXT} !important;
+    }}
+
+    [data-testid="stFileUploaderDropzone"],
+    [data-testid="stFileUploaderDropzoneInstructions"] {{
+        background: {DOCMIND_UPLOAD_BG} !important;
+        background-color: {DOCMIND_UPLOAD_BG} !important;
+        color: {DOCMIND_UPLOAD_TEXT} !important;
+    }}
+
+    [data-testid="stFileUploader"] section p,
+    [data-testid="stFileUploader"] section span,
+    [data-testid="stFileUploader"] section small {{
+        color: {DOCMIND_UPLOAD_MUTED} !important;
+        opacity: 1 !important;
+    }}
+
+    /* Upload/Browse button = EXACT green action family used by New Chat. */
+    [data-testid="stFileUploader"] section button,
+    .stFileUploader section button,
+    div[class*="stFileUploader"] section button,
+    [data-testid="stFileUploader"] button[data-testid^="stBaseButton"] {{
+        background: linear-gradient(
+            135deg,
+            var(--dm-primary),
+            var(--dm-primary2)
+        ) !important;
+        background-color: var(--dm-primary) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--dm-primary) !important;
+        border-radius: 9px !important;
+        min-height: 40px !important;
+        padding: 8px 15px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        font-weight: 700 !important;
+    }}
+
+    [data-testid="stFileUploader"] section button *,
+    .stFileUploader section button *,
+    div[class*="stFileUploader"] section button * {{
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+        opacity: 1 !important;
+    }}
+
+    [data-testid="stFileUploader"] section button:hover,
+    .stFileUploader section button:hover {{
+        filter: brightness(.93) !important;
+        border-color: var(--dm-primary) !important;
+        color: #ffffff !important;
+    }}
+
+    /* Native selected-file row also follows the same theme. */
+    [data-testid="stFileUploaderFile"],
+    .dm-upload-selected {{
+        background: {DOCMIND_UPLOAD_BG} !important;
+        background-color: {DOCMIND_UPLOAD_BG} !important;
+        color: {DOCMIND_UPLOAD_TEXT} !important;
+        border: 1px solid {DOCMIND_UPLOAD_BORDER} !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+    }}
+
+    /* Remove any residual Streamlit white background from uploader wrappers. */
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    [data-testid="stFileUploader"] div:not([role="progressbar"]) {{
+        box-shadow: none !important;
+    }}
+
+    /* Responsive safety: allow page flow only on genuinely small screens. */
+    @media (max-width: 900px) {{
+        html,
+        body,
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stMain"] {{
+            height: auto !important;
+            max-height: none !important;
+            overflow: auto !important;
+        }}
+
+        [data-testid="stMainBlockContainer"],
+        .block-container {{
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }}
+
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {{
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }}
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FULL-HEIGHT CENTER PANEL OVERRIDES
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* Use almost the complete available desktop height. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        height: calc(100vh - 4.75rem) !important;
+        max-height: calc(100vh - 4.75rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        align-items: stretch !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker)
+    > div[data-testid="column"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    /* The center Chat column itself is fixed and fills the workspace height. */
+    div[data-testid="column"]:has(.dm-chat-column-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Stretch the keyed chatbot container to the bottom of the center panel. */
+    .st-key-ai_chat_workspace_box,
+    div[class*="st-key-ai_chat_workspace_box"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-ai_chat_workspace_box
+    [data-testid="stVerticalBlockBorderWrapper"],
+    div[class*="st-key-ai_chat_workspace_box"]
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        max-height: 100% !important;
+    }
+
+    /* The visible assistant box fills the available center height. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Make the main vertical content inside the assistant behave like
+       a fixed chat app so the composer can remain at the bottom. */
+    .st-key-ai_chat_workspace_box > div,
+    div[class*="st-key-ai_chat_workspace_box"] > div {
+        height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    /* Give the empty state more vertical room so the chat section
+       visually fills the blank area instead of ending too early. */
+    .dm-empty-state {
+        min-height: 300px !important;
+        max-height: 300px !important;
+        padding-top: 48px !important;
+        padding-bottom: 28px !important;
+    }
+
+    /* Keep chat input at the bottom area of the fixed assistant. */
+    .st-key-ai_chat_workspace_box [data-testid="stChatInput"],
+    div[class*="st-key-ai_chat_workspace_box"] [data-testid="stChatInput"] {
+        margin-top: 12px !important;
+        margin-bottom: 4px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Only the actual conversation history scrolls. */
+    .st-key-chat_history_scroll_container,
+    div[class*="st-key-agent_v2_scroll"] {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }
+
+    /* Analytics & Evaluation gets its own independent scrollbar. */
+    .st-key-analytics_scroll_container,
+    div[class*="st-key-analytics_scroll_container"] {
+        height: calc(100vh - 5.15rem) !important;
+        max-height: calc(100vh - 5.15rem) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-right: 8px !important;
+        scrollbar-width: thin !important;
+    }
+
+    /* Knowledge Base gets its own independent scrollbar. */
+    .st-key-knowledge_scroll_container,
+    div[class*="st-key-knowledge_scroll_container"] {
+        height: calc(100vh - 5.15rem) !important;
+        max-height: calc(100vh - 5.15rem) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-right: 8px !important;
+        scrollbar-width: thin !important;
+    }
+
+    .st-key-analytics_scroll_container::-webkit-scrollbar,
+    .st-key-knowledge_scroll_container::-webkit-scrollbar,
+    .st-key-chat_history_scroll_container::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-analytics_scroll_container::-webkit-scrollbar-thumb,
+    .st-key-knowledge_scroll_container::-webkit-scrollbar-thumb,
+    .st-key-chat_history_scroll_container::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    /* Right sidebar stays independently scrollable while matching
+       the increased center height. */
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        height: calc(100vh - 7.4rem) !important;
+        max-height: calc(100vh - 7.4rem) !important;
+    }
+
+    @media (max-width: 900px) {
+        .st-key-ai_chat_workspace_box,
+        div[class*="st-key-ai_chat_workspace_box"],
+        .st-key-analytics_scroll_container,
+        div[class*="st-key-analytics_scroll_container"],
+        .st-key-knowledge_scroll_container,
+        div[class*="st-key-knowledge_scroll_container"] {
+            height: auto !important;
+            max-height: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL CHAT UX + SIDEBAR HISTORY FIXES
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* --------------------------------------------------------
+       LEFT SIDEBAR CHAT HISTORY
+       Prevent Streamlit focus/hover states from turning history
+       buttons white with unreadable text.
+       -------------------------------------------------------- */
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:hover,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:focus,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:focus-visible,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:active {
+        background: var(--dm-sidebar-hover) !important;
+        background-color: var(--dm-sidebar-hover) !important;
+        color: var(--dm-sidebar-text) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:hover {
+        border-color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button *,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button p,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button span,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button div {
+        color: var(--dm-sidebar-text) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* --------------------------------------------------------
+       CHATGPT-LIKE CENTER PANEL
+       Outer bot is fixed.
+       Header is fixed.
+       Only message history scrolls.
+       Composer remains fixed at bottom.
+       -------------------------------------------------------- */
+
+    div[data-testid="column"]:has(.dm-chat-column-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-ai_chat_workspace_box,
+    div[class*="st-key-ai_chat_workspace_box"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* The bordered assistant wrapper fills the center panel. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Make the assistant's inner vertical block a flex column. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    /* Conversation history expands to all remaining space. */
+    .st-key-chat_history_scroll_container,
+    div[class*="st-key-agent_v2_scroll"] {
+        flex: 1 1 auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+        padding-right: 5px !important;
+        overscroll-behavior: contain !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar-thumb,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    /* Chat turns flow normally from top to bottom.
+       Auto-scroll brings the latest turn into view, so older chats move up. */
+    .st-key-chat_history_scroll_container
+    [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        min-height: min-content !important;
+        overflow: visible !important;
+    }
+
+    /* The prompt composer must never join the scrolling message pane. */
+    .st-key-docmind_chat_input,
+    div[class*="st-key-docmind_chat_input"] {
+        flex: 0 0 auto !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 20 !important;
+        background: var(--dm-surface) !important;
+        padding-top: 8px !important;
+        margin-top: 4px !important;
+    }
+
+    .st-key-docmind_chat_input [data-testid="stChatInput"],
+    div[class*="st-key-docmind_chat_input"] [data-testid="stChatInput"] {
+        margin: 0 !important;
+    }
+
+    /* Keep header content from shrinking when chat grows. */
+    .dm-chat-box-marker,
+    .dm-chat-box-title,
+    .dm-chat-box-subtitle {
+        flex: 0 0 auto !important;
+    }
+
+    /* Empty-state layout stays static; no unnecessary scrollbar. */
+    .dm-empty-state {
+        flex: 0 0 auto !important;
+        overflow: hidden !important;
+    }
+
+    @media (max-width: 900px) {
+        .st-key-docmind_chat_input,
+        div[class*="st-key-docmind_chat_input"] {
+            position: static !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL SIDEBAR + CHAT LAYOUT RECOVERY
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* Sidebar conversation buttons must always be readable. */
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button {
+        background: var(--dm-sidebar-hover) !important;
+        background-color: var(--dm-sidebar-hover) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        color: var(--dm-sidebar-text) !important;
+        opacity: 1 !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:hover,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:focus,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:active {
+        background: var(--dm-sidebar-hover) !important;
+        color: var(--dm-sidebar-text) !important;
+        border-color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button *,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button p,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button span {
+        color: var(--dm-sidebar-text) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* ========================================================
+       CHATBOT
+       Reset the flex rules that hid DocMind/title/chat content.
+       ======================================================== */
+
+    div[data-testid="column"]:has(.dm-chat-column-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-ai_chat_workspace_box,
+    div[class*="st-key-ai_chat_workspace_box"] {
+        height: calc(100vh - 5.35rem) !important;
+        max-height: calc(100vh - 5.35rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        display: block !important;
+    }
+
+    /* Restore normal block flow inside the assistant.
+       Header -> scrollable messages -> prompt input. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker),
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) > div,
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        display: block !important;
+        flex: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 14px !important;
+        background: var(--dm-surface) !important;
+    }
+
+    /* DocMind heading and subtitle remain visible at the top. */
+    .dm-chat-box-marker,
+    .dm-chat-box-title,
+    .dm-chat-box-subtitle {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+
+    /* ========================================================
+       ONLY CHAT HISTORY SCROLLS
+       ======================================================== */
+
+    .st-key-chat_history_scroll_container,
+    div[class*="st-key-agent_v2_scroll"] {
+        height: calc(100vh - 14rem) !important;
+        max-height: calc(100vh - 14rem) !important;
+        min-height: 240px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        padding-right: 5px !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar-thumb,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    /* ========================================================
+       PROMPT COMPOSER — FIXED OUTSIDE THE CHAT SCROLLER
+       ======================================================== */
+
+    .st-key-docmind_chat_input,
+    div[class*="st-key-docmind_chat_input"] {
+        display: block !important;
+        visibility: visible !important;
+        position: relative !important;
+        bottom: auto !important;
+        flex: none !important;
+        z-index: 5 !important;
+        margin-top: 8px !important;
+        padding-top: 6px !important;
+        background: var(--dm-surface) !important;
+    }
+
+    .st-key-docmind_chat_input [data-testid="stChatInput"],
+    div[class*="st-key-docmind_chat_input"] [data-testid="stChatInput"] {
+        position: relative !important;
+        bottom: auto !important;
+        margin: 0 !important;
+    }
+
+    /* Empty/new chat state stays visible and does not scroll. */
+    .dm-empty-state {
+        display: block !important;
+        visibility: visible !important;
+        min-height: 275px !important;
+        max-height: 275px !important;
+        overflow: hidden !important;
+    }
+
+    /* Analytics and Knowledge Base remain independently scrollable. */
+    .st-key-analytics_scroll_container,
+    div[class*="st-key-analytics_scroll_container"],
+    .st-key-knowledge_scroll_container,
+    div[class*="st-key-knowledge_scroll_container"] {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: calc(100vh - 5.2rem) !important;
+        max-height: calc(100vh - 5.2rem) !important;
+    }
+
+    /* Right Documents sidebar remains independent too. */
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    @media (max-width: 900px) {
+        section[data-testid="stSidebar"],
+        [data-testid="stSidebar"] {
+            min-width: unset !important;
+            width: unset !important;
+            max-width: unset !important;
+        }
+
+        .st-key-ai_chat_workspace_box,
+        div[class*="st-key-ai_chat_workspace_box"],
+        .st-key-chat_history_scroll_container,
+        div[class*="st-key-agent_v2_scroll"] {
+            height: auto !important;
+            max-height: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL CHAT LAYOUT — RESTORE CONTENT + FIX COMPOSER AT BOTTOM
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* ========================================================
+       CHAT SHELL
+       Header + welcome/messages stay visible.
+       Only message history scrolls.
+       Composer stays fixed at the bottom of the chatbot.
+       ======================================================== */
+
+    div[data-testid="column"]:has(.dm-chat-column-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .st-key-ai_chat_workspace_box,
+    div[class*="st-key-ai_chat_workspace_box"] {
+        height: calc(100vh - 5.25rem) !important;
+        max-height: calc(100vh - 5.25rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 14px !important;
+        background: var(--dm-surface) !important;
+        box-sizing: border-box !important;
+    }
+
+    /*
+      Streamlit places the chatbot elements inside this vertical block.
+      Make THAT block the flex column:
+        title
+        subtitle
+        welcome OR scrollable messages
+        errors if any
+        prompt input
+    */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    > div
+    > [data-testid="stVerticalBlock"] {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        flex: 1 1 auto !important;
+    }
+
+    /* Restore the content that was being clipped. */
+    .dm-chat-box-marker,
+    .dm-chat-box-title,
+    .dm-chat-box-subtitle,
+    .dm-empty-state,
+    .dm-empty-icon,
+    .dm-empty-title,
+    .dm-empty-text {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .dm-chat-box-title {
+        flex: 0 0 auto !important;
+        margin-top: 0 !important;
+        margin-bottom: 2px !important;
+    }
+
+    .dm-chat-box-subtitle {
+        flex: 0 0 auto !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* New-chat welcome content is visible and occupies the middle area. */
+    .dm-empty-state {
+        flex: 0 0 auto !important;
+        min-height: 255px !important;
+        max-height: 255px !important;
+        padding: 38px 24px 20px !important;
+        overflow: hidden !important;
+    }
+
+    /* ========================================================
+       MESSAGE HISTORY
+       This is the ONLY part of the chatbot allowed to scroll.
+       ======================================================== */
+
+    .st-key-chat_history_scroll_container,
+    div[class*="st-key-agent_v2_scroll"] {
+        flex: 1 1 auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        padding-right: 6px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    > div,
+    div[class*="st-key-agent_v2_scroll"]
+    > div {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stVerticalBlock"] {
+        display: block !important;
+        height: auto !important;
+        min-height: min-content !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar-thumb,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    /* ========================================================
+       PROMPT INPUT
+       It is NOT inside the chat-history scroller.
+       Push it to the bottom of the fixed chatbot.
+       ======================================================== */
+
+    .st-key-docmind_chat_input,
+    div[class*="st-key-docmind_chat_input"] {
+        flex: 0 0 auto !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        inset: auto !important;
+        margin-top: auto !important;
+        margin-bottom: 0 !important;
+        padding-top: 8px !important;
+        background: var(--dm-surface) !important;
+        z-index: 30 !important;
+    }
+
+    .st-key-docmind_chat_input [data-testid="stChatInput"],
+    div[class*="st-key-docmind_chat_input"] [data-testid="stChatInput"] {
+        position: relative !important;
+        inset: auto !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Keep the example questions visible above the fixed composer. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    .stButton {
+        flex: 0 0 auto !important;
+    }
+
+    /* ========================================================
+       SIDEBAR HISTORY — readable in dark and light modes.
+       ======================================================== */
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:hover,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:focus,
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:active {
+        background: var(--dm-sidebar-hover) !important;
+        background-color: var(--dm-sidebar-hover) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        color: var(--dm-sidebar-text) !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button * {
+        color: var(--dm-sidebar-text) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-history_nav_"] button:hover {
+        border-color: var(--dm-primary) !important;
+    }
+
+    /* Analytics / Knowledge Base / Documents keep their own scrollbars. */
+    .st-key-analytics_scroll_container,
+    div[class*="st-key-analytics_scroll_container"],
+    .st-key-knowledge_scroll_container,
+    div[class*="st-key-knowledge_scroll_container"],
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    @media (max-width: 900px) {
+        .st-key-ai_chat_workspace_box,
+        div[class*="st-key-ai_chat_workspace_box"] {
+            height: auto !important;
+            max-height: none !important;
+        }
+
+        [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+        > div
+        > [data-testid="stVerticalBlock"] {
+            display: block !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-docmind_chat_input,
+        div[class*="st-key-docmind_chat_input"] {
+            margin-top: 10px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL CHATGPT-LIKE AI CHAT OVERRIDES
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* Scope every rule to the AI chat workspace only. */
+
+    .st-key-ai_chat_workspace_box,
+    div[class*="st-key-ai_chat_workspace_box"] {
+        height: calc(100vh - 5.4rem) !important;
+        max-height: calc(100vh - 5.4rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 14px !important;
+        background: var(--dm-surface) !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Restore normal Streamlit flow inside the outer chat shell.
+       The middle native container handles scrolling. */
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    > div,
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    .dm-chat-box-title,
+    .dm-chat-box-subtitle,
+    .dm-empty-state,
+    .dm-empty-icon,
+    .dm-empty-title,
+    .dm-empty-text {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .dm-chat-box-title {
+        margin-bottom: 2px !important;
+    }
+
+    .dm-chat-box-subtitle {
+        margin-bottom: 8px !important;
+    }
+
+    /* This is the ONLY scrollable area in the chatbot. */
+    .st-key-chat_history_scroll_container,
+    div[class*="st-key-agent_v2_scroll"] {
+        height: calc(100vh - 14.1rem) !important;
+        max-height: calc(100vh - 14.1rem) !important;
+        min-height: 300px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        padding-right: 5px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        min-height: min-content !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar-thumb,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    /* Welcome screen sits naturally inside the message viewport. */
+    .dm-empty-state {
+        min-height: 270px !important;
+        max-height: none !important;
+        padding: 48px 24px 24px !important;
+        overflow: visible !important;
+    }
+
+    /* Prompt stays below the scroller and never scrolls with messages. */
+    .st-key-docmind_chat_input,
+    div[class*="st-key-docmind_chat_input"] {
+        position: relative !important;
+        inset: auto !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: var(--dm-surface) !important;
+        z-index: 10 !important;
+    }
+
+    .st-key-docmind_chat_input [data-testid="stChatInput"],
+    div[class*="st-key-docmind_chat_input"] [data-testid="stChatInput"] {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    @media (max-width: 900px) {
+        .st-key-ai_chat_workspace_box,
+        div[class*="st-key-ai_chat_workspace_box"],
+        .st-key-chat_history_scroll_container,
+        div[class*="st-key-agent_v2_scroll"] {
+            height: auto !important;
+            max-height: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# REFERENCE-STYLE AI AGENT — AI SECTION ONLY
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* ---------- Fixed center AI workspace ---------- */
+    .st-key-ai_chat_workspace_box,
+    div[class*="st-key-ai_chat_workspace_box"] {
+        height: calc(100vh - 5.25rem) !important;
+        max-height: calc(100vh - 5.25rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        background: transparent !important;
+    }
+
+    .st-key-ai_chat_workspace_box > div,
+    div[class*="st-key-ai_chat_workspace_box"] > div {
+        height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Neutralize old bordered-chat rules only in this AI workspace. */
+    .st-key-ai_chat_workspace_box
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker),
+    div[class*="st-key-ai_chat_workspace_box"]
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.dm-chat-box-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* ---------- Centered DocMind identity ---------- */
+    .dm-agent-header {
+        flex: 0 0 auto !important;
+        text-align: center !important;
+        padding: 2px 0 14px !important;
+    }
+
+    .dm-agent-brand-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+
+    .dm-agent-logo {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 11px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: linear-gradient(
+            135deg,
+            var(--dm-primary),
+            var(--dm-primary2)
+        ) !important;
+        color: #ffffff !important;
+        font-size: 18px !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .18) !important;
+    }
+
+    .dm-agent-title {
+        color: var(--dm-heading) !important;
+        font-size: 1.75rem !important;
+        line-height: 1 !important;
+        font-weight: 800 !important;
+        letter-spacing: -.03em !important;
+    }
+
+    .dm-agent-subtitle {
+        margin-top: 7px !important;
+        color: var(--dm-muted) !important;
+        font-size: .9rem !important;
+    }
+
+    /* ---------- Conversation viewport ---------- */
+    .st-key-chat_history_scroll_container,
+    div[class*="st-key-agent_v2_scroll"] {
+        height: calc(100vh - 18.8rem) !important;
+        max-height: calc(100vh - 18.8rem) !important;
+        min-height: 300px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        padding: 2px 18px 12px 8px !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-chat_history_scroll_container::-webkit-scrollbar-thumb,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        min-height: min-content !important;
+        overflow: visible !important;
+    }
+
+    /* Streamlit chat turns look like the supplied reference:
+       no giant cards, clean content rows with avatars. */
+    .st-key-chat_history_scroll_container [data-testid="stChatMessage"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stChatMessage"] {
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 10px 2px !important;
+        margin: 0 !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stChatMessageContent"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stChatMessageContent"] {
+        background: transparent !important;
+        padding-top: 1px !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stChatMessage"] p,
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stChatMessage"] p {
+        color: var(--dm-text) !important;
+        line-height: 1.55 !important;
+    }
+
+    .st-key-chat_history_scroll_container
+    [data-testid="stChatMessageAvatarUser"],
+    .st-key-chat_history_scroll_container
+    [data-testid="stChatMessageAvatarAssistant"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stChatMessageAvatarUser"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stChatMessageAvatarAssistant"] {
+        transform: scale(.92) !important;
+    }
+
+    .dm-turn-gap {
+        height: 10px !important;
+    }
+
+    /* Source cards become compact, matching the reference density. */
+    .st-key-chat_history_scroll_container
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: var(--dm-border) !important;
+        background: var(--dm-surface2) !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+    }
+
+    /* ---------- Empty state ---------- */
+    .dm-agent-empty {
+        min-height: 300px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 26px !important;
+    }
+
+    .dm-agent-empty-icon {
+        width: 54px !important;
+        height: 54px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 15px !important;
+        background: var(--dm-soft) !important;
+        border: 1px solid var(--dm-border) !important;
+        font-size: 25px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .dm-agent-empty-title {
+        color: var(--dm-heading) !important;
+        font-size: 1.15rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .dm-agent-empty-text {
+        color: var(--dm-muted) !important;
+        max-width: 570px !important;
+        font-size: .9rem !important;
+        line-height: 1.55 !important;
+    }
+
+    .dm-example-label {
+        color: var(--dm-heading) !important;
+        font-size: .95rem !important;
+        font-weight: 750 !important;
+        margin: 2px 0 8px !important;
+    }
+
+    .st-key-chat_history_scroll_container .stButton > button,
+    div[class*="st-key-agent_v2_scroll"] .stButton > button {
+        min-height: 42px !important;
+        background: var(--dm-surface2) !important;
+        color: var(--dm-text) !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 10px !important;
+        white-space: normal !important;
+    }
+
+    .st-key-chat_history_scroll_container .stButton > button:hover,
+    div[class*="st-key-agent_v2_scroll"] .stButton > button:hover {
+        border-color: var(--dm-primary) !important;
+        color: var(--dm-primary) !important;
+    }
+
+    /* ---------- RAG status strip ---------- */
+    .dm-agent-pipeline {
+        flex: 0 0 auto !important;
+        min-height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 9px !important;
+        padding: 8px 13px !important;
+        margin: 4px 16px 3px !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 10px !important;
+        background: var(--dm-surface2) !important;
+        color: var(--dm-text) !important;
+        font-size: .78rem !important;
+    }
+
+    .dm-pipeline-arrow {
+        color: var(--dm-muted) !important;
+    }
+
+    .dm-agent-grounding {
+        flex: 0 0 auto !important;
+        color: var(--dm-muted) !important;
+        font-size: .76rem !important;
+        margin: 0 18px 5px !important;
+    }
+
+    /* ---------- Fixed composer ---------- */
+    .st-key-docmind_chat_input,
+    div[class*="st-key-docmind_chat_input"] {
+        flex: 0 0 auto !important;
+        position: relative !important;
+        inset: auto !important;
+        margin: 4px 16px 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        z-index: 20 !important;
+    }
+
+    .st-key-docmind_chat_input [data-testid="stChatInput"],
+    div[class*="st-key-docmind_chat_input"] [data-testid="stChatInput"] {
+        position: relative !important;
+        inset: auto !important;
+        min-height: 62px !important;
+        margin: 0 !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 13px !important;
+        background: var(--dm-input) !important;
+        box-shadow: 0 8px 26px rgba(0,0,0,.10) !important;
+    }
+
+    .st-key-docmind_chat_input textarea,
+    div[class*="st-key-docmind_chat_input"] textarea {
+        min-height: 58px !important;
+        padding: 17px 56px 14px 15px !important;
+        background: var(--dm-input) !important;
+        color: var(--dm-input-text) !important;
+    }
+
+    .st-key-docmind_chat_input button,
+    div[class*="st-key-docmind_chat_input"] button {
+        background: var(--dm-surface3) !important;
+        border: 1px solid var(--dm-border) !important;
+        color: var(--dm-text) !important;
+        border-radius: 9px !important;
+        margin-right: 6px !important;
+    }
+
+    .st-key-docmind_chat_input button:hover,
+    div[class*="st-key-docmind_chat_input"] button:hover {
+        background: var(--dm-primary) !important;
+        border-color: var(--dm-primary) !important;
+        color: #ffffff !important;
+    }
+
+    .dm-agent-disclaimer {
+        flex: 0 0 auto !important;
+        text-align: center !important;
+        color: var(--dm-muted) !important;
+        font-size: .67rem !important;
+        padding: 7px 0 0 !important;
+    }
+
+    @media (max-width: 900px) {
+        .st-key-ai_chat_workspace_box,
+        div[class*="st-key-ai_chat_workspace_box"] {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-chat_history_scroll_container,
+        div[class*="st-key-agent_v2_scroll"] {
+            height: 520px !important;
+            max-height: 520px !important;
+            min-height: 0 !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# ISOLATED DOCMIND AGENT V2 — CENTER PANEL ONLY
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* The center AI area uses normal flow.
+       Older experimental chat CSS uses different keys/classes,
+       so it cannot hide this version. */
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+        height: calc(100vh - 5.25rem) !important;
+        max-height: calc(100vh - 5.25rem) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        padding: 0 14px 0 8px !important;
+    }
+
+    /* ---------- Header ---------- */
+    .dm-agent-v2-header {
+        text-align: center !important;
+        padding: 4px 0 14px !important;
+    }
+
+    .dm-agent-v2-brand {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+
+    .dm-agent-v2-logo {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 11px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: linear-gradient(
+            135deg,
+            var(--dm-primary),
+            var(--dm-primary2)
+        ) !important;
+        color: #ffffff !important;
+        font-size: 18px !important;
+        box-shadow: 0 8px 22px rgba(0,0,0,.18) !important;
+    }
+
+    .dm-agent-v2-title {
+        color: var(--dm-heading) !important;
+        font-size: 1.72rem !important;
+        line-height: 1 !important;
+        font-weight: 800 !important;
+        letter-spacing: -.025em !important;
+    }
+
+    .dm-agent-v2-subtitle {
+        color: var(--dm-muted) !important;
+        font-size: .88rem !important;
+        margin-top: 7px !important;
+    }
+
+    /* ---------- Scrollable conversation ---------- */
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        height: calc(100vh - 17.8rem) !important;
+        max-height: calc(100vh - 17.8rem) !important;
+        min-height: 330px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        padding: 4px 14px 12px 6px !important;
+        background: transparent !important;
+    }
+
+    .st-key-agent_v2_scroll::-webkit-scrollbar,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar {
+        width: 7px !important;
+    }
+
+    .st-key-agent_v2_scroll::-webkit-scrollbar-thumb,
+    div[class*="st-key-agent_v2_scroll"]::-webkit-scrollbar-thumb {
+        background: var(--dm-border) !important;
+        border-radius: 999px !important;
+    }
+
+    /* Clean message rows like the reference. */
+    .st-key-agent_v2_scroll [data-testid="stChatMessage"],
+    div[class*="st-key-agent_v2_scroll"] [data-testid="stChatMessage"] {
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 9px 2px !important;
+        margin: 0 !important;
+    }
+
+    .st-key-agent_v2_scroll [data-testid="stChatMessageContent"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stChatMessageContent"] {
+        background: transparent !important;
+    }
+
+    .st-key-agent_v2-scroll [data-testid="stChatMessage"] p,
+    .st-key-agent_v2_scroll [data-testid="stChatMessage"] p,
+    div[class*="st-key-agent_v2_scroll"] [data-testid="stChatMessage"] p {
+        color: var(--dm-text) !important;
+        line-height: 1.5 !important;
+    }
+
+    .dm-agent-v2-turn-gap {
+        height: 8px !important;
+    }
+
+    /* Existing source cards stay readable but compact. */
+    .st-key-agent_v2_scroll
+    [data-testid="stVerticalBlockBorderWrapper"],
+    div[class*="st-key-agent_v2_scroll"]
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: var(--dm-border) !important;
+        background: var(--dm-surface2) !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+    }
+
+    /* ---------- Welcome state ---------- */
+    .dm-agent-v2-empty {
+        min-height: 285px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding: 28px 22px !important;
+    }
+
+    .dm-agent-v2-empty-icon {
+        width: 54px !important;
+        height: 54px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 15px !important;
+        background: var(--dm-soft) !important;
+        border: 1px solid var(--dm-border) !important;
+        font-size: 25px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .dm-agent-v2-empty-title {
+        color: var(--dm-heading) !important;
+        font-size: 1.12rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .dm-agent-v2-empty-text {
+        color: var(--dm-muted) !important;
+        max-width: 570px !important;
+        line-height: 1.55 !important;
+        font-size: .88rem !important;
+    }
+
+    .dm-agent-v2-example-title {
+        color: var(--dm-heading) !important;
+        font-size: .95rem !important;
+        font-weight: 750 !important;
+        margin: 4px 0 8px !important;
+    }
+
+    .st-key-agent_v2_scroll .stButton > button,
+    div[class*="st-key-agent_v2_scroll"] .stButton > button {
+        min-height: 42px !important;
+        height: auto !important;
+        white-space: normal !important;
+        background: var(--dm-surface2) !important;
+        color: var(--dm-text) !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 10px !important;
+    }
+
+    .st-key-agent_v2_scroll .stButton > button:hover,
+    div[class*="st-key-agent_v2_scroll"] .stButton > button:hover {
+        border-color: var(--dm-primary) !important;
+        color: var(--dm-primary) !important;
+    }
+
+    /* ---------- RAG status strip ---------- */
+    .dm-agent-v2-pipeline {
+        min-height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        padding: 7px 12px !important;
+        margin: 4px 10px 3px !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 10px !important;
+        background: var(--dm-surface2) !important;
+        color: var(--dm-text) !important;
+        font-size: .76rem !important;
+    }
+
+    .dm-agent-v2-arrow {
+        color: var(--dm-muted) !important;
+    }
+
+    .dm-agent-v2-grounding {
+        color: var(--dm-muted) !important;
+        font-size: .74rem !important;
+        margin: 0 12px 5px !important;
+    }
+
+    /* ---------- Fixed composer ---------- */
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        position: relative !important;
+        inset: auto !important;
+        margin: 5px 10px 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        z-index: 20 !important;
+    }
+
+    .st-key-agent_v2_input [data-testid="stChatInput"],
+    div[class*="st-key-agent_v2_input"] [data-testid="stChatInput"] {
+        min-height: 60px !important;
+        position: relative !important;
+        inset: auto !important;
+        margin: 0 !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 13px !important;
+        background: var(--dm-input) !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,.10) !important;
+    }
+
+    .st-key-agent_v2_input textarea,
+    div[class*="st-key-agent_v2_input"] textarea {
+        min-height: 56px !important;
+        padding: 16px 54px 13px 15px !important;
+        background: var(--dm-input) !important;
+        color: var(--dm-input-text) !important;
+    }
+
+    .st-key-agent_v2_input button,
+    div[class*="st-key-agent_v2_input"] button {
+        background: var(--dm-surface3) !important;
+        border: 1px solid var(--dm-border) !important;
+        color: var(--dm-text) !important;
+        border-radius: 9px !important;
+        margin-right: 6px !important;
+    }
+
+    .st-key-agent_v2_input button:hover,
+    div[class*="st-key-agent_v2_input"] button:hover {
+        background: var(--dm-primary) !important;
+        border-color: var(--dm-primary) !important;
+        color: #ffffff !important;
+    }
+
+    .dm-agent-v2-disclaimer {
+        text-align: center !important;
+        color: var(--dm-muted) !important;
+        font-size: .66rem !important;
+        padding: 6px 0 0 !important;
+    }
+
+    @media (max-width: 900px) {
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-agent_v2_scroll,
+        div[class*="st-key-agent_v2_scroll"] {
+            height: 500px !important;
+            max-height: 500px !important;
+            min-height: 0 !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL TOP-SPACE ALIGNMENT FIX
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* Reduce the large unused area below Streamlit's top toolbar. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {
+        padding-top: .65rem !important;
+        padding-bottom: .65rem !important;
+    }
+
+    /* Start the main center/right workspace immediately below the toolbar. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        height: calc(100vh - 4.15rem) !important;
+        max-height: calc(100vh - 4.15rem) !important;
+        align-items: stretch !important;
+    }
+
+    /* Move only the center AI-agent column upward. */
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        top: 0 !important;
+        height: calc(100vh - 4.15rem) !important;
+        max-height: calc(100vh - 4.15rem) !important;
+    }
+
+    .dm-agent-v2-header {
+        margin-top: 0 !important;
+        padding-top: 2px !important;
+    }
+
+    /* Move the Documents sidebar upward as well.
+       Keep all of its existing scrolling and document controls unchanged. */
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        top: 0 !important;
+        position: relative !important;
+        height: calc(100vh - 4.15rem) !important;
+        max-height: calc(100vh - 4.15rem) !important;
+        min-height: 0 !important;
+    }
+
+    .dm-right-panel-title {
+        margin-top: 0 !important;
+        padding-top: 2px !important;
+    }
+
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        height: calc(100vh - 7rem) !important;
+        max-height: calc(100vh - 7rem) !important;
+    }
+
+    /* Let the center conversation viewport use the newly gained height. */
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        height: calc(100vh - 13.8rem) !important;
+        max-height: calc(100vh - 13.8rem) !important;
+    }
+
+    @media (max-width: 900px) {
+        [data-testid="stMainBlockContainer"],
+        .block-container {
+            padding-top: 1rem !important;
+        }
+
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+        div[data-testid="column"]:has(.dm-right-panel-marker) {
+            height: auto !important;
+            max-height: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL TOP ALIGNMENT + FIXED CHAT COMPOSER
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* --------------------------------------------------------
+       MAIN WORKSPACE
+       Start immediately below Streamlit's toolbar.
+       -------------------------------------------------------- */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {
+        padding-top: .8rem !important;
+        padding-bottom: .65rem !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        height: calc(100vh - 4.3rem) !important;
+        max-height: calc(100vh - 4.3rem) !important;
+        min-height: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        align-items: stretch !important;
+        overflow: hidden !important;
+    }
+
+    /* --------------------------------------------------------
+       CENTER AI COLUMN
+       Vertically align its top with the DocMind brand in the
+       left sidebar. The direct Streamlit vertical block becomes
+       a flex column so the composer can stay at the bottom.
+       -------------------------------------------------------- */
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div,
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        overflow: hidden !important;
+        gap: .35rem !important;
+    }
+
+    .dm-agent-v2-column-marker {
+        display: none !important;
+    }
+
+    /* Header stays at the very top of the AI column. */
+    .dm-agent-v2-header {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+        padding: 2px 0 10px !important;
+    }
+
+    /* --------------------------------------------------------
+       CHAT HISTORY
+       This middle region receives all remaining height and is
+       the only part of the AI section that scrolls.
+       -------------------------------------------------------- */
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        flex: 1 1 auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        margin: 0 !important;
+        padding: 2px 14px 8px 6px !important;
+    }
+
+    .st-key-agent_v2_scroll > div,
+    div[class*="st-key-agent_v2_scroll"] > div {
+        min-height: 0 !important;
+        max-height: none !important;
+    }
+
+    /* Welcome screen fills the middle region naturally. */
+    .dm-agent-v2-empty {
+        min-height: 250px !important;
+        height: auto !important;
+        max-height: none !important;
+        padding: 24px 22px 18px !important;
+    }
+
+    /* Status strip remains outside the scrolling history. */
+    .dm-agent-v2-pipeline,
+    .dm-agent-v2-grounding {
+        flex: 0 0 auto !important;
+    }
+
+    /* --------------------------------------------------------
+       PROMPT COMPOSER
+       Always visible at the bottom; never part of chat scrolling.
+       -------------------------------------------------------- */
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        flex: 0 0 auto !important;
+        position: relative !important;
+        inset: auto !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 5px 10px 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        z-index: 50 !important;
+    }
+
+    .st-key-agent_v2_input [data-testid="stChatInput"],
+    div[class*="st-key-agent_v2_input"] [data-testid="stChatInput"] {
+        position: relative !important;
+        inset: auto !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 100% !important;
+        min-height: 60px !important;
+        margin: 0 !important;
+    }
+
+    .dm-agent-v2-disclaimer {
+        flex: 0 0 auto !important;
+        padding: 5px 0 0 !important;
+        margin: 0 !important;
+    }
+
+    /* --------------------------------------------------------
+       RIGHT DOCUMENTS COLUMN
+       Align its title with the top of the center AI section and
+       let its content scroll independently underneath.
+       -------------------------------------------------------- */
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        top: auto !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    > div,
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-right-panel-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        overflow: hidden !important;
+    }
+
+    .dm-right-panel-title {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+        padding: 2px 0 10px !important;
+    }
+
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        flex: 1 1 auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }
+
+    @media (max-width: 900px) {
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker),
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+        div[data-testid="column"]:has(.dm-right-panel-marker) {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+        > div > [data-testid="stVerticalBlock"],
+        div[data-testid="column"]:has(.dm-right-panel-marker)
+        > div > [data-testid="stVerticalBlock"] {
+            display: block !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-agent_v2_scroll,
+        div[class*="st-key-agent_v2_scroll"] {
+            height: 500px !important;
+            max-height: 500px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# CLEAN TOP ALIGNMENT OVERRIDE
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* Main content begins directly below Streamlit's toolbar. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {
+        padding-top: .55rem !important;
+        padding-bottom: .55rem !important;
+    }
+
+    /*
+      The center and right columns share the same horizontal row.
+      Keep that row flush to the top and use the available viewport.
+    */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        align-items: flex-start !important;
+        min-height: 0 !important;
+        height: calc(100vh - 4.2rem) !important;
+        max-height: calc(100vh - 4.2rem) !important;
+        overflow: hidden !important;
+    }
+
+    /* Center AI / Analytics / Knowledge column starts at row top. */
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+    div[data-testid="column"]:has(.dm-analytics-scroll-marker),
+    div[data-testid="column"]:has(.dm-kb-scroll-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        top: auto !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+    }
+
+    /* AI title is flush with the top of its center column. */
+    .dm-agent-v2-header {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /*
+      Right Documents column begins at exactly the same row top.
+      Its existing internal scroller is preserved.
+    */
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        top: auto !important;
+        position: relative !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .dm-right-panel-title {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Keep Documents content independently scrollable below its heading. */
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        min-height: 0 !important;
+    }
+
+    /*
+      Keep the prompt visible. The center conversation takes the remaining
+      space, while the composer stays outside that scrolling region.
+    */
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex: 0 0 auto !important;
+        position: relative !important;
+        inset: auto !important;
+        z-index: 30 !important;
+    }
+
+    /* Responsive layout returns to normal flow on smaller screens. */
+    @media (max-width: 900px) {
+        [data-testid="stMainBlockContainer"],
+        .block-container {
+            padding-top: .85rem !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker),
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+        div[data-testid="column"]:has(.dm-right-panel-marker),
+        div[data-testid="column"]:has(.dm-analytics-scroll-marker),
+        div[data-testid="column"]:has(.dm-kb-scroll-marker) {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL SIDEBAR COLLAPSE + HEADER VISIBILITY FIX
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /*
+      Do not set sidebar width, min-width, max-width, transform, left,
+      display, visibility, or opacity here. Streamlit needs to control
+      those properties for its native collapse/expand button.
+    */
+
+    /* Keep only the sidebar's internal scrolling behavior. */
+    [data-testid="stSidebar"] {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    [data-testid="stSidebar"] > div,
+    [data-testid="stSidebarContent"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+    }
+
+    /* Move the workspace just below Streamlit's fixed toolbar. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {
+        padding-top: 1.35rem !important;
+        padding-bottom: .55rem !important;
+    }
+
+    /* Center AI + right Documents row stays high, but no longer clips. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        height: calc(100vh - 4.95rem) !important;
+        max-height: calc(100vh - 4.95rem) !important;
+        min-height: 0 !important;
+        align-items: flex-start !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        top: auto !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+    }
+
+    /* Ensure both headings are fully visible. */
+    .dm-agent-v2-header,
+    .dm-right-panel-title {
+        margin-top: 0 !important;
+        padding-top: .15rem !important;
+    }
+
+    /* Preserve the fixed composer and internal scrolling. */
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"],
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        inset: auto !important;
+        z-index: 30 !important;
+    }
+
+    @media (max-width: 900px) {
+        [data-testid="stMainBlockContainer"],
+        .block-container {
+            padding-top: .9rem !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker),
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+        div[data-testid="column"]:has(.dm-right-panel-marker) {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# RESPONSIVE AI AGENT + BOTTOM PROMPT ONLY
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* --------------------------------------------------------
+       AI AGENT COLUMN
+       Responsive — no fixed pixel height for the whole agent.
+       -------------------------------------------------------- */
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div,
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        gap: .4rem !important;
+    }
+
+    /* Header stays natural/responsive. */
+    .dm-agent-v2-header {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+        padding: .2rem 0 .6rem !important;
+    }
+
+    /* --------------------------------------------------------
+       CHAT CONTENT
+       Takes all remaining space and scrolls when needed.
+       -------------------------------------------------------- */
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        flex: 1 1 auto !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        scrollbar-width: thin !important;
+        margin: 0 !important;
+        padding: .25rem .8rem .75rem .35rem !important;
+    }
+
+    .st-key-agent_v2_scroll > div,
+    div[class*="st-key-agent_v2_scroll"] > div,
+    .st-key-agent_v2_scroll [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"] [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Empty state is responsive instead of fixed-height. */
+    .dm-agent-v2-empty {
+        min-height: clamp(220px, 38vh, 340px) !important;
+        height: auto !important;
+        max-height: none !important;
+        padding: clamp(18px, 3vh, 34px) 22px !important;
+    }
+
+    /* --------------------------------------------------------
+       PROMPT INPUT
+       This is the ONLY fixed/sticky part.
+       -------------------------------------------------------- */
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        flex: 0 0 auto !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 100 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        margin: .35rem .65rem 0 !important;
+        padding: .45rem 0 .1rem !important;
+
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(0,0,0,0),
+                var(--dm-surface) 34%
+            ) !important;
+    }
+
+    .st-key-agent_v2_input [data-testid="stChatInput"],
+    div[class*="st-key-agent_v2_input"] [data-testid="stChatInput"] {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        min-height: 58px !important;
+        margin: 0 !important;
+
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 13px !important;
+        background: var(--dm-input) !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,.12) !important;
+    }
+
+    .st-key-agent_v2_input textarea,
+    div[class*="st-key-agent_v2_input"] textarea {
+        min-height: 54px !important;
+        max-height: 140px !important;
+        resize: none !important;
+        padding: 15px 54px 13px 15px !important;
+
+        background: var(--dm-input) !important;
+        color: var(--dm-input-text) !important;
+        overflow-y: auto !important;
+    }
+
+    .st-key-agent_v2_input button,
+    div[class*="st-key-agent_v2_input"] button {
+        flex: 0 0 auto !important;
+    }
+
+    .dm-agent-v2-disclaimer {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+        padding: .3rem 0 0 !important;
+    }
+
+    /* --------------------------------------------------------
+       RESPONSIVE BREAKPOINTS
+       -------------------------------------------------------- */
+    @media (max-width: 1200px) {
+        .dm-agent-v2-title {
+            font-size: 1.5rem !important;
+        }
+
+        .st-key-agent_v2_input,
+        div[class*="st-key-agent_v2_input"] {
+            margin-left: .35rem !important;
+            margin-right: .35rem !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+            display: block !important;
+        }
+
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+        > div > [data-testid="stVerticalBlock"] {
+            display: block !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-agent_v2_scroll,
+        div[class*="st-key-agent_v2_scroll"] {
+            height: auto !important;
+            max-height: none !important;
+            min-height: 420px !important;
+            overflow-y: visible !important;
+        }
+
+        .st-key-agent_v2_input,
+        div[class*="st-key-agent_v2_input"] {
+            position: sticky !important;
+            bottom: .35rem !important;
+            margin: .5rem 0 0 !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dm-agent-v2-header {
+            padding-top: 0 !important;
+        }
+
+        .dm-agent-v2-brand {
+            gap: 7px !important;
+        }
+
+        .dm-agent-v2-title {
+            font-size: 1.32rem !important;
+        }
+
+        .dm-agent-v2-subtitle {
+            font-size: .8rem !important;
+        }
+
+        .dm-agent-v2-empty {
+            min-height: 210px !important;
+            padding: 18px 12px !important;
+        }
+
+        .st-key-agent_v2_input textarea,
+        div[class*="st-key-agent_v2_input"] textarea {
+            min-height: 50px !important;
+            max-height: 120px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# AUTHORITATIVE PADDING COLLISION FIX
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    /* Keep the centered title below Streamlit's fixed toolbar. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] .block-container,
+    .main .block-container,
+    .block-container {
+        width: 100% !important;
+        max-width: 1600px !important;
+        padding-top: 4.65rem !important;
+        padding-bottom: .75rem !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+    }
+
+    /* Fit the entire workspace inside the visible browser viewport. */
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+        height: calc(100dvh - 5.4rem) !important;
+        max-height: calc(100dvh - 5.4rem) !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        align-items: stretch !important;
+        overflow: hidden !important;
+    }
+
+    /* Final cascade layer: spacing only; colors and component styling stay unchanged. */
+    [data-testid="stMainBlockContainer"],
+    [data-testid="stMainBlockContainer"] *,
+    [data-testid="stSidebar"],
+    [data-testid="stSidebar"] * {
+        box-sizing: border-box !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker),
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+    div[data-testid="column"]:has(.dm-right-panel-marker),
+    div[data-testid="column"]:has(.dm-analytics-scroll-marker),
+    div[data-testid="column"]:has(.dm-kb-scroll-marker) {
+        min-width: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+    div[data-testid="column"]:has(.dm-right-panel-marker) {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        padding-bottom: 0 !important;
+        overflow: hidden !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker) {
+        display: flex !important;
+        flex-direction: column !important;
+        padding-top: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker) > div,
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+    > div > [data-testid="stVerticalBlock"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: .3rem !important;
+        overflow: hidden !important;
+    }
+
+    .dm-agent-v2-header {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+        padding: .45rem .5rem .55rem !important;
+    }
+
+    .st-key-agent_v2_scroll,
+    div[class*="st-key-agent_v2_scroll"] {
+        flex: 1 1 0 !important;
+        height: 0 !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding-left: .35rem !important;
+        padding-right: .75rem !important;
+        padding-bottom: .8rem !important;
+        scroll-padding-bottom: .8rem !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+    }
+
+    .st-key-agent_v2_scroll > div,
+    div[class*="st-key-agent_v2_scroll"] > div,
+    .st-key-agent_v2_scroll [data-testid="stVerticalBlock"],
+    div[class*="st-key-agent_v2_scroll"] [data-testid="stVerticalBlock"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .st-key-agent_v2_scroll p,
+    .st-key-agent_v2_scroll li,
+    div[class*="st-key-agent_v2_scroll"] p,
+    div[class*="st-key-agent_v2_scroll"] li,
+    .dm-doc-name,
+    .dm-retrieved-title span {
+        overflow-wrap: anywhere !important;
+    }
+
+    /* The flex layout keeps the input at the bottom without covering messages. */
+    .st-key-agent_v2_input,
+    div[class*="st-key-agent_v2_input"] {
+        flex: 0 0 auto !important;
+        position: relative !important;
+        inset: auto !important;
+        width: auto !important;
+        max-width: calc(100% - 1.3rem) !important;
+        margin: .2rem .65rem 0 !important;
+        padding: .25rem 0 .05rem !important;
+        z-index: 30 !important;
+    }
+
+    .st-key-agent_v2_input [data-testid="stChatInput"],
+    div[class*="st-key-agent_v2_input"] [data-testid="stChatInput"],
+    .st-key-agent_v2_input textarea,
+    div[class*="st-key-agent_v2_input"] textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .st-key-agent_v2_input [data-testid="stChatInput"],
+    div[class*="st-key-agent_v2_input"] [data-testid="stChatInput"] {
+        min-height: 54px !important;
+        margin: 0 !important;
+    }
+
+    .st-key-agent_v2_input textarea,
+    div[class*="st-key-agent_v2_input"] textarea {
+        min-height: 50px !important;
+        max-height: 120px !important;
+        padding: 13px 56px 11px 15px !important;
+    }
+
+    .dm-agent-v2-disclaimer {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+        padding: .2rem .65rem 0 !important;
+    }
+
+    .dm-agent-v2-pipeline,
+    .dm-agent-v2-grounding {
+        flex: 0 0 auto !important;
+    }
+
+    .st-key-right_documents_scroll_container,
+    div[class*="st-key-right_documents_scroll_container"] {
+        min-width: 0 !important;
+        width: 100% !important;
+        padding-left: .1rem !important;
+        padding-right: .45rem !important;
+        padding-bottom: .75rem !important;
+    }
+
+    @media (max-width: 900px) {
+        [data-testid="stAppViewContainer"],
+        [data-testid="stMain"] {
+            overflow-y: auto !important;
+        }
+
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stMainBlockContainer"] .block-container,
+        .main .block-container,
+        .block-container {
+            padding-top: 4.5rem !important;
+            padding-bottom: 1rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker),
+        div[data-testid="column"]:has(.dm-right-panel-marker) {
+            width: 100% !important;
+            min-width: 0 !important;
+            height: auto !important;
+            max-height: none !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            overflow: visible !important;
+        }
+
+        div[data-testid="column"]:has(.dm-agent-v2-column-marker)
+        > div > [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-agent_v2_scroll,
+        div[class*="st-key-agent_v2_scroll"] {
+            flex: none !important;
+            height: clamp(360px, 58dvh, 540px) !important;
+            max-height: clamp(360px, 58dvh, 540px) !important;
+            min-height: 0 !important;
+            overflow-y: auto !important;
+        }
+
+        .st-key-agent_v2_input,
+        div[class*="st-key-agent_v2_input"] {
+            position: relative !important;
+            bottom: auto !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stMainBlockContainer"] .block-container,
+        .main .block-container,
+        .block-container {
+            padding-left: .7rem !important;
+            padding-right: .7rem !important;
+        }
+
+        .dm-agent-v2-header {
+            padding: .3rem .25rem .5rem !important;
+        }
+
+        .st-key-agent_v2_input textarea,
+        div[class*="st-key-agent_v2_input"] textarea {
+            padding-right: 52px !important;
+        }
+    }
+
+    /* Compact vertical spacing on short laptop screens. */
+    @media (min-width: 901px) and (max-height: 760px) {
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stMainBlockContainer"] .block-container,
+        .main .block-container,
+        .block-container {
+            padding-top: 4.25rem !important;
+            padding-bottom: .45rem !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+            height: calc(100dvh - 4.85rem) !important;
+            max-height: calc(100dvh - 4.85rem) !important;
+        }
+
+        .dm-agent-v2-header {
+            padding-top: .2rem !important;
+            padding-bottom: .35rem !important;
+        }
+
+        .dm-agent-v2-logo {
+            width: 34px !important;
+            height: 34px !important;
+        }
+
+        .dm-agent-v2-subtitle {
+            margin-top: 4px !important;
+        }
+
+        .dm-agent-v2-pipeline {
+            min-height: 36px !important;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# Page-scrolling chat with a viewport-fixed composer. Scoped to the chat route.
+st.markdown(
+    """
+    <style>
+    [data-testid="stMain"]:has(.st-key-dm_center_chat) {
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scroll-padding-bottom: 180px;
+    }
+    [data-testid="stMainBlockContainer"]:has(.st-key-dm_center_chat),
+    .block-container:has(.st-key-dm_center_chat) {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100% !important;
+        overflow: visible !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(.st-key-dm_center_chat) {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        align-items: flex-start !important;
+    }
+    /* Remove viewport locks only along the center column's wrapper chain. */
+    :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_center_chat):has(.st-key-dm_center_chat),
+    :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_center_chat):has(.st-key-dm_center_chat) > div,
+    :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_center_chat):has(.st-key-dm_center_chat) > div > [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+        transform: none !important;
+        contain: none !important;
+    }
+    .st-key-dm_center_chat.st-key-dm_center_chat.st-key-dm_center_chat {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: calc(100dvh - 6rem) !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
+        gap: 1rem !important;
+        padding: 0 0 var(--dm-composer-space, 180px) !important;
+        box-sizing: border-box !important;
+        transform: none !important;
+        contain: none !important;
+    }
+    .st-key-dm_center_chat > div:has(.st-key-dm_center_header):has(.st-key-dm_center_composer),
+    .st-key-dm_center_chat > div > [data-testid="stVerticalBlock"]:has(.st-key-dm_center_header):has(.st-key-dm_center_composer) {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    .st-key-dm_center_chat .st-key-dm_center_header,
+    .st-key-dm_center_chat .st-key-dm_center_header > div,
+    .st-key-dm_center_chat .st-key-dm_conversation_viewport,
+    .st-key-dm_center_chat .st-key-dm_conversation_viewport > div,
+    .st-key-dm_center_chat .st-key-dm_conversation_viewport [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        flex: 0 0 auto !important;
+    }
+    .st-key-dm_center_chat .st-key-dm_conversation_viewport {
+        padding: .5rem .7rem 1rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+        min-width: 0 !important;
+    }
+    .st-key-dm_center_chat .dm-agent-v2-empty {
+        min-height: clamp(180px, 30dvh, 300px) !important;
+        padding: clamp(16px, 3vw, 32px) 12px !important;
+    }
+    .st-key-dm_center_chat .dm-agent-v2-example-title {
+        margin: .5rem 0 !important;
+    }
+    .st-key-dm_center_chat .stButton > button {
+        white-space: normal !important;
+        height: auto !important;
+        min-height: 44px !important;
+        padding: .65rem .8rem !important;
+    }
+    /* The composer remains in flow as a safe fallback before measurement. */
+    .st-key-dm_center_chat .st-key-dm_center_composer {
+        position: sticky !important;
+        bottom: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        padding: .65rem .6rem max(.6rem, env(safe-area-inset-bottom)) !important;
+        background: var(--dm-bg) !important;
+        box-sizing: border-box !important;
+        z-index: 90 !important;
+        gap: .35rem !important;
+    }
+    .st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer {
+        position: fixed !important;
+        left: var(--dm-composer-left) !important;
+        width: var(--dm-composer-width) !important;
+        bottom: var(--dm-composer-bottom, 0px) !important;
+        right: auto !important;
+        top: auto !important;
+        margin: 0 !important;
+    }
+    .st-key-dm_center_chat .st-key-agent_v2_input {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .st-key-dm_center_chat .st-key-dm_center_composer > div,
+    .st-key-dm_center_chat .st-key-dm_center_composer [data-testid="stVerticalBlock"] {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        gap: .35rem !important;
+    }
+    .st-key-dm_center_chat .dm-agent-v2-disclaimer {
+        padding: .25rem 0 0 !important;
+        margin: 0 !important;
+        line-height: 1.4 !important;
+    }
+    .st-key-dm_center_chat [data-testid="stChatMessage"] {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        margin: 0 0 1rem !important;
+        padding: .6rem .2rem !important;
+    }
+    .st-key-dm_center_chat [data-testid="stChatMessageContent"] {
+        min-width: 0 !important;
+        overflow-wrap: anywhere;
+    }
+    @media (max-width: 600px) {
+        .st-key-dm_center_chat .dm-agent-v2-header {
+            padding: .4rem .25rem !important;
+        }
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport {
+            padding-left: .15rem !important;
+            padding-right: .15rem !important;
+        }
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport [data-testid="stHorizontalBlock"] {
+            flex-wrap: wrap !important;
+        }
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport :is([data-testid="column"], [data-testid="stColumn"]) {
+            min-width: 100% !important;
+            flex: 1 1 100% !important;
+        }
+    }
+    /* Reserve the existing right-hand column, but pin its CONTENT independently
+       of the page and of Streamlit's sticky positioning wrappers. */
+    @media (min-width: 901px) {
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_documents_dock) {
+            position: relative !important;
+            top: auto !important;
+            align-self: flex-start !important;
+            height: calc(100dvh - 5.4rem) !important;
+            max-height: calc(100dvh - 5.4rem) !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            transform: none !important;
+            contain: none !important;
+        }
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_documents_dock) > div,
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_documents_dock)
+        > div > [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            transform: none !important;
+            contain: none !important;
+        }
+        .st-key-dm_documents_dock.st-key-dm_documents_dock.st-key-dm_documents_dock.st-key-dm_documents_dock.st-key-dm_documents_dock[data-viewport-pinned="true"] {
+            position: fixed !important;
+            top: var(--dm-doc-top) !important;
+            left: var(--dm-doc-left) !important;
+            width: var(--dm-doc-width) !important;
+            height: var(--dm-doc-height) !important;
+            max-height: var(--dm-doc-height) !important;
+            min-height: 0 !important;
+            bottom: auto !important;
+            right: auto !important;
+            margin: 0 !important;
+            padding: 0 .4rem 1rem 0 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior-y: contain !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: var(--dm-border) transparent !important;
+            box-sizing: border-box !important;
+            background: var(--dm-bg) !important;
+            z-index: 80 !important;
+            display: block !important;
+        }
+        .st-key-dm_documents_dock .st-key-right_documents_scroll_container,
+        .st-key-dm_documents_dock .st-key-right_documents_scroll_container > div,
+        .st-key-dm_documents_dock .st-key-right_documents_scroll_container [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            flex: 0 0 auto !important;
+        }
+        .st-key-dm_documents_dock[data-viewport-pinned="true"]::-webkit-scrollbar {
+            width: 8px;
+        }
+        .st-key-dm_documents_dock[data-viewport-pinned="true"]::-webkit-scrollbar-thumb {
+            background: var(--dm-border);
+            border-radius: 8px;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+# ============================================================
+# FINAL MOBILE SIDEBAR COLLAPSE FIX
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    @media (max-width: 900px) {
+
+        /*
+          Streamlit exposes sidebar state through aria-expanded.
+          When collapsed, completely move the sidebar off-canvas and
+          remove it from hit-testing so none of its contents remain visible.
+        */
+        section[data-testid="stSidebar"][aria-expanded="false"],
+        [data-testid="stSidebar"][aria-expanded="false"] {
+            width: 0 !important;
+            min-width: 0 !important;
+            max-width: 0 !important;
+
+            margin-left: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+
+            transform: translateX(-110%) !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+
+            border-right: 0 !important;
+            overflow: hidden !important;
+        }
+
+        section[data-testid="stSidebar"][aria-expanded="false"] > div,
+        [data-testid="stSidebar"][aria-expanded="false"] > div,
+        section[data-testid="stSidebar"][aria-expanded="false"]
+        [data-testid="stSidebarContent"],
+        [data-testid="stSidebar"][aria-expanded="false"]
+        [data-testid="stSidebarContent"] {
+            width: 0 !important;
+            min-width: 0 !important;
+            max-width: 0 !important;
+            overflow: hidden !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        /*
+          When expanded, restore a normal mobile drawer width.
+          This is only applied while aria-expanded is explicitly true.
+        */
+        section[data-testid="stSidebar"][aria-expanded="true"],
+        [data-testid="stSidebar"][aria-expanded="true"] {
+            width: min(86vw, 320px) !important;
+            min-width: min(86vw, 320px) !important;
+            max-width: min(86vw, 320px) !important;
+
+            transform: translateX(0) !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+
+            margin-left: 0 !important;
+            overflow: hidden !important;
+        }
+
+        section[data-testid="stSidebar"][aria-expanded="true"] > div,
+        [data-testid="stSidebar"][aria-expanded="true"] > div,
+        section[data-testid="stSidebar"][aria-expanded="true"]
+        [data-testid="stSidebarContent"],
+        [data-testid="stSidebar"][aria-expanded="true"]
+        [data-testid="stSidebarContent"] {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        /*
+          Keep Streamlit's collapsed/open control above the app so the
+          user can always reopen the sidebar after it is hidden.
+        */
+        [data-testid="collapsedControl"] {
+            z-index: 100000 !important;
+            pointer-events: auto !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
