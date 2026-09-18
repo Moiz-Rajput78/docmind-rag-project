@@ -50,4 +50,4 @@ data/uploads/
 
 # Temporary files
 *.tmp
-*.temp
+*.temp~$*
