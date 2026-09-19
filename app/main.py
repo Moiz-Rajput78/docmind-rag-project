@@ -75,6 +75,21 @@ def toggle_theme():
     )
 
 
+def set_theme_from_documents_toggle():
+    """Keep the Documents-panel theme switch in sync with the app theme."""
+    st.session_state.theme = (
+        "light"
+        if st.session_state.documents_theme_toggle
+        else "dark"
+    )
+
+
+if "documents_theme_toggle" not in st.session_state:
+    st.session_state.documents_theme_toggle = (
+        st.session_state.theme == "light"
+    )
+
+
 if st.session_state.theme == "dark":
     THEME = {
         "bg": "#101412",
@@ -10874,14 +10889,8 @@ def render_chat_message(question, answer, sources, result=None):
             render_retrieval_details(result, expanded=False)
 
 
-def render_right_documents(document_manager, current_result):
-    """Render the persistent document sidebar shown in the target UI."""
-    # Marker lets CSS style the complete Streamlit column as a real
-    # right-hand sidebar, matching the native left sidebar palette.
-    st.markdown(
-        '<div class="dm-right-panel-marker" aria-hidden="true"></div>',
-        unsafe_allow_html=True,
-    )
+def render_right_upload_controls(document_manager):
+    """Render the fixed upload controls for the Documents sidebar."""
 
     st.markdown(
         '<div class="dm-right-section-title">Upload</div>',
@@ -10969,6 +10978,10 @@ def render_right_documents(document_manager, current_result):
             with st.expander("Technical details"):
                 st.code(str(exc))
 
+
+def render_right_documents_content(document_manager, current_result):
+    """Render only the independently scrollable Documents sidebar content."""
+
     st.markdown(
         '<div class="dm-right-section-title">Uploaded Documents</div>',
         unsafe_allow_html=True,
@@ -11045,8 +11058,6 @@ def render_right_documents(document_manager, current_result):
         for idx, document in enumerate(documents):
             filename = document.get("filename", "Unknown")
 
-            # Prefer explicit chunk counts returned by the manager. If they
-            # are unavailable, keep the UI honest rather than inventing one.
             chunk_value = document.get("chunks")
             if chunk_value is None:
                 chunk_value = document.get("chunk_count")
@@ -11178,6 +11189,7 @@ def render_right_documents(document_manager, current_result):
 with st.sidebar:
     st.markdown(
         """
+        <span class="dm-sidebar-brand-sticky-marker"></span>
         <div class="dm-brand">
             <div class="dm-brand-icon">◆</div>
             <div>
@@ -11186,6 +11198,11 @@ with st.sidebar:
             </div>
         </div>
         """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        '<span class="dm-sidebar-newchat-sticky-marker"></span>',
         unsafe_allow_html=True,
     )
 
@@ -11276,22 +11293,6 @@ with st.sidebar:
     st.caption(f"Retrieving top {top_k} relevant chunks.")
 
     st.divider()
-
-    current_dark = st.session_state.theme == "dark"
-
-    theme_label = (
-        "☀️ Light mode"
-        if current_dark
-        else "🌙 Dark mode"
-    )
-
-    if st.button(
-        theme_label,
-        width="stretch",
-        key="workspace_theme",
-    ):
-        toggle_theme()
-        st.rerun()
 
     if st.session_state.conversation_history:
         if st.button(
@@ -11648,27 +11649,6 @@ with center_panel:
                     panel.dataset.composerPinned = 'true';
                     set(panel, '--dm-composer-space',
                         Math.ceil(composer.getBoundingClientRect().height + 32) + 'px');
-                    // The column remains in the layout as a width placeholder.
-                    // Only its inner Documents dock is fixed to the viewport.
-                    const dock = doc.querySelector('.st-key-dm_documents_dock');
-                    const column = dock?.closest('[data-testid="stColumn"], [data-testid="column"]');
-                    if (dock && column) {
-                        if (win.matchMedia('(min-width: 901px)').matches) {
-                            const bounds = column.getBoundingClientRect();
-                            const style = win.getComputedStyle(column);
-                            const padLeft = parseFloat(style.paddingLeft) || 0;
-                            const padRight = parseFloat(style.paddingRight) || 0;
-                            const header = doc.querySelector('[data-testid="stHeader"]');
-                            const top = Math.max(0, header?.getBoundingClientRect().bottom || 56) + 12;
-                            set(dock, '--dm-doc-left', (bounds.left + padLeft) + 'px');
-                            set(dock, '--dm-doc-width', Math.max(0, bounds.width - padLeft - padRight) + 'px');
-                            set(dock, '--dm-doc-top', top + 'px');
-                            set(dock, '--dm-doc-height', Math.max(100,
-                                (viewport?.height || win.innerHeight) + (viewport?.offsetTop || 0) - top - 12) + 'px');
-                            dock.dataset.viewportPinned = 'true';
-                        } else {
-                            delete dock.dataset.viewportPinned;
-                        }
                     }
                 };
                 const schedule = () => {
@@ -11683,9 +11663,6 @@ with center_panel:
                     const composer = panel.querySelector('.st-key-dm_center_composer');
                     if (composer) observer.observe(composer);
                 }
-                const documentsColumn = doc.querySelector('.st-key-dm_documents_dock')
-                    ?.closest('[data-testid="stColumn"], [data-testid="column"]');
-                if (documentsColumn) observer.observe(documentsColumn);
                 win.addEventListener('resize', schedule);
                 doc.addEventListener('scroll', schedule, true);
                 win.visualViewport?.addEventListener('resize', schedule);
@@ -11717,20 +11694,63 @@ with center_panel:
 # ============================================================
 
 with right_panel:
-    with st.container(key="dm_documents_dock", border=False):
-        st.markdown(
-            '<div class="dm-right-panel-title">Documents</div>',
-            unsafe_allow_html=True,
-        )
+    # This marker stays in the right column so all existing column-level
+    # styling continues to target the Documents sidebar correctly.
+    st.markdown(
+        '<div class="dm-right-panel-marker" aria-hidden="true"></div>',
+        unsafe_allow_html=True,
+    )
 
+    with st.container(key="dm_documents_dock", border=False):
+
+        # ------------------------------------------------------------
+        # FIXED DOCUMENTS HEADER
+        # Heading + theme toggle + upload controls do NOT scroll.
+        # ------------------------------------------------------------
+        with st.container(key="dm_documents_fixed_header", border=False):
+            documents_title_col, documents_theme_col = st.columns(
+                [4.2, 1],
+                gap="small",
+                vertical_alignment="center",
+            )
+
+            with documents_title_col:
+                st.markdown(
+                    '<div class="dm-right-panel-title">Documents</div>',
+                    unsafe_allow_html=True,
+                )
+
+            with documents_theme_col:
+                st.markdown(
+                    '<span class="dm-doc-theme-toggle-marker"></span>',
+                    unsafe_allow_html=True,
+                )
+                st.toggle(
+                    "Light theme",
+                    key="documents_theme_toggle",
+                    on_change=set_theme_from_documents_toggle,
+                    help="Switch between dark and light mode",
+                    label_visibility="collapsed",
+                )
+
+            if workspace_document_manager:
+                render_right_upload_controls(
+                    workspace_document_manager,
+                )
+
+        # ------------------------------------------------------------
+        # SCROLLABLE DOCUMENT CONTENT
+        # Only this lower section receives its own vertical scrollbar.
+        # ------------------------------------------------------------
         if workspace_document_manager:
-            # Independent scrolling Documents sidebar.
+            # The entire Documents dock behaves like a sidebar.
+            # This lower container is intentionally NOT given its own height
+            # or scrollbar; the outer Documents dock owns scrolling.
             with st.container(
-                height=640,
                 border=False,
                 key="right_documents_scroll_container",
             ):
-                render_right_documents(
+                render_right_documents_content(
                     workspace_document_manager,
                     st.session_state.last_result,
                 )
@@ -15916,3 +15936,1010 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+
+# ============================================================
+# FINAL LEFT SIDEBAR FIXED BRAND/NEW CHAT + HEADER THEME TOGGLE
+# ============================================================
+
+st.markdown(
+    f"""
+    <style>
+    /* The sidebar body remains its own scroll area. */
+    [data-testid="stSidebar"] {{
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stSidebar"] > div,
+    [data-testid="stSidebarContent"] {{
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        scrollbar-width: thin !important;
+        overscroll-behavior: contain !important;
+    }}
+
+    /* DocMind identity remains at the top while lower sidebar content scrolls. */
+    [data-testid="stSidebar"] [data-testid="stElementContainer"]:has(.dm-sidebar-brand-sticky-marker) {{
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 50 !important;
+        background: var(--dm-sidebar-bg) !important;
+        margin: 0 !important;
+        padding-top: .35rem !important;
+        padding-bottom: .15rem !important;
+    }}
+
+    /* Marker row itself is invisible and consumes no height. */
+    [data-testid="stSidebar"] [data-testid="stElementContainer"]:has(.dm-sidebar-newchat-sticky-marker) {{
+        position: sticky !important;
+        top: 4.65rem !important;
+        z-index: 49 !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: var(--dm-sidebar-bg) !important;
+    }}
+
+    /* New Chat is the element immediately after its marker. */
+    [data-testid="stSidebar"] [data-testid="stElementContainer"]:has(.dm-sidebar-newchat-sticky-marker)
+    + [data-testid="stElementContainer"] {{
+        position: sticky !important;
+        top: 4.55rem !important;
+        z-index: 50 !important;
+        background: var(--dm-sidebar-bg) !important;
+        padding-top: .55rem !important;
+        padding-bottom: .8rem !important;
+        margin-bottom: .2rem !important;
+        border-bottom: 1px solid var(--dm-sidebar-border) !important;
+    }}
+
+    .dm-sidebar-brand-sticky-marker,
+    .dm-sidebar-newchat-sticky-marker {{
+        display: none !important;
+    }}
+
+    /* Documents heading theme toggle */
+    div[data-testid="column"]:has(.dm-doc-theme-toggle-marker) {{
+        display:flex !important;
+        align-items:center !important;
+        justify-content:flex-end !important;
+        min-width:0 !important;
+    }}
+
+    .dm-doc-theme-toggle-marker {{
+        display:none !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-doc-theme-toggle-marker)
+    [data-testid="stToggle"] {{
+        margin:0 !important;
+        width:auto !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-doc-theme-toggle-marker)
+    [data-testid="stToggle"] label {{
+        padding:0 !important;
+        margin:0 !important;
+    }}
+
+    div[data-testid="column"]:has(.dm-doc-theme-toggle-marker)
+    [data-testid="stToggle"] p {{
+        display:none !important;
+    }}
+
+    @media (max-width: 900px) {{
+        div[data-testid="column"]:has(.dm-doc-theme-toggle-marker) {{
+            justify-content:flex-end !important;
+        }}
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ============================================================
+# DOCUMENTS SIDEBAR — CLEAN FINAL LAYOUT
+# ============================================================
+# Desktop:
+#   * whole Documents panel is fixed like the left sidebar
+#   * heading/toggle/upload/submit stay fixed inside it
+#   * only Uploaded Documents / Indexed KB / Retrieved Sources scroll
+# Mobile:
+#   * returns to normal Streamlit document flow
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+
+        /* Keep the right Streamlit column only as the layout placeholder. */
+        div[data-testid="column"]:has(.dm-right-panel-marker),
+        div[data-testid="stColumn"]:has(.dm-right-panel-marker) {
+            position: relative !important;
+            overflow: visible !important;
+            min-height: 1px !important;
+        }
+
+        /* Entire Documents panel: fixed to viewport, never page-scrolls. */
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"] {
+            position: fixed !important;
+            top: 4.75rem !important;
+            right: 1.25rem !important;
+
+            width: 340px !important;
+            max-width: 340px !important;
+
+            height: calc(100dvh - 5.15rem) !important;
+            max-height: calc(100dvh - 5.15rem) !important;
+            min-height: 0 !important;
+
+            margin: 0 !important;
+            padding: 0 .25rem 0 0 !important;
+            box-sizing: border-box !important;
+
+            background: var(--dm-bg) !important;
+            z-index: 999 !important;
+
+            overflow: hidden !important;
+        }
+
+        /* Streamlit wrapper immediately inside the keyed dock. */
+        .st-key-dm_documents_dock > div,
+        div[class*="st-key-dm_documents_dock"] > div {
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+        }
+
+        /* The dock's main vertical block owns the flex layout. */
+        .st-key-dm_documents_dock > div > [data-testid="stVerticalBlock"],
+        div[class*="st-key-dm_documents_dock"] > div > [data-testid="stVerticalBlock"] {
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+
+            display: flex !important;
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
+            gap: .35rem !important;
+
+            overflow: hidden !important;
+        }
+
+        /* Fixed top block: Documents + toggle + Upload + Submit. */
+        .st-key-dm_documents_fixed_header,
+        div[class*="st-key-dm_documents_fixed_header"] {
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 2 !important;
+
+            background: var(--dm-bg) !important;
+            padding-bottom: .55rem !important;
+            border-bottom: 1px solid var(--dm-border) !important;
+        }
+
+        /* Lower block: the ONLY scrollable section. */
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            height: auto !important;
+            max-height: none !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+
+            position: relative !important;
+            padding-right: .45rem !important;
+            padding-bottom: 1.25rem !important;
+            box-sizing: border-box !important;
+
+            scrollbar-gutter: stable !important;
+            overscroll-behavior-y: contain !important;
+        }
+
+        /* Inner Streamlit wrappers must not create another scroll/clipping layer. */
+        .st-key-right_documents_scroll_container > div,
+        .st-key-right_documents_scroll_container > div > div,
+        .st-key-right_documents_scroll_container [data-testid="stVerticalBlock"],
+        div[class*="st-key-right_documents_scroll_container"] > div,
+        div[class*="st-key-right_documents_scroll_container"] > div > div,
+        div[class*="st-key-right_documents_scroll_container"] [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        /* Ensure the final control/card is fully reachable. */
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlock"] > :last-child {
+            margin-bottom: 1rem !important;
+        }
+
+        /* Scrollbar only for lower document content. */
+        .st-key-right_documents_scroll_container::-webkit-scrollbar,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar {
+            width: 7px !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-track,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-thumb,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-thumb {
+            background: var(--dm-border) !important;
+            border-radius: 999px !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-thumb:hover,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-thumb:hover {
+            background: var(--dm-muted) !important;
+        }
+    }
+
+    @media (max-width: 1200px) and (min-width: 901px) {
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"] {
+            width: 300px !important;
+            max-width: 300px !important;
+            right: 1rem !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"],
+        .st-key-dm_documents_fixed_header,
+        div[class*="st-key-dm_documents_fixed_header"],
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            position: static !important;
+            inset: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
+            transform: none !important;
+        }
+
+        .st-key-dm_documents_dock > div,
+        .st-key-dm_documents_dock > div > [data-testid="stVerticalBlock"],
+        div[class*="st-key-dm_documents_dock"] > div,
+        div[class*="st-key-dm_documents_dock"] > div > [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            display: block !important;
+            overflow: visible !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# AUTHORITATIVE DOCUMENTS SCROLL FIX
+# ============================================================
+# The lower Documents area now uses Streamlit's native height container.
+# This final CSS intentionally overrides all older experimental rules.
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+
+        /* Entire right sidebar remains fixed. */
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"] {
+            position: fixed !important;
+            top: 4.75rem !important;
+            right: 1.25rem !important;
+
+            width: 340px !important;
+            max-width: 340px !important;
+
+            height: calc(100dvh - 5.15rem) !important;
+            max-height: calc(100dvh - 5.15rem) !important;
+            min-height: 0 !important;
+
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+
+            background: var(--dm-bg) !important;
+            z-index: 999 !important;
+        }
+
+        /* Main dock layout = fixed header + flexible native scroll body. */
+        .st-key-dm_documents_dock > div,
+        div[class*="st-key-dm_documents_dock"] > div {
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+        }
+
+        .st-key-dm_documents_dock > div > [data-testid="stVerticalBlock"],
+        div[class*="st-key-dm_documents_dock"] > div > [data-testid="stVerticalBlock"] {
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+
+            display: flex !important;
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
+
+            overflow: hidden !important;
+            gap: .35rem !important;
+        }
+
+        /* Top controls never scroll. */
+        .st-key-dm_documents_fixed_header,
+        div[class*="st-key-dm_documents_fixed_header"] {
+            flex: 0 0 auto !important;
+
+            height: auto !important;
+            max-height: none !important;
+
+            overflow: visible !important;
+
+            background: var(--dm-bg) !important;
+            z-index: 10 !important;
+
+            padding-bottom: .55rem !important;
+            border-bottom: 1px solid var(--dm-border) !important;
+        }
+
+        /*
+         * LOWER CONTENT:
+         * Streamlit now creates this as a native height-limited container.
+         * Let it own scrolling.
+         */
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            flex: 1 1 0 !important;
+
+            /* Override the Python fallback height responsively. */
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+
+            position: relative !important;
+            box-sizing: border-box !important;
+
+            padding-right: .45rem !important;
+            padding-bottom: 1rem !important;
+
+            overscroll-behavior-y: contain !important;
+            scrollbar-gutter: stable !important;
+        }
+
+        /*
+         * DO NOT set overflow:visible on every nested wrapper here.
+         * The native Streamlit height container needs its own internal
+         * overflow machinery intact.
+         */
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlockBorderWrapper"],
+        div[class*="st-key-right_documents_scroll_container"]
+        [data-testid="stVerticalBlockBorderWrapper"] {
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
+            max-height: 100% !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlockBorderWrapper"] > div,
+        div[class*="st-key-right_documents_scroll_container"]
+        [data-testid="stVerticalBlockBorderWrapper"] > div {
+            min-height: min-content !important;
+        }
+
+        /* Make sure the final card/buttons can be reached. */
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlock"] > :last-child {
+            margin-bottom: 1.25rem !important;
+        }
+
+        /* Visible independent scrollbar. */
+        .st-key-right_documents_scroll_container::-webkit-scrollbar,
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar,
+        div[class*="st-key-right_documents_scroll_container"]
+        [data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar {
+            width: 8px !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-thumb,
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar-thumb,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-thumb,
+        div[class*="st-key-right_documents_scroll_container"]
+        [data-testid="stVerticalBlockBorderWrapper"]::-webkit-scrollbar-thumb {
+            background: var(--dm-border) !important;
+            border-radius: 999px !important;
+        }
+    }
+
+    @media (max-width: 1200px) and (min-width: 901px) {
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"] {
+            width: 300px !important;
+            max-width: 300px !important;
+            right: 1rem !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"],
+        .st-key-dm_documents_fixed_header,
+        div[class*="st-key-dm_documents_fixed_header"],
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            position: static !important;
+
+            width: 100% !important;
+            max-width: 100% !important;
+
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+
+            overflow: visible !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL AUTHORITATIVE RIGHT DOCUMENTS SIDEBAR
+# ============================================================
+# Desktop behavior:
+#   1. Right Documents panel is fixed to viewport.
+#   2. Right Streamlit column remains in layout as width placeholder.
+#   3. Documents + toggle + Upload + Submit stay fixed.
+#   4. Only Uploaded Documents / Indexed KB / Retrieved sources scroll.
+#   5. No scroll listeners / no polling loops -> smooth scrolling.
+# ============================================================
+
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindRightSidebarFinal";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        let resizeObserver = null;
+        let resizeRaf = 0;
+        let startupTimers = [];
+
+        const setImp = (el, prop, value) => {
+            if (!el) return;
+            el.style.setProperty(prop, value, "important");
+        };
+
+        const clearProps = (el, props) => {
+            if (!el) return;
+            props.forEach((p) => el.style.removeProperty(p));
+        };
+
+        const getParts = () => {
+            const dock = doc.querySelector(".st-key-dm_documents_dock");
+            if (!dock) return {};
+
+            const column = dock.closest(
+                '[data-testid="stColumn"], [data-testid="column"]'
+            );
+
+            const header = dock.querySelector(
+                ".st-key-dm_documents_fixed_header"
+            );
+
+            const body = dock.querySelector(
+                ".st-key-right_documents_scroll_container"
+            );
+
+            const dockVertical =
+                dock.querySelector(':scope > div > [data-testid="stVerticalBlock"]') ||
+                dock.querySelector(':scope > div [data-testid="stVerticalBlock"]');
+
+            return { dock, column, header, body, dockVertical };
+        };
+
+        const resetMobile = () => {
+            const { dock, column, header, body, dockVertical } = getParts();
+
+            clearProps(dock, [
+                "position", "top", "left", "right", "bottom",
+                "width", "max-width", "height", "max-height",
+                "min-height", "overflow", "overflow-y", "overflow-x",
+                "display", "flex-direction", "box-sizing",
+                "z-index", "margin", "padding-right", "transform",
+                "background"
+            ]);
+
+            clearProps(column, [
+                "position", "overflow", "align-self", "transform"
+            ]);
+
+            clearProps(dockVertical, [
+                "height", "max-height", "min-height",
+                "display", "flex-direction", "overflow", "gap"
+            ]);
+
+            clearProps(header, [
+                "flex", "height", "max-height", "min-height",
+                "position", "z-index", "overflow", "background"
+            ]);
+
+            clearProps(body, [
+                "flex", "height", "max-height", "min-height",
+                "overflow-y", "overflow-x", "position",
+                "box-sizing", "padding-bottom", "padding-right"
+            ]);
+        };
+
+        const layout = () => {
+            const { dock, column, header, body, dockVertical } = getParts();
+
+            if (!dock || !column || !header || !body) {
+                return false;
+            }
+
+            if (win.innerWidth <= 900) {
+                resetMobile();
+                return true;
+            }
+
+            const rect = column.getBoundingClientRect();
+
+            if (!rect.width || rect.width < 180) {
+                return false;
+            }
+
+            const top = 76;
+            const bottomGap = 8;
+            const sideInset = 6;
+
+            const left = Math.round(rect.left + sideInset);
+            const width = Math.max(
+                280,
+                Math.round(rect.width - sideInset * 2)
+            );
+
+            const dockHeight = Math.max(
+                360,
+                win.innerHeight - top - bottomGap
+            );
+
+            // Keep the Streamlit column in layout as a width placeholder.
+            setImp(column, "position", "relative");
+            setImp(column, "overflow", "visible");
+            setImp(column, "align-self", "flex-start");
+            setImp(column, "transform", "none");
+
+            // True fixed right sidebar.
+            setImp(dock, "position", "fixed");
+            setImp(dock, "top", `${top}px`);
+            setImp(dock, "left", `${left}px`);
+            setImp(dock, "right", "auto");
+            setImp(dock, "bottom", "auto");
+            setImp(dock, "width", `${width}px`);
+            setImp(dock, "max-width", `${width}px`);
+            setImp(dock, "height", `${dockHeight}px`);
+            setImp(dock, "max-height", `${dockHeight}px`);
+            setImp(dock, "min-height", "0");
+            setImp(dock, "overflow", "hidden");
+            setImp(dock, "box-sizing", "border-box");
+            setImp(dock, "z-index", "999");
+            setImp(dock, "margin", "0");
+            setImp(dock, "padding-right", "0");
+            setImp(dock, "transform", "none");
+            setImp(dock, "background", "var(--dm-bg)");
+
+            // Make the actual Streamlit vertical wrapper a proper column.
+            if (dockVertical) {
+                setImp(dockVertical, "height", "100%");
+                setImp(dockVertical, "max-height", "100%");
+                setImp(dockVertical, "min-height", "0");
+                setImp(dockVertical, "display", "flex");
+                setImp(dockVertical, "flex-direction", "column");
+                setImp(dockVertical, "overflow", "hidden");
+                setImp(dockVertical, "gap", "0.35rem");
+            }
+
+            // Fixed top controls.
+            setImp(header, "flex", "0 0 auto");
+            setImp(header, "height", "auto");
+            setImp(header, "max-height", "none");
+            setImp(header, "min-height", "0");
+            setImp(header, "position", "relative");
+            setImp(header, "z-index", "20");
+            setImp(header, "overflow", "visible");
+            setImp(header, "background", "var(--dm-bg)");
+
+            // IMPORTANT: measure after header styles are applied.
+            const headerHeight = Math.ceil(header.getBoundingClientRect().height);
+            const gap = 8;
+
+            const bodyHeight = Math.max(
+                160,
+                dockHeight - headerHeight - gap
+            );
+
+            // This is the one and only scroll surface.
+            setImp(body, "flex", "0 0 auto");
+            setImp(body, "height", `${bodyHeight}px`);
+            setImp(body, "max-height", `${bodyHeight}px`);
+            setImp(body, "min-height", `${bodyHeight}px`);
+            setImp(body, "overflow-y", "auto");
+            setImp(body, "overflow-x", "hidden");
+            setImp(body, "position", "relative");
+            setImp(body, "box-sizing", "border-box");
+            setImp(body, "padding-right", "0.45rem");
+            setImp(body, "padding-bottom", "1rem");
+
+            // Do not let old CSS force the body wrappers into clipped heights.
+            const inner = body.querySelectorAll(
+                ':scope > div, :scope > div > div, [data-testid="stVerticalBlock"]'
+            );
+
+            inner.forEach((node) => {
+                setImp(node, "height", "auto");
+                setImp(node, "max-height", "none");
+                setImp(node, "min-height", "0");
+                setImp(node, "overflow", "visible");
+            });
+
+            return true;
+        };
+
+        const scheduleLayout = () => {
+            win.cancelAnimationFrame(resizeRaf);
+            resizeRaf = win.requestAnimationFrame(layout);
+        };
+
+        // Initial attempts only. No permanent interval.
+        [0, 80, 200, 450, 900].forEach((delay) => {
+            startupTimers.push(
+                win.setTimeout(scheduleLayout, delay)
+            );
+        });
+
+        // Recalculate only when real dimensions change.
+        resizeObserver = new win.ResizeObserver(scheduleLayout);
+
+        const observeWhenReady = () => {
+            const { column, header } = getParts();
+
+            if (column) resizeObserver.observe(column);
+            if (header) resizeObserver.observe(header);
+        };
+
+        startupTimers.push(
+            win.setTimeout(observeWhenReady, 250)
+        );
+
+        win.addEventListener(
+            "resize",
+            scheduleLayout,
+            { passive: true }
+        );
+
+        win.visualViewport?.addEventListener(
+            "resize",
+            scheduleLayout,
+            { passive: true }
+        );
+
+        win[KEY] = {
+            destroy() {
+                win.cancelAnimationFrame(resizeRaf);
+                resizeObserver?.disconnect();
+
+                startupTimers.forEach((timer) => {
+                    win.clearTimeout(timer);
+                });
+
+                win.removeEventListener(
+                    "resize",
+                    scheduleLayout
+                );
+
+                win.visualViewport?.removeEventListener(
+                    "resize",
+                    scheduleLayout
+                );
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+
+        /* Prevent the workspace from clipping the fixed right sidebar. */
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+            overflow: visible !important;
+        }
+
+        /* Fixed top area. */
+        .st-key-dm_documents_fixed_header,
+        div[class*="st-key-dm_documents_fixed_header"] {
+            flex: 0 0 auto !important;
+            background: var(--dm-bg) !important;
+            padding-bottom: .55rem !important;
+            border-bottom: 1px solid var(--dm-border) !important;
+        }
+
+        /* The lower body is the sole scroll owner. */
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior-y: contain !important;
+            scrollbar-gutter: stable !important;
+        }
+
+        /* Ensure final item is reachable. */
+        .st-key-right_documents_scroll_container
+        [data-testid="stVerticalBlock"] > :last-child {
+            margin-bottom: 1.25rem !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar {
+            width: 8px !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-track,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-thumb,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-thumb {
+            background: var(--dm-border) !important;
+            border-radius: 999px !important;
+        }
+
+        .st-key-right_documents_scroll_container::-webkit-scrollbar-thumb:hover,
+        div[class*="st-key-right_documents_scroll_container"]::-webkit-scrollbar-thumb:hover {
+            background: var(--dm-muted) !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .st-key-dm_documents_dock,
+        div[class*="st-key-dm_documents_dock"],
+        .st-key-dm_documents_fixed_header,
+        div[class*="st-key-dm_documents_fixed_header"],
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            position: static !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
+            transform: none !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL GAP FIX — DOCUMENTS HEADER WRAPPER
+# ============================================================
+# Removes the invisible stretched Streamlit wrapper between
+# Upload/Submit and "Uploaded Documents".
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+
+        /*
+         * The direct Streamlit element that CONTAINS the fixed header
+         * must size itself only to the visible header content.
+         */
+        .st-key-dm_documents_dock
+        [data-testid="stVerticalBlock"] > div:has(.st-key-dm_documents_fixed_header),
+        div[class*="st-key-dm_documents_dock"]
+        [data-testid="stVerticalBlock"] > div:has(.st-key-dm_documents_fixed_header) {
+            flex: 0 0 auto !important;
+
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+        }
+
+        /*
+         * Every wrapper INSIDE the fixed header must also remain content-sized.
+         * Older rules in the file were forcing some of these to 100% height.
+         */
+        .st-key-dm_documents_fixed_header,
+        .st-key-dm_documents_fixed_header > div,
+        .st-key-dm_documents_fixed_header > div > div,
+        .st-key-dm_documents_fixed_header [data-testid="stVerticalBlock"],
+        div[class*="st-key-dm_documents_fixed_header"],
+        div[class*="st-key-dm_documents_fixed_header"] > div,
+        div[class*="st-key-dm_documents_fixed_header"] > div > div,
+        div[class*="st-key-dm_documents_fixed_header"] [data-testid="stVerticalBlock"] {
+            flex: 0 0 auto !important;
+
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+
+            overflow: visible !important;
+        }
+
+        /*
+         * The Streamlit element that contains the scroll body must consume
+         * the remaining sidebar space instead of being pushed downward.
+         */
+        .st-key-dm_documents_dock
+        [data-testid="stVerticalBlock"] > div:has(.st-key-right_documents_scroll_container),
+        div[class*="st-key-dm_documents_dock"]
+        [data-testid="stVerticalBlock"] > div:has(.st-key-right_documents_scroll_container) {
+            flex: 1 1 auto !important;
+
+            min-height: 0 !important;
+            height: auto !important;
+            max-height: none !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: hidden !important;
+        }
+
+        /*
+         * Scroll content begins directly under the fixed controls.
+         */
+        .st-key-right_documents_scroll_container,
+        div[class*="st-key-right_documents_scroll_container"] {
+            margin-top: 0 !important;
+            padding-top: .35rem !important;
+        }
+
+        /*
+         * Remove any accidental spacer immediately between the fixed header
+         * and the document scroll body.
+         */
+        .st-key-dm_documents_dock
+        [data-testid="stVerticalBlock"] > div:empty {
+            display: none !important;
+            height: 0 !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+
+        const fixGap = () => {
+            if (win.innerWidth <= 900) return;
+
+            const dock = doc.querySelector(".st-key-dm_documents_dock");
+            const header = doc.querySelector(".st-key-dm_documents_fixed_header");
+            const body = doc.querySelector(".st-key-right_documents_scroll_container");
+
+            if (!dock || !header || !body) return;
+
+            // Normalize the Streamlit element wrappers that contain
+            // the header and scroll body.
+            const headerElement = header.closest('[data-testid="stElementContainer"]')
+                || header.parentElement;
+
+            const bodyElement = body.closest('[data-testid="stElementContainer"]')
+                || body.parentElement;
+
+            if (headerElement) {
+                headerElement.style.setProperty("height", "auto", "important");
+                headerElement.style.setProperty("min-height", "0", "important");
+                headerElement.style.setProperty("max-height", "none", "important");
+                headerElement.style.setProperty("flex", "0 0 auto", "important");
+                headerElement.style.setProperty("margin", "0", "important");
+            }
+
+            if (bodyElement) {
+                bodyElement.style.setProperty("flex", "1 1 auto", "important");
+                bodyElement.style.setProperty("min-height", "0", "important");
+                bodyElement.style.setProperty("margin", "0", "important");
+            }
+
+            // Recalculate lower scroll height from the ACTUAL visible header.
+            const dockHeight = dock.clientHeight;
+            const headerHeight = Math.ceil(header.getBoundingClientRect().height);
+
+            const available = Math.max(
+                160,
+                dockHeight - headerHeight - 8
+            );
+
+            body.style.setProperty("height", `${available}px`, "important");
+            body.style.setProperty("min-height", `${available}px`, "important");
+            body.style.setProperty("max-height", `${available}px`, "important");
+            body.style.setProperty("overflow-y", "auto", "important");
+            body.style.setProperty("overflow-x", "hidden", "important");
+        };
+
+        [0, 100, 300, 700].forEach((delay) => {
+            win.setTimeout(fixGap, delay);
+        });
+
+        win.addEventListener("resize", fixGap, { passive: true });
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
