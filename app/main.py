@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+import time
 
 import pandas as pd
 import streamlit as st
@@ -10742,15 +10743,267 @@ if "last_error" not in st.session_state:
 if "scroll_chat_to_bottom" not in st.session_state:
     st.session_state.scroll_chat_to_bottom = False
 
+if "pending_question" not in st.session_state:
+    st.session_state.pending_question = None
 
-def reset_chat():
-    """Start a new browser-session conversation without touching indexed data."""
+if "docmind_is_thinking" not in st.session_state:
+    st.session_state.docmind_is_thinking = False
+
+if "show_clear_session_confirmation" not in st.session_state:
+    st.session_state.show_clear_session_confirmation = False
+
+# ------------------------------------------------------------
+# MULTI-CHAT SESSION STATE
+# ------------------------------------------------------------
+# Each sidebar chat is a separate conversation thread.
+# The existing conversation_history / conversation_title / last_result
+# variables remain the "active chat" working state so the rest of the
+# application does not need to be rewritten.
+if "chat_sessions" not in st.session_state:
+    st.session_state.chat_sessions = {}
+
+if "chat_order" not in st.session_state:
+    st.session_state.chat_order = []
+
+if "active_chat_id" not in st.session_state:
+    st.session_state.active_chat_id = None
+
+if "chat_counter" not in st.session_state:
+    st.session_state.chat_counter = 0
+
+
+def _next_chat_id():
+    st.session_state.chat_counter += 1
+    return f"chat_{st.session_state.chat_counter}"
+
+
+def _empty_chat_state():
+    return {
+        "title": "New conversation",
+        "history": [],
+        "last_result": None,
+    }
+
+
+def save_active_chat():
+    """Persist the current working conversation into the multi-chat store."""
+    chat_id = st.session_state.active_chat_id
+
+    if not chat_id:
+        return
+
+    st.session_state.chat_sessions[chat_id] = {
+        "title": st.session_state.conversation_title or "New conversation",
+        "history": list(st.session_state.conversation_history),
+        "last_result": st.session_state.last_result,
+    }
+
+    if chat_id not in st.session_state.chat_order:
+        st.session_state.chat_order.append(chat_id)
+
+
+def load_chat(chat_id):
+    """Switch the workspace to an existing chat thread."""
+    if chat_id not in st.session_state.chat_sessions:
+        return False
+
+    save_active_chat()
+
+    chat = st.session_state.chat_sessions[chat_id]
+
+    st.session_state.active_chat_id = chat_id
+    st.session_state.conversation_title = (
+        chat.get("title") or "New conversation"
+    )
+    st.session_state.conversation_history = list(
+        chat.get("history", [])
+    )
+    st.session_state.last_result = chat.get("last_result")
+
+    if (
+        st.session_state.last_result is None
+        and st.session_state.conversation_history
+    ):
+        st.session_state.last_result = (
+            st.session_state.conversation_history[-1]
+        )
+
+    st.session_state.last_error = None
+    st.session_state.scroll_chat_to_bottom = False
+    st.session_state.pending_question = None
+    st.session_state.docmind_is_thinking = False
+    st.session_state.docmind_view = "AI Chat"
+    return True
+
+
+def create_new_chat():
+    """
+    Start a new empty chat without deleting any previous conversations.
+    Previous chats stay available in the left sidebar.
+    """
+    save_active_chat()
+
+    chat_id = _next_chat_id()
+    st.session_state.chat_sessions[chat_id] = _empty_chat_state()
+    st.session_state.chat_order.append(chat_id)
+    st.session_state.active_chat_id = chat_id
+
     st.session_state.conversation_history = []
     st.session_state.last_result = None
     st.session_state.conversation_title = "New conversation"
     st.session_state.last_error = None
     st.session_state.scroll_chat_to_bottom = False
+    st.session_state.pending_question = None
+    st.session_state.docmind_is_thinking = False
     st.session_state.docmind_view = "AI Chat"
+
+
+def reset_chat():
+    """
+    Reset only the currently active working conversation.
+
+    This does NOT delete other stored chat threads. It is kept as a helper
+    for flows that need a clean active workspace.
+    """
+    st.session_state.conversation_history = []
+    st.session_state.last_result = None
+    st.session_state.conversation_title = "New conversation"
+    st.session_state.last_error = None
+    st.session_state.scroll_chat_to_bottom = False
+    st.session_state.pending_question = None
+    st.session_state.docmind_is_thinking = False
+    st.session_state.docmind_view = "AI Chat"
+
+    if st.session_state.active_chat_id:
+        st.session_state.chat_sessions[
+            st.session_state.active_chat_id
+        ] = _empty_chat_state()
+
+
+def delete_chat(chat_id):
+    """Delete one chat thread and activate another remaining chat if possible."""
+    if chat_id in st.session_state.chat_sessions:
+        del st.session_state.chat_sessions[chat_id]
+
+    st.session_state.chat_order = [
+        item
+        for item in st.session_state.chat_order
+        if item != chat_id
+    ]
+
+    if st.session_state.active_chat_id == chat_id:
+        remaining = [
+            item
+            for item in st.session_state.chat_order
+            if item in st.session_state.chat_sessions
+            and st.session_state.chat_sessions[item].get("history")
+        ]
+
+        if remaining:
+            load_chat(remaining[-1])
+        else:
+            st.session_state.active_chat_id = None
+            st.session_state.conversation_history = []
+            st.session_state.last_result = None
+            st.session_state.conversation_title = "New conversation"
+            st.session_state.last_error = None
+            st.session_state.pending_question = None
+            st.session_state.docmind_is_thinking = False
+            st.session_state.docmind_view = "AI Chat"
+
+
+def clear_all_chats():
+    """Clear every chat thread while keeping uploaded/indexed documents."""
+    st.session_state.chat_sessions = {}
+    st.session_state.chat_order = []
+    st.session_state.active_chat_id = None
+
+    st.session_state.conversation_history = []
+    st.session_state.last_result = None
+    st.session_state.conversation_title = "New conversation"
+    st.session_state.last_error = None
+    st.session_state.scroll_chat_to_bottom = False
+    st.session_state.pending_question = None
+    st.session_state.docmind_is_thinking = False
+    st.session_state.docmind_view = "AI Chat"
+
+    st.session_state.show_clear_session_confirmation = False
+    st.session_state.action_message = {
+        "type": "success",
+        "text": "All chats were cleared. Uploaded documents were kept.",
+    }
+
+
+def clear_all_data():
+    """
+    Clear all uploaded/indexed documents and all chat threads.
+
+    Each document is deleted through DocumentManager so its stored file and
+    vector/index data are removed through the project's existing delete flow.
+    """
+    document_manager = get_document_manager()
+
+    try:
+        documents = document_manager.list_documents()
+    except Exception as exc:
+        raise RuntimeError(
+            f"Could not read the uploaded document list: {exc}"
+        ) from exc
+
+    failures = []
+
+    for document in documents:
+        filename = document.get("filename")
+        if not filename:
+            continue
+
+        try:
+            document_manager.delete_document(filename)
+        except Exception as exc:
+            failures.append(f"{filename}: {exc}")
+
+    if failures:
+        raise RuntimeError(
+            "Some documents could not be deleted:\n" + "\n".join(failures)
+        )
+
+    st.session_state.chat_sessions = {}
+    st.session_state.chat_order = []
+    st.session_state.active_chat_id = None
+
+    st.session_state.conversation_history = []
+    st.session_state.last_result = None
+    st.session_state.conversation_title = "New conversation"
+    st.session_state.last_error = None
+    st.session_state.scroll_chat_to_bottom = False
+    st.session_state.pending_question = None
+    st.session_state.docmind_is_thinking = False
+    st.session_state.docmind_view = "AI Chat"
+
+    st.session_state.show_clear_session_confirmation = False
+    st.session_state.action_message = {
+        "type": "success",
+        "text": "All chats, uploaded files, and indexed document data were cleared.",
+    }
+
+
+# ------------------------------------------------------------
+# MIGRATE THE CURRENT SINGLE CHAT INTO THE MULTI-CHAT STORE
+# ------------------------------------------------------------
+# This runs once after upgrading from the previous one-chat implementation.
+if (
+    st.session_state.active_chat_id is None
+    and st.session_state.conversation_history
+):
+    migrated_chat_id = _next_chat_id()
+
+    st.session_state.chat_sessions[migrated_chat_id] = {
+        "title": st.session_state.conversation_title or "New conversation",
+        "history": list(st.session_state.conversation_history),
+        "last_result": st.session_state.last_result,
+    }
+    st.session_state.chat_order.append(migrated_chat_id)
+    st.session_state.active_chat_id = migrated_chat_id
 
 
 def ask_question(question: str, top_k_value: int):
@@ -10760,19 +11013,10 @@ def ask_question(question: str, top_k_value: int):
         return False
 
     try:
-        with st.status("Working with your knowledge base…", expanded=False) as status:
-            status.update(
-                label="🔎 Searching your documents…",
-                state="running",
-            )
-
-            answer_service = get_answer_service(top_k_value)
-            result = answer_service.ask(question)
-
-            status.update(
-                label="✓ Answer ready",
-                state="complete",
-            )
+        # The visible thinking indicator is rendered directly above the composer
+        # by the chat workspace so it appears exactly where the next answer will go.
+        answer_service = get_answer_service(top_k_value)
+        result = answer_service.ask(question)
 
         st.session_state.last_result = result
         st.session_state.last_error = None
@@ -10784,6 +11028,15 @@ def ask_question(question: str, top_k_value: int):
             st.session_state.conversation_title = (
                 compact[:42] + "…" if len(compact) > 42 else compact
             )
+
+        # If this is the first message in a brand-new workspace, create a
+        # persistent chat thread now. Otherwise update the existing thread.
+        if st.session_state.active_chat_id is None:
+            chat_id = _next_chat_id()
+            st.session_state.active_chat_id = chat_id
+            st.session_state.chat_order.append(chat_id)
+
+        save_active_chat()
 
         return True
 
@@ -10802,38 +11055,42 @@ def ask_question(question: str, top_k_value: int):
 
 def scroll_chat_history_to_bottom():
     """
-    Reveal the newest answer in the main page scroller.
+    Show the newest user question first, followed by the DocMind answer.
 
-    The prompt composer remains pinned; sidebar scrollers are not touched.
+    The function name is preserved so the existing session-state flow does
+    not need to change. It scrolls only the internal conversation viewport.
     """
     components.html(
         """
         <script>
         (() => {
-            const scrollNewestIntoView = () => {
-                const doc = window.parent.document;
+            const win = window.parent;
+            const doc = win.document;
 
-                const root =
-                    doc.querySelector(
-                        '.st-key-dm_conversation_viewport'
-                    );
+            const positionAtLatestAnswerStart = () => {
+                const viewport = doc.querySelector(
+                    ".st-key-dm_conversation_viewport"
+                );
+                const marker = doc.querySelector(
+                    "#dm-latest-turn-start"
+                );
 
-                if (!root) return;
+                if (!viewport || !marker) return;
 
-                const scroller = root.closest('[data-testid="stMain"]');
-                if (!scroller) return;
-                const composer = doc.querySelector('.st-key-dm_center_composer');
-                const reserve = (composer?.getBoundingClientRect().height || 150) + 24;
-                const bottom = root.getBoundingClientRect().bottom;
-                const visibleBottom = scroller.getBoundingClientRect().bottom - reserve;
-                if (bottom > visibleBottom) {
-                    scroller.scrollTop += bottom - visibleBottom;
-                }
+                const viewportRect = viewport.getBoundingClientRect();
+                const markerRect = marker.getBoundingClientRect();
+
+                const target =
+                    viewport.scrollTop +
+                    (markerRect.top - viewportRect.top) -
+                    8;
+
+                viewport.scrollTop = Math.max(0, target);
             };
 
-            setTimeout(scrollNewestIntoView, 80);
-            setTimeout(scrollNewestIntoView, 220);
-            setTimeout(scrollNewestIntoView, 450);
+            [30, 100, 220, 420, 700].forEach((delay) => {
+                win.setTimeout(positionAtLatestAnswerStart, delay);
+            });
         })();
         </script>
         """,
@@ -10842,51 +11099,29 @@ def scroll_chat_history_to_bottom():
     )
 
 
+def render_chat_message(
+    question,
+    answer,
+    sources,
+    result=None,
+    is_latest=False,
+):
+    """Render one clean conversation turn without retrieval UI inside chat."""
 
-def render_chat_message(question, answer, sources, result=None):
-    """Render one conversation turn with grounded evidence."""
-    with st.chat_message("user"):
+    # A stable marker immediately BEFORE the newest user question.
+    # This makes the newest question appear first, followed by the answer.
+    if is_latest:
+        st.markdown(
+            '<div id="dm-latest-turn-start" '
+            'style="height:1px; margin:0; padding:0;"></div>',
+            unsafe_allow_html=True,
+        )
+
+    with st.chat_message("user", avatar="👤"):
         st.markdown(question)
 
-    with st.chat_message("assistant"):
-        if answer.strip() == "I don't know based on the available documents.":
-            st.warning(answer)
-        else:
-            st.markdown(answer)
-
-        if sources:
-            st.markdown("**Sources**")
-            source_cols = st.columns(min(len(sources), 3))
-
-            for idx, source in enumerate(sources):
-                with source_cols[idx % len(source_cols)]:
-                    filename = source.get("filename", "Unknown")
-                    page = source.get("page")
-                    chunk = source.get("chunk_number", "?")
-                    distance = source.get("distance")
-
-                    page_text = (
-                        "Page N/A"
-                        if page in (None, -1)
-                        else f"Page {page}"
-                    )
-
-                    distance_text = "N/A"
-                    try:
-                        if distance is not None:
-                            distance_text = f"{float(distance):.4f}"
-                    except (TypeError, ValueError):
-                        pass
-
-                    with st.container(border=True):
-                        st.markdown(f"📄 **{filename}**")
-                        st.caption(
-                            f"{page_text} • Chunk {chunk} • "
-                            f"Distance {distance_text}"
-                        )
-
-        if result:
-            render_retrieval_details(result, expanded=False)
+    with st.chat_message("assistant", avatar="🧠"):
+        st.markdown(answer)
 
 
 def render_right_upload_controls(document_manager):
@@ -11212,7 +11447,7 @@ with st.sidebar:
         width="stretch",
         key="new_chat_button",
     ):
-        reset_chat()
+        create_new_chat()
         st.rerun()
 
     st.markdown(
@@ -11220,32 +11455,62 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
-    if st.session_state.conversation_history:
-        # This is intentionally session-only. No fake persistent history
-        # or artificial dates are generated.
-        for idx, conversation in enumerate(
-            st.session_state.conversation_history
-        ):
-            question_text = conversation.get(
-                "question",
-                "Untitled",
+    # Persist the active workspace before drawing the chat list.
+    save_active_chat()
+
+    visible_chat_ids = [
+        chat_id
+        for chat_id in st.session_state.chat_order
+        if (
+            chat_id in st.session_state.chat_sessions
+            and st.session_state.chat_sessions[chat_id].get("history")
+        )
+    ]
+
+    if visible_chat_ids:
+        # Newest chats appear first, similar to modern chat applications.
+        for chat_id in reversed(visible_chat_ids):
+            chat_data = st.session_state.chat_sessions[chat_id]
+
+            title = chat_data.get("title") or "New conversation"
+            title = " ".join(str(title).split())
+
+            if len(title) > 31:
+                title = title[:31] + "…"
+
+            is_active = (
+                chat_id == st.session_state.active_chat_id
             )
 
-            title = " ".join(question_text.split())
+            chat_col, delete_col = st.columns(
+                [0.86, 0.14],
+                gap="small",
+            )
 
-            if len(title) > 34:
-                title = title[:34] + "…"
+            with chat_col:
+                if st.button(
+                    title,
+                    key=f"chat_nav_{chat_id}",
+                    width="stretch",
+                    help=(
+                        "Current conversation."
+                        if is_active
+                        else "Open this conversation."
+                    ),
+                    type="primary" if is_active else "secondary",
+                ):
+                    if load_chat(chat_id):
+                        st.rerun()
 
-            if st.button(
-                title,
-                key=f"history_nav_{idx}",
-                width="stretch",
-                help="View this conversation turn.",
-            ):
-                st.session_state.docmind_view = "AI Chat"
-                st.session_state.last_result = conversation
-                st.session_state.conversation_title = title
-                st.rerun()
+            with delete_col:
+                if st.button(
+                    "🗑",
+                    key=f"delete_chat_{chat_id}",
+                    width="stretch",
+                    help=f"Delete '{title}'.",
+                ):
+                    delete_chat(chat_id)
+                    st.rerun()
 
     else:
         st.caption("No conversations in this session yet.")
@@ -11294,13 +11559,69 @@ with st.sidebar:
 
     st.divider()
 
-    if st.session_state.conversation_history:
+    if st.button(
+        "🗑️ Clear session",
+        width="stretch",
+        key="clear_session_sidebar",
+    ):
+        st.session_state.show_clear_session_confirmation = True
+        st.rerun()
+
+    if st.session_state.show_clear_session_confirmation:
+        st.markdown(
+            """
+            <div class="dm-clear-confirm-box">
+                <div class="dm-clear-confirm-title">Clear session?</div>
+                <div class="dm-clear-confirm-text">
+                    Choose what you want to remove.
+                </div>
+                <div class="dm-clear-confirm-warning">
+                    <b>Clear all data</b> permanently removes all uploaded
+                    documents, indexed document data, and all chats.
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        clear_chats_col, clear_all_col = st.columns(2, gap="small")
+
+        with clear_chats_col:
+            if st.button(
+                "Clear chats",
+                width="stretch",
+                key="confirm_clear_chats_only",
+                help="Delete all chats but keep uploaded documents and the knowledge base.",
+            ):
+                clear_all_chats()
+                st.rerun()
+
+        with clear_all_col:
+            if st.button(
+                "Clear all data",
+                width="stretch",
+                key="confirm_clear_everything",
+                help="Delete all uploaded files, indexed data, and all chats.",
+            ):
+                try:
+                    with st.spinner("Clearing all data…"):
+                        clear_all_data()
+                    st.rerun()
+
+                except Exception as exc:
+                    st.session_state.action_message = {
+                        "type": "error",
+                        "text": f"Could not clear all data: {exc}",
+                    }
+                    st.session_state.show_clear_session_confirmation = False
+                    st.rerun()
+
         if st.button(
-            "🗑️ Clear session",
+            "Cancel",
             width="stretch",
-            key="clear_session_sidebar",
+            key="cancel_clear_session",
         ):
-            reset_chat()
+            st.session_state.show_clear_session_confirmation = False
             st.rerun()
 
     st.divider()
@@ -11495,13 +11816,17 @@ with center_panel:
                 )
 
             # --------------------------------------------------------
-            # ONLY this middle conversation area scrolls.
+            # CENTER CONTENT
             # --------------------------------------------------------
-            with st.container(
-                border=False,
-                key="dm_conversation_viewport",
-            ):
-                if history:
+            # Use Streamlit's native fixed-height containers for reliable
+            # internal scrolling. This avoids the conflicting CSS/JS scroll
+            # behavior that previously hid the empty state and chat history.
+            if history:
+                with st.container(
+                    height=520,
+                    border=False,
+                    key="dm_conversation_viewport",
+                ):
                     for idx, conversation in enumerate(history):
                         render_chat_message(
                             conversation.get("question", ""),
@@ -11511,6 +11836,7 @@ with center_panel:
                             ),
                             conversation.get("sources", []) or [],
                             conversation,
+                            is_latest=(idx == len(history) - 1),
                         )
 
                         if idx < len(history) - 1:
@@ -11523,7 +11849,23 @@ with center_panel:
                         scroll_chat_history_to_bottom()
                         st.session_state.scroll_chat_to_bottom = False
 
-                else:
+                    if st.session_state.last_error:
+                        st.error(
+                            "Something went wrong while generating the answer. "
+                            "Please try again."
+                        )
+                        with st.expander("Technical details"):
+                            st.code(st.session_state.last_error)
+
+                    # The thinking indicator is rendered outside this
+                    # scrollable history container, directly above the composer.
+
+            else:
+                with st.container(
+                    height=520,
+                    border=False,
+                    key="dm_empty_state_viewport",
+                ):
                     st.markdown(
                         """
                         <div class="dm-agent-v2-empty">
@@ -11560,53 +11902,46 @@ with center_panel:
                                 example,
                                 key=f"workspace_example_{idx}",
                                 width="stretch",
+                                disabled=st.session_state.docmind_is_thinking,
                             ):
-                                if ask_question(example, top_k):
-                                    st.rerun()
+                                st.session_state.pending_question = example
+                                st.session_state.docmind_is_thinking = True
+                                st.rerun()
 
-                # --------------------------------------------------------
-                # Retrieval status and errors scroll with the answer.
-                # --------------------------------------------------------
-                if history:
-                    latest = history[-1]
-                    retrieved_count = latest.get("retrieved_count", 0) or 0
-                    source_count = len(latest.get("sources", []) or [])
+                    if st.session_state.last_error:
+                        st.error(
+                            "Something went wrong while generating the answer. "
+                            "Please try again."
+                        )
+                        with st.expander("Technical details"):
+                            st.code(st.session_state.last_error)
 
-                    st.markdown(
-                        f"""
-                        <div class="dm-agent-v2-pipeline">
-                            <span>⌕ Searching documents</span>
-                            <span class="dm-agent-v2-arrow">→</span>
-                            <span>▤ {retrieved_count} retrieved chunks</span>
-                            <span class="dm-agent-v2-arrow">→</span>
-                            <span>✓ Answer ready</span>
-                        </div>
-                        <div class="dm-agent-v2-grounding">
-                            ✓ Answer generated from {source_count}
-                            source{"s" if source_count != 1 else ""}.
+            # --------------------------------------------------------
+            # COMPOSER + THINKING ROW
+            # --------------------------------------------------------
+            # The thinking indicator lives INSIDE the composer container,
+            # immediately above the chat input. This guarantees that it is
+            # visible exactly where the user expects it.
+            with st.container(key="dm_center_composer", border=False):
+
+                thinking_slot = st.empty()
+
+                if st.session_state.docmind_is_thinking:
+                    thinking_slot.markdown(
+                        """
+                        <div class="dm-thinking-inline">
+                            <span class="dm-thinking-pulse"></span>
+                            <span>🧠 DocMind is thinking…</span>
                         </div>
                         """,
                         unsafe_allow_html=True,
                     )
 
-                if st.session_state.last_error:
-                    st.error(
-                        "Something went wrong while generating the answer. "
-                        "Please try again."
-                    )
-
-                    with st.expander("Technical details"):
-                        st.code(st.session_state.last_error)
-
-            with st.container(key="dm_center_composer", border=False):
-                # --------------------------------------------------------
-                # Composer is OUTSIDE the scrolling history, so it stays
-                # fixed in place while messages move upward.
-                # --------------------------------------------------------
                 submitted_question = st.chat_input(
                     "Ask anything about your documents…",
                     key="agent_v2_input",
                     max_chars=4000,
+                    disabled=st.session_state.docmind_is_thinking,
                 )
 
                 st.markdown(
@@ -11618,75 +11953,38 @@ with center_panel:
                     unsafe_allow_html=True,
                 )
 
-        # Pin only the composer to the viewport, aligned to the center column.
-        components.html(
-            """
-            <script>
-            (() => {
-                const win = window.parent;
-                const doc = win.document;
-                let frame = 0;
-                const fit = () => {
-                    const panel = doc.querySelector('.st-key-dm_center_chat');
-                    const composer = panel?.querySelector('.st-key-dm_center_composer');
-                    if (!panel || !composer) return;
-                    const rect = panel.getBoundingClientRect();
-                    const viewport = win.visualViewport;
-                    const left = Math.max(rect.left, viewport?.offsetLeft || 0);
-                    const right = Math.min(rect.right,
-                        (viewport?.offsetLeft || 0) + (viewport?.width || win.innerWidth));
-                    if (right <= left) return;
-                    const set = (node, name, value) => {
-                        if (node.style.getPropertyValue(name) !== value) {
-                            node.style.setProperty(name, value);
-                        }
-                    };
-                    set(panel, '--dm-composer-left', left + 'px');
-                    set(panel, '--dm-composer-width', (right - left) + 'px');
-                    set(panel, '--dm-composer-bottom', Math.max(0,
-                        win.innerHeight - ((viewport?.offsetTop || 0) +
-                        (viewport?.height || win.innerHeight))) + 'px');
-                    panel.dataset.composerPinned = 'true';
-                    set(panel, '--dm-composer-space',
-                        Math.ceil(composer.getBoundingClientRect().height + 32) + 'px');
-                    }
-                };
-                const schedule = () => {
-                    win.cancelAnimationFrame(frame);
-                    frame = win.requestAnimationFrame(fit);
-                };
-                const observer = new win.ResizeObserver(schedule);
-                const panel = doc.querySelector('.st-key-dm_center_chat');
-                if (panel) {
-                    observer.observe(panel);
-                    if (panel.parentElement) observer.observe(panel.parentElement);
-                    const composer = panel.querySelector('.st-key-dm_center_composer');
-                    if (composer) observer.observe(composer);
-                }
-                win.addEventListener('resize', schedule);
-                doc.addEventListener('scroll', schedule, true);
-                win.visualViewport?.addEventListener('resize', schedule);
-                win.visualViewport?.addEventListener('scroll', schedule);
-                const timers = [0, 100, 350, 800].map(delay => win.setTimeout(schedule, delay));
-                window.addEventListener('pagehide', () => {
-                    observer.disconnect();
-                    win.removeEventListener('resize', schedule);
-                    doc.removeEventListener('scroll', schedule, true);
-                    win.visualViewport?.removeEventListener('resize', schedule);
-                    win.visualViewport?.removeEventListener('scroll', schedule);
-                    win.cancelAnimationFrame(frame);
-                    timers.forEach(timer => win.clearTimeout(timer));
-                }, {once: true});
-            })();
-            </script>
-            """,
-            height=0,
-            width=0,
-        )
+        # ------------------------------------------------------------
+        # TWO-PASS SUBMISSION FLOW
+        # ------------------------------------------------------------
+        # Pass 1: store the question + set thinking=True + rerun.
+        # That rerun renders "DocMind is thinking…" ABOVE the input.
+        if submitted_question and not st.session_state.docmind_is_thinking:
+            st.session_state.pending_question = submitted_question
+            st.session_state.docmind_is_thinking = True
+            st.rerun()
 
-        if submitted_question:
-            if ask_question(submitted_question, top_k):
-                st.rerun()
+        # Pass 2: the thinking row is already rendered. Give the browser a
+        # brief moment to paint it, then execute the blocking RAG/LLM call.
+        if (
+            st.session_state.docmind_is_thinking
+            and st.session_state.pending_question
+        ):
+            pending_question = st.session_state.pending_question
+
+            # Small paint window so the visible thinking row appears before
+            # the blocking retrieval/generation work starts.
+            time.sleep(0.30)
+
+            try:
+                ask_question(
+                    pending_question,
+                    top_k,
+                )
+            finally:
+                st.session_state.pending_question = None
+                st.session_state.docmind_is_thinking = False
+
+            st.rerun()
 
 
 # ============================================================
@@ -17143,4 +17441,1961 @@ components.html(
     """,
     height=0,
     width=0,
+)
+
+
+# ============================================================
+# FINAL CHAT PRESENTATION OVERRIDES
+# Clean ChatGPT-like answer presentation + compact thinking state
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Conversation turns: no cards / no boxed message backgrounds. */
+    .st-key-dm_conversation_viewport [data-testid="stChatMessage"] {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0.45rem 0.15rem 1.05rem 0.15rem !important;
+        margin: 0 !important;
+    }
+
+    .st-key-dm_conversation_viewport [data-testid="stChatMessage"] [data-testid="stChatMessageAvatarUser"],
+    .st-key-dm_conversation_viewport [data-testid="stChatMessage"] [data-testid="stChatMessageAvatarAssistant"] {
+        width: 2rem !important;
+        height: 2rem !important;
+        border-radius: 0.65rem !important;
+        background: var(--dm-surface2) !important;
+        border: 1px solid var(--dm-border) !important;
+    }
+
+    .st-key-dm_conversation_viewport [data-testid="stChatMessageContent"] {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding-top: 0.05rem !important;
+        color: var(--dm-text) !important;
+        max-width: 100% !important;
+    }
+
+    .st-key-dm_conversation_viewport [data-testid="stChatMessageContent"] p,
+    .st-key-dm_conversation_viewport [data-testid="stChatMessageContent"] li {
+        color: var(--dm-text) !important;
+        font-size: 0.98rem !important;
+        line-height: 1.7 !important;
+    }
+
+    .st-key-dm_conversation_viewport [data-testid="stChatMessageContent"] h1,
+    .st-key-dm_conversation_viewport [data-testid="stChatMessageContent"] h2,
+    .st-key-dm_conversation_viewport [data-testid="stChatMessageContent"] h3 {
+        color: var(--dm-heading) !important;
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.65rem !important;
+    }
+
+    /* Give each completed turn a subtle separator like the reference. */
+    .st-key-dm_conversation_viewport [data-testid="stChatMessage"]:has(+ [data-testid="stChatMessage"]) {
+        border-bottom: 1px solid var(--dm-border) !important;
+    }
+
+    /* Compact Streamlit spinner: no white status bar/card. */
+    [data-testid="stSpinner"] {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0.55rem 0 !important;
+        color: var(--dm-muted) !important;
+    }
+
+    [data-testid="stSpinner"] * {
+        color: var(--dm-muted) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ============================================================
+# FINAL SIDEBAR CURRENT CHAT COLOR FIX
+# ============================================================
+# The current conversation uses the Streamlit key `current_chat_nav`.
+# Older CSS targeted `history_nav_*`, so Streamlit's default focused/active
+# button style could still turn the current chat white. Keep this block last
+# so it wins the CSS cascade in both dark and light themes.
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:hover,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:focus,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:focus-visible,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:active {
+        width: 100% !important;
+        background: var(--dm-sidebar-hover) !important;
+        background-color: var(--dm-sidebar-hover) !important;
+        color: var(--dm-sidebar-text) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:hover,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:focus,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:focus-visible {
+        border-color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button *,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button p,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button span,
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button div {
+        color: var(--dm-sidebar-text) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Prevent browser/Streamlit autofill-like focus paint from flashing white. */
+    [data-testid="stSidebar"] [class*="st-key-current_chat_nav"] button:-webkit-focus-ring-color {
+        outline-color: var(--dm-primary) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# STABLE DOCMIND CHAT WORKSPACE
+# ============================================================
+# One layout owns the center area:
+#   Header (fixed)
+#   Conversation (only scrollable region)
+#   Composer (fixed inside center column, NOT position:fixed)
+#
+# This deliberately overrides older experimental chat-layout CSS.
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+        /* Prevent the browser/main Streamlit page from becoming the chat scroller. */
+        html:has(.st-key-dm_center_chat),
+        body:has(.st-key-dm_center_chat),
+        [data-testid="stAppViewContainer"]:has(.st-key-dm_center_chat),
+        [data-testid="stMain"]:has(.st-key-dm_center_chat) {
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            overflow: hidden !important;
+            overscroll-behavior: none !important;
+        }
+
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        .block-container {
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+            padding-bottom: .65rem !important;
+        }
+
+        /* Keep the three-column workspace inside the visible screen. */
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        div[data-testid="stHorizontalBlock"]:has(.dm-right-panel-marker) {
+            height: calc(100dvh - 5.15rem) !important;
+            max-height: calc(100dvh - 5.15rem) !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            align-items: stretch !important;
+        }
+
+        /* Center column wrapper must be allowed to shrink. */
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_center_chat),
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_center_chat) > div,
+        [data-testid="stMain"]:has(.st-key-dm_center_chat)
+        :is([data-testid="column"], [data-testid="stColumn"]):has(.st-key-dm_center_chat)
+        > div > [data-testid="stVerticalBlock"] {
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Header + chat viewport + composer. */
+        .st-key-dm_center_chat {
+            display: flex !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            gap: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            --dm-composer-space: 0px !important;
+        }
+
+        .st-key-dm_center_chat
+        > div:has(.st-key-dm_center_header):has(.st-key-dm_center_composer),
+        .st-key-dm_center_chat
+        > div
+        > [data-testid="stVerticalBlock"]:has(.st-key-dm_center_header):has(.st-key-dm_center_composer) {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 1 auto !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            gap: 0 !important;
+        }
+
+        /* DocMind title does not scroll. */
+        .st-key-dm_center_chat .st-key-dm_center_header {
+            flex: 0 0 auto !important;
+            min-height: 0 !important;
+            height: auto !important;
+            overflow: visible !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* ONLY the conversation scrolls. */
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport {
+            flex: 1 1 0 !important;
+            min-height: 0 !important;
+            height: 0 !important;
+            max-height: none !important;
+            width: 100% !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior-y: contain !important;
+            touch-action: pan-y !important;
+            scrollbar-gutter: stable !important;
+
+            margin: 0 !important;
+            padding: .65rem .75rem .55rem !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Let the message stack grow naturally so older turns remain reachable. */
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport > div,
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport > div > [data-testid="stVerticalBlock"] {
+            width: 100% !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+        }
+
+        /*
+         * Short chats stay close to the composer.
+         * Long chats exceed this minimum and therefore become scrollable.
+         */
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport > div > [data-testid="stVerticalBlock"] {
+            min-height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-end !important;
+        }
+
+        /* Empty/new-chat state must be centered and completely visible. */
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport:has(.dm-agent-v2-empty)
+        > div > [data-testid="stVerticalBlock"] {
+            justify-content: center !important;
+        }
+
+        .st-key-dm_center_chat .dm-agent-v2-empty {
+            min-height: 0 !important;
+            height: auto !important;
+            padding: 1rem 1rem .8rem !important;
+            margin: 0 auto !important;
+            overflow: visible !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .st-key-dm_center_chat .dm-agent-v2-empty-icon,
+        .st-key-dm_center_chat .dm-agent-v2-empty-title,
+        .st-key-dm_center_chat .dm-agent-v2-empty-text,
+        .st-key-dm_center_chat .dm-agent-v2-example-title {
+            visibility: visible !important;
+            opacity: 1 !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-dm_center_chat .dm-agent-v2-example-title {
+            margin: .35rem 0 .55rem !important;
+        }
+
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport:has(.dm-agent-v2-empty)
+        [data-testid="stHorizontalBlock"] {
+            flex: 0 0 auto !important;
+            overflow: visible !important;
+        }
+
+        /* Remove oversized inter-turn spacing. */
+        .st-key-dm_center_chat .dm-agent-v2-turn-gap {
+            height: .45rem !important;
+            min-height: .45rem !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Composer is the fixed bottom row of the center column. */
+        .st-key-dm_center_chat .st-key-dm_center_composer,
+        .st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer {
+            position: relative !important;
+            inset: auto !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+
+            margin: 0 !important;
+            padding: .55rem .55rem max(.4rem, env(safe-area-inset-bottom)) !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+
+            background: var(--dm-bg) !important;
+            border-top: 1px solid var(--dm-border) !important;
+            z-index: 20 !important;
+        }
+
+        .st-key-dm_center_chat .st-key-dm_center_composer > div,
+        .st-key-dm_center_chat
+        .st-key-dm_center_composer [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
+            gap: .2rem !important;
+        }
+
+        .st-key-dm_center_chat .st-key-agent_v2_input,
+        .st-key-dm_center_chat
+        .st-key-agent_v2_input [data-testid="stChatInput"] {
+            position: relative !important;
+            inset: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+
+        /* Latest answer/thinking row sits immediately above the composer. */
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport [data-testid="stChatMessage"]:last-of-type {
+            margin-bottom: .2rem !important;
+            padding-bottom: .2rem !important;
+        }
+
+        .st-key-dm_center_chat .dm-agent-v2-thinking {
+            margin: .15rem 0 .35rem .1rem !important;
+            padding: .2rem 0 !important;
+            flex: 0 0 auto !important;
+        }
+
+        /* Visible conversation scrollbar. */
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport::-webkit-scrollbar {
+            width: 8px !important;
+        }
+
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        .st-key-dm_center_chat
+        .st-key-dm_conversation_viewport::-webkit-scrollbar-thumb {
+            background: var(--dm-border) !important;
+            border-radius: 999px !important;
+            min-height: 34px !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        /* Mobile keeps normal document flow, but chat history can still scroll. */
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport {
+            max-height: 58dvh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        .st-key-dm_center_chat .st-key-dm_center_composer {
+            position: sticky !important;
+            bottom: 0 !important;
+            background: var(--dm-bg) !important;
+            z-index: 30 !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ChatGPT-like scroll behavior:
+# - Empty state stays at the top/center and is never auto-scrolled away.
+# - After submitting a new question, the chat opens at the latest turn.
+# - If the user scrolls upward to read history, we do not force them down.
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindStableScroller";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        let viewport = null;
+        let observer = null;
+        let raf = 0;
+        let userAwayFromBottom = false;
+        let programmatic = false;
+        const timers = [];
+
+        const findViewport = () =>
+            doc.querySelector(
+                ".st-key-dm_center_chat .st-key-dm_conversation_viewport"
+            );
+
+        const emptyState = () =>
+            !!viewport?.querySelector(".dm-agent-v2-empty");
+
+        const nearBottom = (threshold = 100) => {
+            if (!viewport) return true;
+            return (
+                viewport.scrollHeight -
+                viewport.scrollTop -
+                viewport.clientHeight
+            ) <= threshold;
+        };
+
+        const goBottom = () => {
+            if (!viewport || emptyState()) return;
+
+            programmatic = true;
+            win.cancelAnimationFrame(raf);
+            raf = win.requestAnimationFrame(() => {
+                viewport.scrollTop = viewport.scrollHeight;
+                win.setTimeout(() => {
+                    programmatic = false;
+                    userAwayFromBottom = false;
+                }, 30);
+            });
+        };
+
+        const onScroll = () => {
+            if (!viewport || programmatic || emptyState()) return;
+            userAwayFromBottom = !nearBottom(80);
+        };
+
+        const attach = () => {
+            const next = findViewport();
+            if (!next) return;
+
+            if (viewport && viewport !== next) {
+                viewport.removeEventListener("scroll", onScroll);
+            }
+
+            viewport = next;
+            viewport.addEventListener("scroll", onScroll, { passive: true });
+
+            observer?.disconnect();
+            observer = new win.MutationObserver(() => {
+                if (emptyState()) {
+                    viewport.scrollTop = 0;
+                    return;
+                }
+
+                if (!userAwayFromBottom && nearBottom(160)) {
+                    goBottom();
+                }
+            });
+
+            observer.observe(viewport, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+            });
+
+            if (emptyState()) {
+                viewport.scrollTop = 0;
+            } else {
+                goBottom();
+            }
+        };
+
+        [0, 80, 180, 350, 700].forEach((delay) => {
+            timers.push(win.setTimeout(attach, delay));
+        });
+
+        win[KEY] = {
+            destroy() {
+                win.cancelAnimationFrame(raf);
+                observer?.disconnect();
+                if (viewport) {
+                    viewport.removeEventListener("scroll", onScroll);
+                }
+                timers.forEach((timer) => win.clearTimeout(timer));
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# ============================================================
+# FINAL NATIVE CHAT SCROLL OVERRIDE
+# ============================================================
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+        /* Keep the outer Chat workspace fixed. */
+        html:has(.st-key-dm_center_chat),
+        body:has(.st-key-dm_center_chat),
+        [data-testid="stAppViewContainer"]:has(.st-key-dm_center_chat),
+        [data-testid="stMain"]:has(.st-key-dm_center_chat) {
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            overflow: hidden !important;
+        }
+
+        /* Center column is a fixed-height vertical layout. */
+        .st-key-dm_center_chat {
+            height: calc(100dvh - 5.2rem) !important;
+            max-height: calc(100dvh - 5.2rem) !important;
+            min-height: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            gap: 0 !important;
+            --dm-composer-space: 0px !important;
+        }
+
+        .st-key-dm_center_chat
+        > div:has(.st-key-dm_center_header):has(.st-key-dm_center_composer),
+        .st-key-dm_center_chat
+        > div
+        > [data-testid="stVerticalBlock"]:has(.st-key-dm_center_header):has(.st-key-dm_center_composer) {
+            height: 100% !important;
+            max-height: 100% !important;
+            min-height: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            gap: 0 !important;
+        }
+
+        .st-key-dm_center_header {
+            flex: 0 0 auto !important;
+        }
+
+        /*
+         * Streamlit's native height=520 container remains the ONLY
+         * scrollable chat/history surface. We resize it responsively.
+         */
+        .st-key-dm_conversation_viewport,
+        .st-key-dm_empty_state_viewport {
+            flex: 1 1 auto !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior-y: contain !important;
+            scrollbar-gutter: stable !important;
+            padding: .6rem .7rem !important;
+            box-sizing: border-box !important;
+        }
+
+        /*
+         * IMPORTANT: do not force Streamlit's inner wrappers to 0px height.
+         * They must grow with content so older messages are scrollable.
+         */
+        .st-key-dm_conversation_viewport > div,
+        .st-key-dm_conversation_viewport [data-testid="stVerticalBlock"],
+        .st-key-dm_empty_state_viewport > div,
+        .st-key-dm_empty_state_viewport [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        /* Empty/new-chat screen is always visible. */
+        .st-key-dm_empty_state_viewport {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+        }
+
+        .st-key-dm_empty_state_viewport > div,
+        .st-key-dm_empty_state_viewport [data-testid="stVerticalBlock"] {
+            width: 100% !important;
+        }
+
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty,
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty-icon,
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty-title,
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty-text,
+        .st-key-dm_empty_state_viewport .dm-agent-v2-example-title {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            inset: auto !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty {
+            min-height: 220px !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            padding: 1rem !important;
+        }
+
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty-icon {
+            width: 54px !important;
+            height: 54px !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty-title,
+        .st-key-dm_empty_state_viewport .dm-agent-v2-empty-text,
+        .st-key-dm_empty_state_viewport .dm-agent-v2-example-title {
+            display: block !important;
+        }
+
+        .st-key-dm_empty_state_viewport .dm-agent-v2-example-title {
+            margin: .35rem 0 .55rem !important;
+        }
+
+        /* Composer is the bottom row, never an overlay. */
+        .st-key-dm_center_composer,
+        .st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer {
+            position: relative !important;
+            inset: auto !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: .55rem .55rem .4rem !important;
+            background: var(--dm-bg) !important;
+            border-top: 1px solid var(--dm-border) !important;
+            z-index: 10 !important;
+        }
+
+        .st-key-dm_center_composer .st-key-agent_v2_input,
+        .st-key-dm_center_composer [data-testid="stChatInput"] {
+            position: relative !important;
+            inset: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .st-key-dm_conversation_viewport::-webkit-scrollbar {
+            width: 8px !important;
+        }
+
+        .st-key-dm_conversation_viewport::-webkit-scrollbar-thumb {
+            background: var(--dm-border) !important;
+            border-radius: 999px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# LATEST ANSWER WINDOW
+# ------------------------------------------------------------
+# Keep a compact visible conversation window above the composer.
+# When a new answer is generated, the viewport automatically stays at
+# the bottom so only the newest portion of a long answer is visible.
+# The rest of the answer and older messages remain available by
+# scrolling upward inside the chat area.
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+
+        /*
+         * Reserve a comfortable ChatGPT-like reading window above the
+         * composer instead of allowing the message area to consume the
+         * entire center column.
+         */
+        .st-key-dm_conversation_viewport {
+            flex: 0 1 auto !important;
+            height: min(52dvh, 470px) !important;
+            min-height: 300px !important;
+            max-height: min(52dvh, 470px) !important;
+
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior-y: contain !important;
+            scrollbar-gutter: stable !important;
+
+            margin-top: auto !important;
+            padding: .6rem .75rem .55rem !important;
+            box-sizing: border-box !important;
+        }
+
+        /*
+         * Let the message stack grow beyond the visible window.
+         * This is what makes the remaining part of long answers
+         * available through internal scrolling.
+         */
+        .st-key-dm_conversation_viewport > div,
+        .st-key-dm_conversation_viewport [data-testid="stVerticalBlock"] {
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        /*
+         * Keep the newest turn close to the composer.
+         */
+        .st-key-dm_conversation_viewport
+        [data-testid="stChatMessage"]:last-of-type {
+            margin-bottom: .15rem !important;
+            padding-bottom: .15rem !important;
+        }
+
+        /*
+         * Empty state should still use the full remaining center area.
+         */
+        .st-key-dm_empty_state_viewport {
+            flex: 1 1 auto !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            margin-top: 0 !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .st-key-dm_conversation_viewport {
+            height: 48dvh !important;
+            min-height: 260px !important;
+            max-height: 48dvh !important;
+            overflow-y: auto !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Make sure the newest generated answer opens at the bottom of the
+# internal conversation window. The user can immediately scroll upward
+# to see the rest of the answer or older turns.
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindLatestAnswerWindowV1";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        let observer = null;
+        let viewport = null;
+        let userReadingHistory = false;
+        let programmatic = false;
+        const timers = [];
+
+        const getViewport = () =>
+            doc.querySelector(".st-key-dm_conversation_viewport");
+
+        const nearBottom = (el, threshold = 100) =>
+            el.scrollHeight - el.scrollTop - el.clientHeight <= threshold;
+
+        const goBottom = () => {
+            if (!viewport) return;
+
+            programmatic = true;
+            viewport.scrollTop = viewport.scrollHeight;
+
+            win.setTimeout(() => {
+                programmatic = false;
+                userReadingHistory = false;
+            }, 40);
+        };
+
+        const onScroll = () => {
+            if (!viewport || programmatic) return;
+            userReadingHistory = !nearBottom(viewport, 80);
+        };
+
+        const attach = () => {
+            const next = getViewport();
+            if (!next) return;
+
+            if (viewport && viewport !== next) {
+                viewport.removeEventListener("scroll", onScroll);
+            }
+
+            viewport = next;
+            viewport.addEventListener("scroll", onScroll, { passive: true });
+
+            observer?.disconnect();
+            observer = new win.MutationObserver(() => {
+                /*
+                 * Follow the answer while it is being generated only when
+                 * the user has not intentionally scrolled upward.
+                 */
+                if (!userReadingHistory && nearBottom(viewport, 150)) {
+                    goBottom();
+                }
+            });
+
+            observer.observe(viewport, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+            });
+
+            /* Open the completed/newest answer at its latest portion. */
+            goBottom();
+        };
+
+        [0, 80, 180, 350, 700].forEach((delay) => {
+            timers.push(win.setTimeout(attach, delay));
+        });
+
+        win[KEY] = {
+            destroy() {
+                observer?.disconnect();
+                if (viewport) {
+                    viewport.removeEventListener("scroll", onScroll);
+                }
+                timers.forEach((timer) => win.clearTimeout(timer));
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# ============================================================
+# LATEST ANSWER — SHOW FROM THE BEGINNING
+# ------------------------------------------------------------
+# When a new answer is ready, position the internal chat viewport at
+# the START of the latest conversation turn instead of at its end.
+# The answer begins directly in the visible area above the composer,
+# and the user scrolls DOWN to read the remaining part.
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+        /* Keep a clear reading window immediately above the composer. */
+        .st-key-dm_conversation_viewport {
+            height: min(52dvh, 470px) !important;
+            min-height: 300px !important;
+            max-height: min(52dvh, 470px) !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior-y: contain !important;
+            scrollbar-gutter: stable !important;
+            margin-top: auto !important;
+            scroll-padding-top: .5rem !important;
+            scroll-padding-bottom: .5rem !important;
+        }
+
+        /* Do not bottom-align long completed answers. */
+        .st-key-dm_conversation_viewport > div,
+        .st-key-dm_conversation_viewport [data-testid="stVerticalBlock"] {
+            justify-content: flex-start !important;
+        }
+
+        /* Empty/new-chat screen remains centered. */
+        .st-key-dm_empty_state_viewport > div,
+        .st-key-dm_empty_state_viewport [data-testid="stVerticalBlock"] {
+            justify-content: center !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Replace bottom-follow behavior for completed answers:
+# - locate the newest assistant chat message
+# - scroll the INTERNAL chat viewport so that message begins at the top
+# - never scroll the outer Streamlit page
+# - after that, the user scrolls downward to read the rest
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindLatestAnswerStartV2";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        const timers = [];
+        let observer = null;
+        let viewport = null;
+        let lastAssistantSignature = "";
+
+        const getViewport = () =>
+            doc.querySelector(".st-key-dm_conversation_viewport");
+
+        const getChatMessages = () => {
+            if (!viewport) return [];
+            return Array.from(
+                viewport.querySelectorAll('[data-testid="stChatMessage"]')
+            );
+        };
+
+        const getLatestAssistant = () => {
+            const messages = getChatMessages();
+
+            /*
+             * In this app messages are rendered user, assistant, user,
+             * assistant... so the last stChatMessage after generation is
+             * normally the latest conversation turn.
+             */
+            return messages.length ? messages[messages.length - 1] : null;
+        };
+
+        const signatureFor = (node) => {
+            if (!node) return "";
+            return (node.innerText || "").trim().slice(0, 240);
+        };
+
+        const scrollLatestAnswerToStart = () => {
+            if (!viewport) return;
+
+            const latest = getLatestAssistant();
+            if (!latest) return;
+
+            const viewportRect = viewport.getBoundingClientRect();
+            const latestRect = latest.getBoundingClientRect();
+
+            /*
+             * Convert the latest answer's current screen position into the
+             * viewport's own scroll coordinate. A tiny offset keeps breathing
+             * room above the message.
+             */
+            const target =
+                viewport.scrollTop +
+                (latestRect.top - viewportRect.top) -
+                8;
+
+            viewport.scrollTop = Math.max(0, target);
+        };
+
+        const attach = () => {
+            viewport = getViewport();
+            if (!viewport) return;
+
+            observer?.disconnect();
+
+            /*
+             * On initial attach/rerun, show the newest completed answer
+             * FROM ITS BEGINNING.
+             */
+            const latest = getLatestAssistant();
+            if (latest) {
+                lastAssistantSignature = signatureFor(latest);
+                win.requestAnimationFrame(scrollLatestAnswerToStart);
+            }
+
+            observer = new win.MutationObserver(() => {
+                const newest = getLatestAssistant();
+                if (!newest) return;
+
+                const signature = signatureFor(newest);
+
+                /*
+                 * Only reposition when a NEW assistant response appears.
+                 * Do not keep forcing scroll position while the user is
+                 * manually reading the answer.
+                 */
+                if (signature && signature !== lastAssistantSignature) {
+                    lastAssistantSignature = signature;
+
+                    win.setTimeout(() => {
+                        scrollLatestAnswerToStart();
+                    }, 60);
+
+                    win.setTimeout(() => {
+                        scrollLatestAnswerToStart();
+                    }, 180);
+                }
+            });
+
+            observer.observe(viewport, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+            });
+        };
+
+        [0, 80, 180, 350, 700].forEach((delay) => {
+            timers.push(win.setTimeout(attach, delay));
+        });
+
+        win[KEY] = {
+            destroy() {
+                observer?.disconnect();
+                timers.forEach((timer) => win.clearTimeout(timer));
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# ============================================================
+# AUTHORITATIVE NEWEST-ANSWER POSITION
+# ============================================================
+st.markdown(
+    """
+    <style>
+    @media (min-width: 901px) {
+        .st-key-dm_conversation_viewport {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            scroll-behavior: auto !important;
+            scroll-padding-top: .5rem !important;
+        }
+
+        /* Never bottom-align the completed conversation stack. */
+        .st-key-dm_conversation_viewport > div,
+        .st-key-dm_conversation_viewport > div > [data-testid="stVerticalBlock"],
+        .st-key-dm_conversation_viewport [data-testid="stVerticalBlock"] {
+            justify-content: flex-start !important;
+        }
+
+        #dm-latest-turn-start {
+            display: block !important;
+            height: 1px !important;
+            min-height: 1px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            visibility: visible !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindExactFirstLineV1";
+
+        const stopOldAutoScrollers = () => {
+            [
+                "__docmindStableScroller",
+                "__docmindLatestAnswerWindowV1",
+                "__docmindLatestAnswerStartV2",
+                "__docmindAnswerStartExactV1",
+                "__docmindChatOnlyScrollerV1",
+                "__docmindInternalChatScrollV2",
+                "__docmindChatViewportFinalV1",
+                "__docmindHistoryScrollFixV3",
+                "__docmindUnifiedChatScrollerV4"
+            ].forEach((key) => {
+                if (win[key]?.destroy) {
+                    try { win[key].destroy(); } catch (_) {}
+                }
+                try { delete win[key]; } catch (_) {}
+            });
+        };
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        let viewport = null;
+        let observer = null;
+        let userHasScrolled = false;
+        let programmatic = false;
+        const timers = [];
+
+        const getViewport = () =>
+            doc.querySelector(".st-key-dm_conversation_viewport");
+
+        const getMarker = () =>
+            doc.querySelector("#dm-latest-turn-start");
+
+        const positionAtFirstLine = () => {
+            viewport = getViewport();
+            const marker = getMarker();
+
+            if (!viewport || !marker) return;
+
+            const viewportRect = viewport.getBoundingClientRect();
+            const markerRect = marker.getBoundingClientRect();
+
+            const target =
+                viewport.scrollTop +
+                (markerRect.top - viewportRect.top) -
+                8;
+
+            programmatic = true;
+            viewport.scrollTop = Math.max(0, target);
+
+            win.setTimeout(() => {
+                programmatic = false;
+            }, 50);
+        };
+
+        const onScroll = () => {
+            if (!programmatic) {
+                userHasScrolled = true;
+            }
+        };
+
+        const attach = () => {
+            stopOldAutoScrollers();
+
+            const nextViewport = getViewport();
+            if (!nextViewport) return;
+
+            if (viewport && viewport !== nextViewport) {
+                viewport.removeEventListener("scroll", onScroll);
+            }
+
+            viewport = nextViewport;
+            viewport.addEventListener("scroll", onScroll, { passive: true });
+
+            observer?.disconnect();
+
+            /*
+             * Initial completed-answer render:
+             * show the exact beginning of the newest conversation turn.
+             */
+            userHasScrolled = false;
+            positionAtFirstLine();
+
+            observer = new win.MutationObserver(() => {
+                /*
+                 * During Streamlit's rerender, reposition only until the user
+                 * intentionally starts scrolling. After that, never fight them.
+                 */
+                if (!userHasScrolled && getMarker()) {
+                    positionAtFirstLine();
+                }
+            });
+
+            observer.observe(viewport, {
+                childList: true,
+                subtree: true,
+            });
+        };
+
+        [0, 60, 150, 300, 550, 900].forEach((delay) => {
+            timers.push(
+                win.setTimeout(() => {
+                    stopOldAutoScrollers();
+                    attach();
+                }, delay)
+            );
+        });
+
+        win[KEY] = {
+            destroy() {
+                observer?.disconnect();
+                if (viewport) {
+                    viewport.removeEventListener("scroll", onScroll);
+                }
+                timers.forEach((timer) => win.clearTimeout(timer));
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# ============================================================
+# THINKING INDICATOR — DIRECTLY ABOVE COMPOSER
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* The standalone thinking row between history and composer. */
+    .st-key-dm_center_chat .dm-agent-v2-thinking {
+        display: flex !important;
+        align-items: center !important;
+        gap: .55rem !important;
+
+        width: 100% !important;
+        min-height: 32px !important;
+        height: auto !important;
+
+        margin: 0 !important;
+        padding: .35rem .75rem .4rem !important;
+        box-sizing: border-box !important;
+
+        color: var(--dm-muted) !important;
+        background: var(--dm-bg) !important;
+
+        position: relative !important;
+        inset: auto !important;
+        z-index: 25 !important;
+    }
+
+    .st-key-dm_center_chat .dm-agent-v2-thinking-dot {
+        width: 8px !important;
+        height: 8px !important;
+        min-width: 8px !important;
+        border-radius: 999px !important;
+        background: var(--dm-primary) !important;
+        display: inline-block !important;
+        animation: dm-thinking-pulse 1.15s ease-in-out infinite !important;
+    }
+
+    .st-key-dm_center_chat .dm-agent-v2-thinking span:last-child {
+        color: var(--dm-muted) !important;
+        font-size: .88rem !important;
+        line-height: 1.25 !important;
+    }
+
+    @keyframes dm-thinking-pulse {
+        0%, 100% {
+            opacity: .35;
+            transform: scale(.85);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.08);
+        }
+    }
+
+    /*
+     * Keep the composer immediately under the thinking row.
+     * When the placeholder is empty it consumes essentially no space.
+     */
+    .st-key-dm_center_composer {
+        margin-top: 0 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL THINKING INDICATOR VISIBILITY
+# ============================================================
+st.markdown(
+    """
+    <style>
+    .st-key-dm_center_composer {
+        overflow: visible !important;
+    }
+
+    .st-key-dm_center_composer > div,
+    .st-key-dm_center_composer [data-testid="stVerticalBlock"] {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+    }
+
+    .st-key-dm_center_composer .dm-thinking-inline {
+        display: flex !important;
+        align-items: center !important;
+        gap: .55rem !important;
+
+        width: 100% !important;
+        min-height: 34px !important;
+
+        margin: 0 0 .35rem 0 !important;
+        padding: .35rem .55rem !important;
+        box-sizing: border-box !important;
+
+        background: var(--dm-bg) !important;
+        color: var(--dm-text) !important;
+
+        font-size: .9rem !important;
+        font-weight: 650 !important;
+        line-height: 1.3 !important;
+
+        visibility: visible !important;
+        opacity: 1 !important;
+
+        position: relative !important;
+        z-index: 999 !important;
+    }
+
+    .st-key-dm_center_composer .dm-thinking-inline span:last-child {
+        color: var(--dm-text) !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .st-key-dm_center_composer .dm-thinking-pulse {
+        display: inline-block !important;
+        width: 9px !important;
+        height: 9px !important;
+        min-width: 9px !important;
+        border-radius: 999px !important;
+        background: var(--dm-primary) !important;
+        animation: dmInlineThinkingPulse 1s ease-in-out infinite !important;
+    }
+
+    @keyframes dmInlineThinkingPulse {
+        0%, 100% {
+            opacity: .35;
+            transform: scale(.82);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.12);
+        }
+    }
+
+    /* Input remains directly below the thinking row. */
+    .st-key-dm_center_composer [data-testid="stChatInput"] {
+        margin-top: 0 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL — ALWAYS OPEN NEWEST ANSWER FROM ITS FIRST LINE
+# ============================================================
+# Streamlit's fixed-height container can place the actual scrollbar on an
+# internal child element rather than on `.st-key-dm_conversation_viewport`
+# itself. This script finds the REAL scrolling element and positions it at
+# the marker immediately before the newest assistant answer.
+st.markdown(
+    """
+    <style>
+    #dm-latest-turn-start {
+        display:block !important;
+        height:1px !important;
+        min-height:1px !important;
+        margin:0 !important;
+        padding:0 !important;
+        scroll-margin-top:8px !important;
+        visibility:visible !important;
+    }
+
+    /* Completed chat content must start normally; never bottom-align it. */
+    .st-key-dm_conversation_viewport > div,
+    .st-key-dm_conversation_viewport [data-testid="stVerticalBlock"] {
+        justify-content:flex-start !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindTrueFirstLineFinal";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        const timers = [];
+        let observer = null;
+        let userScrolled = false;
+        let programmatic = false;
+        let scroller = null;
+
+        const root = () =>
+            doc.querySelector(".st-key-dm_conversation_viewport");
+
+        const marker = () =>
+            doc.querySelector("#dm-latest-turn-start");
+
+        const isScrollable = (el) => {
+            if (!el) return false;
+            const style = win.getComputedStyle(el);
+            const oy = style.overflowY;
+            return (
+                (oy === "auto" || oy === "scroll") &&
+                el.scrollHeight > el.clientHeight + 2
+            );
+        };
+
+        const findRealScroller = () => {
+            const container = root();
+            const target = marker();
+
+            if (!container || !target) return null;
+
+            /*
+             * First walk upward from the marker. This catches Streamlit's
+             * internal fixed-height scrolling wrapper.
+             */
+            let node = target.parentElement;
+
+            while (node && node !== doc.body) {
+                if (isScrollable(node)) {
+                    return node;
+                }
+
+                if (node === container) break;
+                node = node.parentElement;
+            }
+
+            if (isScrollable(container)) {
+                return container;
+            }
+
+            /*
+             * Fallback: inspect descendants of the keyed Streamlit container.
+             */
+            const descendants = Array.from(
+                container.querySelectorAll("*")
+            );
+
+            return (
+                descendants.find((el) => isScrollable(el)) ||
+                container
+            );
+        };
+
+        const positionAtAnswerStart = () => {
+            const target = marker();
+            scroller = findRealScroller();
+
+            if (!target || !scroller) return;
+
+            programmatic = true;
+
+            /*
+             * Using bounding rectangles works even when Streamlit inserts
+             * extra wrapper elements between the keyed container and content.
+             */
+            const scrollRect = scroller.getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+
+            const desired =
+                scroller.scrollTop +
+                (targetRect.top - scrollRect.top) -
+                8;
+
+            scroller.scrollTop = Math.max(0, desired);
+
+            /*
+             * scrollIntoView is a second safety net for browser/Streamlit
+             * versions whose real scroll element changes after layout.
+             */
+            target.scrollIntoView({
+                behavior: "auto",
+                block: "start",
+                inline: "nearest"
+            });
+
+            win.setTimeout(() => {
+                /*
+                 * Re-apply after scrollIntoView so the 8px breathing room is
+                 * preserved without showing the middle/end of the answer.
+                 */
+                const activeScroller = findRealScroller();
+                const activeTarget = marker();
+
+                if (activeScroller && activeTarget) {
+                    const sr = activeScroller.getBoundingClientRect();
+                    const tr = activeTarget.getBoundingClientRect();
+
+                    activeScroller.scrollTop = Math.max(
+                        0,
+                        activeScroller.scrollTop +
+                        (tr.top - sr.top) -
+                        8
+                    );
+                }
+
+                programmatic = false;
+            }, 30);
+        };
+
+        const onUserScroll = () => {
+            if (!programmatic) {
+                userScrolled = true;
+            }
+        };
+
+        const attach = () => {
+            const container = root();
+            const target = marker();
+
+            if (!container || !target) return;
+
+            scroller = findRealScroller();
+
+            if (scroller) {
+                scroller.removeEventListener("scroll", onUserScroll);
+                scroller.addEventListener(
+                    "scroll",
+                    onUserScroll,
+                    { passive: true }
+                );
+            }
+
+            userScrolled = false;
+            positionAtAnswerStart();
+
+            observer?.disconnect();
+
+            /*
+             * Streamlit may resize/rebuild wrappers for a short moment after
+             * the rerun. Keep the answer at line one until the user manually
+             * scrolls; after that we never fight their reading position.
+             */
+            observer = new win.MutationObserver(() => {
+                if (!userScrolled && marker()) {
+                    positionAtAnswerStart();
+                }
+            });
+
+            observer.observe(container, {
+                childList: true,
+                subtree: true
+            });
+        };
+
+        [0, 40, 100, 180, 300, 500, 800, 1200].forEach((delay) => {
+            timers.push(
+                win.setTimeout(() => {
+                    if (!userScrolled) attach();
+                }, delay)
+            );
+        });
+
+        win[KEY] = {
+            destroy() {
+                observer?.disconnect();
+
+                if (scroller) {
+                    scroller.removeEventListener(
+                        "scroll",
+                        onUserScroll
+                    );
+                }
+
+                timers.forEach((timer) => win.clearTimeout(timer));
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# ============================================================
+# SIDEBAR CHAT DELETE ICON
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /*
+     * Current chat row is rendered as two Streamlit columns:
+     * chat title on the left and a compact delete button on the right.
+     */
+    [data-testid="stSidebar"] div[data-testid="stHorizontalBlock"]:has(
+        .st-key-current_chat_nav
+    ):has(
+        .st-key-delete_current_chat
+    ) {
+        gap: .4rem !important;
+        align-items: stretch !important;
+        margin-bottom: .2rem !important;
+    }
+
+    /* Chat title keeps the existing DocMind sidebar appearance. */
+    [data-testid="stSidebar"] .st-key-current_chat_nav button {
+        width: 100% !important;
+        min-height: 42px !important;
+        background: var(--dm-sidebar-hover) !important;
+        color: var(--dm-sidebar-text) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-current_chat_nav button:hover {
+        border-color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-current_chat_nav button p,
+    [data-testid="stSidebar"] .st-key-current_chat_nav button span {
+        color: var(--dm-sidebar-text) !important;
+    }
+
+    /* Compact trash icon button. */
+    [data-testid="stSidebar"] .st-key-delete_current_chat button {
+        width: 100% !important;
+        min-width: 40px !important;
+        min-height: 42px !important;
+        padding: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        background: transparent !important;
+        color: var(--dm-sidebar-muted) !important;
+        border: 1px solid transparent !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-delete_current_chat button:hover {
+        background: rgba(239, 115, 115, .10) !important;
+        color: var(--dm-danger) !important;
+        border-color: rgba(239, 115, 115, .35) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-delete_current_chat button p,
+    [data-testid="stSidebar"] .st-key-delete_current_chat button span {
+        color: inherit !important;
+        font-size: 1rem !important;
+        line-height: 1 !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-delete_current_chat button:focus,
+    [data-testid="stSidebar"] .st-key-delete_current_chat button:focus-visible {
+        box-shadow: 0 0 0 2px rgba(239, 115, 115, .18) !important;
+        outline: none !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL — SHOW NEWEST QUESTION BEFORE NEWEST ANSWER
+# ============================================================
+st.markdown(
+    """
+    <style>
+    #dm-latest-turn-start {
+        display:block !important;
+        height:1px !important;
+        min-height:1px !important;
+        margin:0 !important;
+        padding:0 !important;
+        scroll-margin-top:8px !important;
+        visibility:visible !important;
+    }
+
+    /* Keep the newest user question and answer in natural order. */
+    .st-key-dm_conversation_viewport
+    [data-testid="stChatMessage"] {
+        position:relative !important;
+        flex:0 0 auto !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# CLEAR SESSION CONFIRMATION UI
+# ============================================================
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"] .dm-clear-confirm-box {
+        margin: .45rem 0 .55rem !important;
+        padding: .75rem .8rem !important;
+        border: 1px solid rgba(239,115,115,.30) !important;
+        border-radius: 10px !important;
+        background: rgba(239,115,115,.06) !important;
+    }
+
+    [data-testid="stSidebar"] .dm-clear-confirm-title {
+        color: var(--dm-sidebar-text) !important;
+        font-size: .84rem !important;
+        font-weight: 800 !important;
+        margin-bottom: .25rem !important;
+    }
+
+    [data-testid="stSidebar"] .dm-clear-confirm-text {
+        color: var(--dm-sidebar-muted) !important;
+        font-size: .74rem !important;
+        line-height: 1.45 !important;
+        margin-bottom: .45rem !important;
+    }
+
+    [data-testid="stSidebar"] .dm-clear-confirm-warning {
+        color: var(--dm-sidebar-muted) !important;
+        font-size: .72rem !important;
+        line-height: 1.45 !important;
+    }
+
+    [data-testid="stSidebar"] .dm-clear-confirm-warning b {
+        color: var(--dm-danger) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button {
+        border-color: rgba(239,115,115,.45) !important;
+        color: var(--dm-danger) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button:hover {
+        background: rgba(239,115,115,.10) !important;
+        border-color: var(--dm-danger) !important;
+        color: var(--dm-danger) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button:hover {
+        border-color: var(--dm-primary) !important;
+        color: var(--dm-primary) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL CLEAR-SESSION BUTTON THEME FIX
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Clear chats */
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button {
+        background: var(--dm-sidebar-hover) !important;
+        color: var(--dm-sidebar-text) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button p,
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button span {
+        color: var(--dm-sidebar-text) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button:hover {
+        background: var(--dm-soft) !important;
+        color: var(--dm-primary) !important;
+        border-color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button:hover p,
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button:hover span {
+        color: var(--dm-primary) !important;
+    }
+
+    /* Clear all data */
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button {
+        background: rgba(239, 115, 115, 0.08) !important;
+        color: var(--dm-danger) !important;
+        border: 1px solid rgba(239, 115, 115, 0.38) !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button p,
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button span {
+        color: var(--dm-danger) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button:hover {
+        background: rgba(239, 115, 115, 0.15) !important;
+        border-color: var(--dm-danger) !important;
+        color: var(--dm-danger) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button:hover p,
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button:hover span {
+        color: var(--dm-danger) !important;
+    }
+
+    /* Cancel */
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button {
+        background: transparent !important;
+        color: var(--dm-sidebar-text) !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button p,
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button span {
+        color: var(--dm-sidebar-text) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button:hover {
+        background: var(--dm-sidebar-hover) !important;
+        border-color: var(--dm-primary) !important;
+        color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button:hover p,
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button:hover span {
+        color: var(--dm-primary) !important;
+    }
+
+    /* Prevent focus/active states from flashing white */
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button:focus,
+    [data-testid="stSidebar"] .st-key-confirm_clear_chats_only button:active,
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button:focus,
+    [data-testid="stSidebar"] .st-key-confirm_clear_everything button:active,
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button:focus,
+    [data-testid="stSidebar"] .st-key-cancel_clear_session button:active {
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# MULTI-CHAT SIDEBAR ROWS
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Every dynamically-created chat row. */
+    [data-testid="stSidebar"]
+    div[data-testid="stHorizontalBlock"]:has([class*="st-key-chat_nav_chat_"]):has([class*="st-key-delete_chat_chat_"]) {
+        gap: .4rem !important;
+        align-items: stretch !important;
+        margin-bottom: .25rem !important;
+    }
+
+    /* Chat title buttons. */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button {
+        width: 100% !important;
+        min-height: 42px !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+        border: 1px solid var(--dm-sidebar-border) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button[kind="secondary"] {
+        background: transparent !important;
+        color: var(--dm-sidebar-text) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button[kind="primary"] {
+        background: var(--dm-sidebar-hover) !important;
+        color: var(--dm-sidebar-text) !important;
+        border-color: var(--dm-primary) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button p,
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button span {
+        color: var(--dm-sidebar-text) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button:hover {
+        background: var(--dm-sidebar-hover) !important;
+        border-color: var(--dm-primary) !important;
+    }
+
+    /* Delete icon beside each chat. */
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button {
+        width: 100% !important;
+        min-width: 38px !important;
+        min-height: 42px !important;
+        padding: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        background: transparent !important;
+        color: var(--dm-sidebar-muted) !important;
+        border: 1px solid transparent !important;
+        border-radius: 9px !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button:hover {
+        background: rgba(239,115,115,.10) !important;
+        color: var(--dm-danger) !important;
+        border-color: rgba(239,115,115,.35) !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button p,
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button span {
+        color: inherit !important;
+        line-height: 1 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
