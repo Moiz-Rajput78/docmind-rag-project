@@ -16943,3 +16943,204 @@ components.html(
     height=0,
     width=0,
 )
+
+# ============================================================
+# FINAL HARD FIX — KEEP CHAT COMPOSER FIXED TO VIEWPORT
+# ============================================================
+# This override intentionally comes last so older experimental CSS cannot
+# move the prompt box when the main page scrolls.
+st.markdown(
+    """
+    <style>
+    /* Desktop/tablet: the complete composer (input + disclaimer) is pinned
+       to the browser viewport, not to the scrolling Streamlit page. */
+    @media (min-width: 901px) {
+        .st-key-dm_center_chat .st-key-dm_center_composer {
+            position: fixed !important;
+            left: var(--dm-composer-left, 0px) !important;
+            width: var(--dm-composer-width, 100%) !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: var(--dm-composer-bottom, 0px) !important;
+            margin: 0 !important;
+            padding: .65rem .6rem max(.6rem, env(safe-area-inset-bottom)) !important;
+            box-sizing: border-box !important;
+            background: var(--dm-bg) !important;
+            border-top: 1px solid color-mix(in srgb, var(--dm-border) 70%, transparent) !important;
+            z-index: 9990 !important;
+        }
+
+        /* Leave enough room inside the scrollable conversation so the final
+           answer/source card is never hidden behind the fixed composer. */
+        .st-key-dm_center_chat .st-key-dm_conversation_viewport,
+        .st-key-dm_center_chat .st-key-agent_v2_scroll {
+            padding-bottom: var(--dm-composer-space, 8.5rem) !important;
+            scroll-padding-bottom: var(--dm-composer-space, 8.5rem) !important;
+        }
+
+        .st-key-dm_center_chat .st-key-agent_v2_input,
+        .st-key-dm_center_chat .st-key-agent_v2_input [data-testid="stChatInput"] {
+            position: relative !important;
+            inset: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+
+        .st-key-dm_center_chat .dm-agent-v2-disclaimer {
+            margin: 0 !important;
+            padding: .35rem 0 0 !important;
+        }
+    }
+
+    /* Mobile keeps the safer sticky behavior so the composer follows the
+       mobile viewport without covering the entire narrow layout. */
+    @media (max-width: 900px) {
+        .st-key-dm_center_chat .st-key-dm_center_composer {
+            position: sticky !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            z-index: 9990 !important;
+            background: var(--dm-bg) !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Measure the visible center column and apply the coordinates directly to the
+# composer. Direct inline !important styles make this resilient to Streamlit's
+# generated wrapper classes and to earlier CSS blocks in this file.
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindFixedComposerV3";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        let raf = 0;
+        let resizeObserver = null;
+        let mutationObserver = null;
+        const timers = [];
+
+        const setImp = (node, prop, value) => {
+            if (!node) return;
+            node.style.setProperty(prop, value, "important");
+        };
+
+        const layout = () => {
+            const panel = doc.querySelector(".st-key-dm_center_chat");
+            const composer = panel?.querySelector(".st-key-dm_center_composer");
+            if (!panel || !composer) return false;
+
+            // On narrow screens, CSS sticky mode is used instead.
+            if (win.innerWidth <= 900) {
+                composer.style.removeProperty("position");
+                composer.style.removeProperty("left");
+                composer.style.removeProperty("right");
+                composer.style.removeProperty("top");
+                composer.style.removeProperty("bottom");
+                composer.style.removeProperty("width");
+                return true;
+            }
+
+            const rect = panel.getBoundingClientRect();
+            const viewport = win.visualViewport;
+            const vpLeft = viewport?.offsetLeft || 0;
+            const vpTop = viewport?.offsetTop || 0;
+            const vpWidth = viewport?.width || win.innerWidth;
+            const vpHeight = viewport?.height || win.innerHeight;
+
+            const left = Math.max(rect.left, vpLeft);
+            const right = Math.min(rect.right, vpLeft + vpWidth);
+            if (right <= left) return false;
+
+            const keyboardBottom = Math.max(
+                0,
+                win.innerHeight - (vpTop + vpHeight)
+            );
+
+            setImp(panel, "--dm-composer-left", `${left}px`);
+            setImp(panel, "--dm-composer-width", `${right - left}px`);
+            setImp(panel, "--dm-composer-bottom", `${keyboardBottom}px`);
+
+            setImp(composer, "position", "fixed");
+            setImp(composer, "left", `${left}px`);
+            setImp(composer, "width", `${right - left}px`);
+            setImp(composer, "right", "auto");
+            setImp(composer, "top", "auto");
+            setImp(composer, "bottom", `${keyboardBottom}px`);
+            setImp(composer, "margin", "0");
+            setImp(composer, "z-index", "9990");
+
+            const composerHeight = Math.ceil(
+                composer.getBoundingClientRect().height
+            );
+            setImp(
+                panel,
+                "--dm-composer-space",
+                `${composerHeight + 24}px`
+            );
+
+            panel.dataset.composerPinned = "true";
+            return true;
+        };
+
+        const schedule = () => {
+            win.cancelAnimationFrame(raf);
+            raf = win.requestAnimationFrame(layout);
+        };
+
+        // Re-run when Streamlit rerenders widgets or the viewport changes.
+        resizeObserver = new win.ResizeObserver(schedule);
+        mutationObserver = new win.MutationObserver(schedule);
+
+        const attachObservers = () => {
+            const panel = doc.querySelector(".st-key-dm_center_chat");
+            const composer = panel?.querySelector(".st-key-dm_center_composer");
+            if (panel) resizeObserver.observe(panel);
+            if (composer) resizeObserver.observe(composer);
+            if (doc.body) {
+                mutationObserver.observe(doc.body, {
+                    childList: true,
+                    subtree: true,
+                });
+            }
+            schedule();
+        };
+
+        win.addEventListener("resize", schedule, { passive: true });
+        doc.addEventListener("scroll", schedule, true);
+        win.visualViewport?.addEventListener("resize", schedule, { passive: true });
+        win.visualViewport?.addEventListener("scroll", schedule, { passive: true });
+
+        [0, 80, 200, 500, 1000].forEach((delay) => {
+            timers.push(win.setTimeout(attachObservers, delay));
+        });
+
+        win[KEY] = {
+            destroy() {
+                win.cancelAnimationFrame(raf);
+                resizeObserver?.disconnect();
+                mutationObserver?.disconnect();
+                timers.forEach((timer) => win.clearTimeout(timer));
+                win.removeEventListener("resize", schedule);
+                doc.removeEventListener("scroll", schedule, true);
+                win.visualViewport?.removeEventListener("resize", schedule);
+                win.visualViewport?.removeEventListener("scroll", schedule);
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
