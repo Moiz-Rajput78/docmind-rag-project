@@ -17339,14 +17339,28 @@ components.html(
             const composer = panel?.querySelector(".st-key-dm_center_composer");
             if (!panel || !composer) return false;
 
-            // On narrow screens, CSS sticky mode is used instead.
+            // On narrow screens, completely leave desktop pinning mode.
+            // Chrome responsive mode can keep the old desktop measurements
+            // (--dm-composer-left / --dm-composer-width) unless they are
+            // explicitly cleared here.
             if (win.innerWidth <= 900) {
+                panel.removeAttribute("data-composer-pinned");
+
+                panel.style.removeProperty("--dm-composer-left");
+                panel.style.removeProperty("--dm-composer-width");
+                panel.style.removeProperty("--dm-composer-bottom");
+                panel.style.removeProperty("--dm-composer-space");
+
                 composer.style.removeProperty("position");
                 composer.style.removeProperty("left");
                 composer.style.removeProperty("right");
                 composer.style.removeProperty("top");
                 composer.style.removeProperty("bottom");
                 composer.style.removeProperty("width");
+                composer.style.removeProperty("max-width");
+                composer.style.removeProperty("margin");
+                composer.style.removeProperty("transform");
+
                 return true;
             }
 
@@ -21478,4 +21492,141 @@ st.markdown(
 # COMPACT PROFESSIONAL THEME TOGGLE
 # ============================================================
 # Disabled old toggle styles to avoid conflicts with the final moon/sun toggle above.
+
+
+
+# ============================================================
+# FINAL MOBILE CHAT COMPOSER CENTERING FIX
+# ============================================================
+# Important:
+# Earlier desktop composer experiments use a high-specificity selector:
+# .st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer
+# with fixed left/width values. In responsive/mobile mode those desktop
+# coordinates can survive a DevTools viewport change. The rules below come
+# LAST and explicitly neutralize that state for <= 900px.
+st.markdown(
+    """
+    <style>
+    @media (max-width: 900px) {
+
+        /*
+         * The center chat itself must use the full available mobile width.
+         * Do not let old desktop width/left custom properties influence it.
+         */
+        .st-key-dm_center_chat,
+        .st-key-dm_center_chat[data-composer-pinned="true"] {
+            --dm-composer-left: 0px !important;
+            --dm-composer-width: 100% !important;
+            --dm-composer-bottom: 0px !important;
+            --dm-composer-space: 0px !important;
+
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+
+            margin-left: auto !important;
+            margin-right: auto !important;
+
+            box-sizing: border-box !important;
+        }
+
+        /*
+         * Override BOTH the normal composer selector and the old
+         * data-composer-pinned desktop selector with equal/higher specificity.
+         */
+        .st-key-dm_center_chat .st-key-dm_center_composer,
+        .st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer,
+        .st-key-dm_center_chat.st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer {
+            position: sticky !important;
+
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: 0 !important;
+
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+
+            margin-left: auto !important;
+            margin-right: auto !important;
+
+            transform: none !important;
+
+            padding:
+                .55rem
+                .35rem
+                max(.55rem, env(safe-area-inset-bottom))
+                .35rem !important;
+
+            box-sizing: border-box !important;
+            background: var(--dm-bg) !important;
+            z-index: 9990 !important;
+        }
+
+        /*
+         * Streamlit wrappers around the chat input also need to stay fluid.
+         * Otherwise a desktop wrapper width can make the visible input appear
+         * offset even when the composer itself is 100% wide.
+         */
+        .st-key-dm_center_composer > div,
+        .st-key-dm_center_composer [data-testid="stVerticalBlock"],
+        .st-key-dm_center_composer [data-testid="stElementContainer"],
+        .st-key-dm_center_composer .st-key-agent_v2_input,
+        .st-key-dm_center_composer .st-key-agent_v2_input > div,
+        .st-key-dm_center_composer .st-key-agent_v2_input [data-testid="stChatInput"] {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+
+            left: auto !important;
+            right: auto !important;
+
+            margin-left: auto !important;
+            margin-right: auto !important;
+
+            transform: none !important;
+            box-sizing: border-box !important;
+        }
+
+        /*
+         * Give the actual input a small, symmetric phone-screen gutter.
+         * This keeps it visually centered like ChatGPT on mobile.
+         */
+        .st-key-dm_center_composer .st-key-agent_v2_input {
+            padding-left: .25rem !important;
+            padding-right: .25rem !important;
+        }
+
+        .st-key-dm_center_composer [data-testid="stChatInput"] {
+            margin: 0 auto !important;
+        }
+
+        /*
+         * Prevent any horizontal overflow caused by old desktop measurements.
+         */
+        [data-testid="stMain"]:has(.st-key-dm_center_chat),
+        [data-testid="stMainBlockContainer"]:has(.st-key-dm_center_chat),
+        .block-container:has(.st-key-dm_center_chat) {
+            overflow-x: hidden !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .st-key-dm_center_chat .st-key-dm_center_composer,
+        .st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer,
+        .st-key-dm_center_chat.st-key-dm_center_chat[data-composer-pinned="true"] .st-key-dm_center_composer {
+            padding-left: .2rem !important;
+            padding-right: .2rem !important;
+        }
+
+        .st-key-dm_center_composer .st-key-agent_v2_input {
+            padding-left: .15rem !important;
+            padding-right: .15rem !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
