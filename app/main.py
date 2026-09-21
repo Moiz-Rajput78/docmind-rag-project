@@ -11442,7 +11442,7 @@ with st.sidebar:
     )
 
     if st.button(
-        "＋ New Chat",
+        "✎ New chat",
         type="primary",
         width="stretch",
         key="new_chat_button",
@@ -11451,7 +11451,7 @@ with st.sidebar:
         st.rerun()
 
     st.markdown(
-        '<div class="dm-nav-label">CHATS</div>',
+        '<div class="dm-nav-label">Recents</div>',
         unsafe_allow_html=True,
     )
 
@@ -11482,12 +11482,14 @@ with st.sidebar:
                 chat_id == st.session_state.active_chat_id
             )
 
-            chat_col, delete_col = st.columns(
-                [0.86, 0.14],
-                gap="small",
-            )
-
-            with chat_col:
+            # One clean visual chat row.
+            # The visible delete icon is injected INSIDE the chat button.
+            # A hidden Streamlit delete button remains underneath so the
+            # existing Python delete functionality stays reliable.
+            with st.container(
+                key=f"chat_row_{chat_id}",
+                border=False,
+            ):
                 if st.button(
                     title,
                     key=f"chat_nav_{chat_id}",
@@ -11502,11 +11504,9 @@ with st.sidebar:
                     if load_chat(chat_id):
                         st.rerun()
 
-            with delete_col:
                 if st.button(
-                    "🗑",
+                    "",
                     key=f"delete_chat_{chat_id}",
-                    width="stretch",
                     help=f"Delete '{title}'.",
                 ):
                     delete_chat(chat_id)
@@ -11515,8 +11515,9 @@ with st.sidebar:
     else:
         st.caption("No conversations in this session yet.")
 
+    # Visual separator between recent chats and the navigation/tools below.
     st.markdown(
-        '<div class="dm-nav-label">ANALYTICS & EVALUATION</div>',
+        '<div class="dm-recents-separator" aria-hidden="true"></div>',
         unsafe_allow_html=True,
     )
 
@@ -11528,11 +11529,6 @@ with st.sidebar:
         st.session_state.docmind_view = "Analytics & Evaluation"
         st.rerun()
 
-    st.markdown(
-        '<div class="dm-nav-label">KNOWLEDGE</div>',
-        unsafe_allow_html=True,
-    )
-
     if st.button(
         "📚 Knowledge Base",
         width="stretch",
@@ -11540,11 +11536,6 @@ with st.sidebar:
     ):
         st.session_state.docmind_view = "Knowledge Base"
         st.rerun()
-
-    st.markdown(
-        '<div class="dm-nav-label">RETRIEVAL</div>',
-        unsafe_allow_html=True,
-    )
 
     top_k = st.slider(
         "Top-K chunks",
@@ -11640,6 +11631,35 @@ try:
     workspace_document_manager = get_document_manager()
 except Exception:
     workspace_document_manager = None
+
+# ============================================================
+# GLOBAL THEME CONTROL
+# Separate from the Documents panel so mobile stacking cannot
+# push it into the middle of the page.
+# ============================================================
+with st.container(key="dm_global_theme_control", border=False):
+    selected_theme = st.radio(
+        "Theme",
+        options=["🌙", "☀️"],
+        index=0 if st.session_state.theme == "dark" else 1,
+        horizontal=True,
+        key="documents_theme_segmented_toggle",
+        label_visibility="collapsed",
+    )
+
+    selected_theme_value = (
+        "light"
+        if selected_theme == "☀️"
+        else "dark"
+    )
+
+    if selected_theme_value != st.session_state.theme:
+        st.session_state.theme = selected_theme_value
+        st.session_state.documents_theme_toggle = (
+            selected_theme_value == "light"
+        )
+        st.rerun()
+
 
 center_panel, right_panel = st.columns(
     [3.15, 1.15],
@@ -12006,30 +12026,10 @@ with right_panel:
         # Heading + theme toggle + upload controls do NOT scroll.
         # ------------------------------------------------------------
         with st.container(key="dm_documents_fixed_header", border=False):
-            documents_title_col, documents_theme_col = st.columns(
-                [4.2, 1],
-                gap="small",
-                vertical_alignment="center",
+            st.markdown(
+                '<div class="dm-right-panel-title">Documents</div>',
+                unsafe_allow_html=True,
             )
-
-            with documents_title_col:
-                st.markdown(
-                    '<div class="dm-right-panel-title">Documents</div>',
-                    unsafe_allow_html=True,
-                )
-
-            with documents_theme_col:
-                st.markdown(
-                    '<span class="dm-doc-theme-toggle-marker"></span>',
-                    unsafe_allow_html=True,
-                )
-                st.toggle(
-                    "Light theme",
-                    key="documents_theme_toggle",
-                    on_change=set_theme_from_documents_toggle,
-                    help="Switch between dark and light mode",
-                    label_visibility="collapsed",
-                )
 
             if workspace_document_manager:
                 render_right_upload_controls(
@@ -19062,83 +19062,7 @@ components.html(
 # ============================================================
 # SIDEBAR CHAT DELETE ICON
 # ============================================================
-st.markdown(
-    """
-    <style>
-    /*
-     * Current chat row is rendered as two Streamlit columns:
-     * chat title on the left and a compact delete button on the right.
-     */
-    [data-testid="stSidebar"] div[data-testid="stHorizontalBlock"]:has(
-        .st-key-current_chat_nav
-    ):has(
-        .st-key-delete_current_chat
-    ) {
-        gap: .4rem !important;
-        align-items: stretch !important;
-        margin-bottom: .2rem !important;
-    }
 
-    /* Chat title keeps the existing DocMind sidebar appearance. */
-    [data-testid="stSidebar"] .st-key-current_chat_nav button {
-        width: 100% !important;
-        min-height: 42px !important;
-        background: var(--dm-sidebar-hover) !important;
-        color: var(--dm-sidebar-text) !important;
-        border: 1px solid var(--dm-sidebar-border) !important;
-        border-radius: 9px !important;
-        box-shadow: none !important;
-    }
-
-    [data-testid="stSidebar"] .st-key-current_chat_nav button:hover {
-        border-color: var(--dm-primary) !important;
-    }
-
-    [data-testid="stSidebar"] .st-key-current_chat_nav button p,
-    [data-testid="stSidebar"] .st-key-current_chat_nav button span {
-        color: var(--dm-sidebar-text) !important;
-    }
-
-    /* Compact trash icon button. */
-    [data-testid="stSidebar"] .st-key-delete_current_chat button {
-        width: 100% !important;
-        min-width: 40px !important;
-        min-height: 42px !important;
-        padding: 0 !important;
-
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-
-        background: transparent !important;
-        color: var(--dm-sidebar-muted) !important;
-        border: 1px solid transparent !important;
-        border-radius: 9px !important;
-        box-shadow: none !important;
-    }
-
-    [data-testid="stSidebar"] .st-key-delete_current_chat button:hover {
-        background: rgba(239, 115, 115, .10) !important;
-        color: var(--dm-danger) !important;
-        border-color: rgba(239, 115, 115, .35) !important;
-    }
-
-    [data-testid="stSidebar"] .st-key-delete_current_chat button p,
-    [data-testid="stSidebar"] .st-key-delete_current_chat button span {
-        color: inherit !important;
-        font-size: 1rem !important;
-        line-height: 1 !important;
-    }
-
-    [data-testid="stSidebar"] .st-key-delete_current_chat button:focus,
-    [data-testid="stSidebar"] .st-key-delete_current_chat button:focus-visible {
-        box-shadow: 0 0 0 2px rgba(239, 115, 115, .18) !important;
-        outline: none !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
 
 # ============================================================
@@ -19325,77 +19249,2233 @@ st.markdown(
 # ============================================================
 # MULTI-CHAT SIDEBAR ROWS
 # ============================================================
+
+
+
+# ============================================================
+# PROFESSIONAL APPEARANCE / THEME CONTROL
+# ============================================================
 st.markdown(
     """
     <style>
-    /* Every dynamically-created chat row. */
-    [data-testid="stSidebar"]
-    div[data-testid="stHorizontalBlock"]:has([class*="st-key-chat_nav_chat_"]):has([class*="st-key-delete_chat_chat_"]) {
-        gap: .4rem !important;
-        align-items: stretch !important;
-        margin-bottom: .25rem !important;
+    /* Outer appearance card */
+    .st-key-documents_theme_control {
+        margin: .55rem 0 .85rem !important;
+        padding: .72rem .78rem .68rem !important;
+        border: 1px solid var(--dm-border) !important;
+        border-radius: 13px !important;
+        background:
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--dm-surface2) 92%, transparent),
+                color-mix(in srgb, var(--dm-surface) 96%, transparent)
+            ) !important;
+        box-shadow: 0 5px 18px rgba(0,0,0,.06) !important;
+        overflow: visible !important;
     }
 
-    /* Chat title buttons. */
-    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button {
-        width: 100% !important;
-        min-height: 42px !important;
+    .st-key-documents_theme_control > div,
+    .st-key-documents_theme_control [data-testid="stVerticalBlock"] {
+        gap: .5rem !important;
+    }
+
+    /* Heading explains exactly what the control is for */
+    .dm-theme-control-heading {
+        display: flex !important;
+        align-items: center !important;
+        gap: .55rem !important;
+        margin: 0 0 .08rem !important;
+    }
+
+    .dm-theme-control-icon {
+        width: 30px !important;
+        height: 30px !important;
+        flex: 0 0 30px !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
         border-radius: 9px !important;
-        box-shadow: none !important;
-        border: 1px solid var(--dm-sidebar-border) !important;
+        background: var(--dm-soft) !important;
+        border: 1px solid var(--dm-border) !important;
+        color: var(--dm-primary) !important;
+
+        font-size: 17px !important;
+        font-weight: 800 !important;
     }
 
-    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button[kind="secondary"] {
+    .dm-theme-control-title {
+        color: var(--dm-heading) !important;
+        font-size: .79rem !important;
+        font-weight: 800 !important;
+        line-height: 1.1 !important;
+    }
+
+    .dm-theme-control-subtitle {
+        color: var(--dm-muted) !important;
+        font-size: .64rem !important;
+        font-weight: 550 !important;
+        margin-top: .15rem !important;
+        line-height: 1.1 !important;
+    }
+
+    /* Dark / Light labels */
+    .dm-theme-choice {
+        min-height: 34px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: .28rem !important;
+
+        padding: .35rem .42rem !important;
+        border-radius: 9px !important;
+        border: 1px solid transparent !important;
+
+        color: var(--dm-muted) !important;
         background: transparent !important;
-        color: var(--dm-sidebar-text) !important;
+
+        font-size: .68rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+
+        transition:
+            background .18s ease,
+            color .18s ease,
+            border-color .18s ease !important;
     }
 
-    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button[kind="primary"] {
-        background: var(--dm-sidebar-hover) !important;
-        color: var(--dm-sidebar-text) !important;
-        border-color: var(--dm-primary) !important;
+    .dm-theme-choice.active {
+        color: var(--dm-heading) !important;
+        background: var(--dm-soft) !important;
+        border-color: color-mix(
+            in srgb,
+            var(--dm-primary) 42%,
+            var(--dm-border)
+        ) !important;
+        box-shadow: inset 0 0 0 1px rgba(53,201,138,.04) !important;
     }
 
-    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button p,
-    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button span {
-        color: var(--dm-sidebar-text) !important;
+    .dm-theme-choice-icon {
+        font-size: .9rem !important;
+        line-height: 1 !important;
+        color: inherit !important;
     }
 
-    [data-testid="stSidebar"] [class*="st-key-chat_nav_chat_"] button:hover {
-        background: var(--dm-sidebar-hover) !important;
-        border-color: var(--dm-primary) !important;
-    }
-
-    /* Delete icon beside each chat. */
-    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button {
-        width: 100% !important;
-        min-width: 38px !important;
-        min-height: 42px !important;
+    /*
+     * Make the actual Streamlit switch larger and more deliberate.
+     * The surrounding labels make its purpose unambiguous even if
+     * Streamlit changes its internal switch markup in a future release.
+     */
+    .st-key-documents_theme_control [data-testid="stToggle"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
         padding: 0 !important;
+        min-height: 34px !important;
+    }
+
+    .st-key-documents_theme_control [data-testid="stToggle"] > label {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+    }
+
+    /* Best-effort enhancement of Streamlit's native switch track */
+    .st-key-documents_theme_control
+    [data-testid="stToggle"] [data-baseweb="checkbox"] > div {
+        transform: scale(1.14) !important;
+        transform-origin: center !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,.12) !important;
+    }
+
+    .st-key-documents_theme_control
+    [data-testid="stToggle"] input:focus-visible + div {
+        outline: 2px solid var(--dm-primary) !important;
+        outline-offset: 3px !important;
+    }
+
+    /* Keep the row compact inside the right sidebar */
+    .st-key-documents_theme_control
+    div[data-testid="stHorizontalBlock"] {
+        gap: .28rem !important;
+        align-items: center !important;
+    }
+
+    @media (max-width: 1200px) and (min-width: 901px) {
+        .dm-theme-choice {
+            font-size: .63rem !important;
+            padding-left: .3rem !important;
+            padding-right: .3rem !important;
+        }
+
+        .dm-theme-control-title {
+            font-size: .75rem !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .st-key-documents_theme_control {
+            margin-top: .45rem !important;
+        }
+
+        .dm-theme-choice {
+            font-size: .7rem !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL THEME CONTROL — DARK MODE [TOGGLE] LIGHT MODE
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Remove the previous card/appearance styling completely. */
+    .st-key-documents_theme_control {
+        margin: .55rem 0 .8rem !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    .st-key-documents_theme_control > div,
+    .st-key-documents_theme_control [data-testid="stVerticalBlock"] {
+        gap: 0 !important;
+        overflow: visible !important;
+    }
+
+    .st-key-documents_theme_control
+    div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        align-items: center !important;
+        gap: .35rem !important;
+        width: 100% !important;
+    }
+
+    /* Labels on each side of the switch */
+    .dm-theme-mode-label {
+        min-height: 34px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: .28rem !important;
+
+        padding: .26rem .25rem !important;
+        box-sizing: border-box !important;
+
+        color: var(--dm-muted) !important;
+        font-size: .68rem !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+
+        opacity: .72 !important;
+        transition:
+            color .18s ease,
+            opacity .18s ease !important;
+    }
+
+    .dm-theme-mode-label.active {
+        color: var(--dm-heading) !important;
+        opacity: 1 !important;
+    }
+
+    .dm-theme-mode-icon {
+        font-size: .92rem !important;
+        line-height: 1 !important;
+        color: inherit !important;
+    }
+
+    /*
+     * Make the center Streamlit toggle feel more intentional without
+     * replacing its reliable built-in functionality.
+     */
+    .st-key-documents_theme_control
+    [data-testid="stToggle"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        min-width: 48px !important;
+        min-height: 34px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .st-key-documents_theme_control
+    [data-testid="stToggle"] > label {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+    }
+
+    /* Slightly enlarge the native Streamlit switch. */
+    .st-key-documents_theme_control
+    [data-testid="stToggle"]
+    [data-baseweb="checkbox"] > div {
+        transform: scale(1.18) !important;
+        transform-origin: center !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,.14) !important;
+    }
+
+    .st-key-documents_theme_control
+    [data-testid="stToggle"] input:focus-visible + div {
+        outline: 2px solid var(--dm-primary) !important;
+        outline-offset: 3px !important;
+    }
+
+    /* Keep everything on one line in the Documents panel. */
+    @media (min-width: 901px) {
+        .st-key-documents_theme_control
+        div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+        }
+    }
+
+    @media (max-width: 1200px) and (min-width: 901px) {
+        .dm-theme-mode-label {
+            font-size: .62rem !important;
+            gap: .2rem !important;
+        }
+
+        .dm-theme-mode-icon {
+            font-size: .84rem !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .dm-theme-mode-label {
+            font-size: .7rem !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL THEME TOGGLE — TEXT INSIDE THE PILL
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /*
+     * One professional segmented toggle:
+     *
+     *  DARK MODE ACTIVE:
+     *  ┌─────────────────────────────────┐
+     *  │  🌙 Dark Mode   |   ☀ Light Mode │
+     *  └─────────────────────────────────┘
+     *
+     *  LIGHT MODE ACTIVE:
+     *  same control, right segment highlighted.
+     */
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) {
+        width: 100% !important;
+        margin: .55rem 0 .8rem !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) > div {
+        width: 100% !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radiogroup"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0 !important;
+
+        width: 100% !important;
+        min-height: 42px !important;
+
+        padding: 3px !important;
+        box-sizing: border-box !important;
+
+        border-radius: 999px !important;
+        border: 1px solid var(--dm-border) !important;
+
+        background: var(--dm-surface2) !important;
+
+        box-shadow:
+            inset 0 1px 2px rgba(0,0,0,.08),
+            0 3px 10px rgba(0,0,0,.06) !important;
+
+        overflow: hidden !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"] {
+        position: relative !important;
+
+        min-height: 36px !important;
+        height: 36px !important;
 
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
 
+        margin: 0 !important;
+        padding: 0 .55rem !important;
+
+        border: 0 !important;
+        border-radius: 999px !important;
+
         background: transparent !important;
-        color: var(--dm-sidebar-muted) !important;
-        border: 1px solid transparent !important;
-        border-radius: 9px !important;
+        color: var(--dm-muted) !important;
+
+        cursor: pointer !important;
+        transition:
+            background .2s ease,
+            color .2s ease,
+            box-shadow .2s ease,
+            transform .2s ease !important;
+    }
+
+    /* Hide Streamlit's circular radio bullet. */
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"] > div:first-child {
+        display: none !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"] p {
+        margin: 0 !important;
+        color: inherit !important;
+
+        font-size: .70rem !important;
+        font-weight: 750 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+    }
+
+    /*
+     * Add icons INSIDE each half of the toggle.
+     */
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"]:first-child p::before {
+        content: "☾";
+        display: inline-block !important;
+        margin-right: .32rem !important;
+        font-size: .9rem !important;
+        vertical-align: -1px !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"]:last-child p::before {
+        content: "☀";
+        display: inline-block !important;
+        margin-right: .32rem !important;
+        font-size: .9rem !important;
+        vertical-align: -1px !important;
+    }
+
+    /*
+     * Selected half becomes the knob/highlight.
+     */
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"][aria-checked="true"] {
+        background: var(--dm-soft) !important;
+        color: var(--dm-heading) !important;
+
+        box-shadow:
+            0 1px 5px rgba(0,0,0,.12),
+            inset 0 0 0 1px
+            color-mix(
+                in srgb,
+                var(--dm-primary) 35%,
+                var(--dm-border)
+            ) !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"]:hover {
+        color: var(--dm-heading) !important;
+    }
+
+    div[data-testid="stRadio"]:has(
+        input[name*="documents_theme_segmented_toggle"]
+    ) [role="radio"]:active {
+        transform: scale(.985) !important;
+    }
+
+    /*
+     * In light mode, make the selected Light segment visibly bright.
+     */
+    html:has(
+        div[data-testid="stRadio"]
+        input[name*="documents_theme_segmented_toggle"]:checked
+    ) body {
+        --dm-theme-segment-transition: .2s;
+    }
+
+    @media (max-width: 1200px) and (min-width: 901px) {
+        div[data-testid="stRadio"]:has(
+            input[name*="documents_theme_segmented_toggle"]
+        ) [role="radio"] p {
+            font-size: .64rem !important;
+        }
+
+        div[data-testid="stRadio"]:has(
+            input[name*="documents_theme_segmented_toggle"]
+        ) [role="radio"] {
+            padding-left: .35rem !important;
+            padding-right: .35rem !important;
+        }
+    }
+
+    @media (max-width: 900px) {
+        div[data-testid="stRadio"]:has(
+            input[name*="documents_theme_segmented_toggle"]
+        ) {
+            max-width: 320px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# CHATGPT-LIKE SIDEBAR SPACING / BUTTON SIZES / VISUAL RHYTHM
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Sidebar spacing baseline */
+    section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+        padding-top: 0.7rem !important;
+        padding-left: 0.9rem !important;
+        padding-right: 0.9rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    /* Brand area */
+    .dm-brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.78rem !important;
+        padding: 0.15rem 0 0.85rem 0 !important;
+        margin: 0 0 0.25rem 0 !important;
+    }
+
+    .dm-brand-icon {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        border-radius: 14px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        box-shadow: 0 10px 22px rgba(53, 201, 138, 0.14) !important;
+    }
+
+    .dm-brand-title {
+        font-size: 1.04rem !important;
+        font-weight: 800 !important;
+        line-height: 1.1 !important;
+        margin: 0 !important;
+    }
+
+    .dm-brand-sub {
+        font-size: 0.72rem !important;
+        line-height: 1.2 !important;
+        margin-top: 0.18rem !important;
+        opacity: 0.9 !important;
+    }
+
+    /* Sidebar labels like Recents / Analytics / Knowledge / Retrieval */
+    .dm-nav-label {
+        margin: 1.05rem 0 0.5rem 0 !important;
+        padding: 0 !important;
+        font-size: 0.78rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.04em !important;
+        text-transform: none !important;
+        color: var(--dm-heading) !important;
+        opacity: 0.92 !important;
+    }
+
+    /* New chat button - primary CTA */
+    .stSidebar div[data-testid="stButton"] button {
+        min-height: 46px !important;
+        border-radius: 14px !important;
+        padding: 0.8rem 0.95rem !important;
+        font-size: 0.98rem !important;
+        font-weight: 650 !important;
+        line-height: 1 !important;
+        transition:
+            background 0.18s ease,
+            border-color 0.18s ease,
+            color 0.18s ease,
+            transform 0.12s ease,
+            box-shadow 0.18s ease !important;
         box-shadow: none !important;
     }
 
-    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button:hover {
-        background: rgba(239,115,115,.10) !important;
-        color: var(--dm-danger) !important;
-        border-color: rgba(239,115,115,.35) !important;
+    .stSidebar div[data-testid="stButton"] button:hover {
+        transform: translateY(-1px) !important;
     }
 
-    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button p,
-    [data-testid="stSidebar"] [class*="st-key-delete_chat_chat_"] button span {
-        color: inherit !important;
+    /* Primary new chat button (first main CTA near top) */
+    .stSidebar [data-testid="stSidebarContent"] > div > div > div[data-testid="stButton"]:first-of-type button,
+    .stSidebar .st-key-sidebar_newchat_wrap div[data-testid="stButton"] button {
+        min-height: 48px !important;
+        border-radius: 14px !important;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        background: linear-gradient(180deg, #38d694 0%, #2fc784 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        box-shadow:
+            0 10px 24px rgba(53, 201, 138, 0.18),
+            inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    }
+
+    .stSidebar [data-testid="stSidebarContent"] > div > div > div[data-testid="stButton"]:first-of-type button:hover,
+    .stSidebar .st-key-sidebar_newchat_wrap div[data-testid="stButton"] button:hover {
+        background: linear-gradient(180deg, #43dca0 0%, #33ca89 100%) !important;
+    }
+
+    /* Chat item button / row buttons / nav buttons */
+    .stSidebar .st-key-chat_list_container div[data-testid="stButton"] button,
+    .stSidebar div[data-testid="stButton"] button[kind="secondary"],
+    .stSidebar div[data-testid="stButton"] button {
+        background: color-mix(in srgb, var(--dm-surface2) 95%, transparent) !important;
+        border: 1px solid var(--dm-border) !important;
+        color: var(--dm-heading) !important;
+    }
+
+    /* Ghost row hover like ChatGPT */
+    .stSidebar div[data-testid="stButton"] button:hover {
+        background: color-mix(in srgb, var(--dm-surface2) 88%, var(--dm-soft) 12%) !important;
+        border-color: color-mix(in srgb, var(--dm-border) 72%, var(--dm-primary) 28%) !important;
+        color: var(--dm-heading) !important;
+    }
+
+    /* Chat list feel */
+    .stSidebar .st-key-chat_list_container,
+    .stSidebar .st-key-sidebar-chat-list,
+    .stSidebar .st-key-chat_scroll_container {
+        margin-top: 0.15rem !important;
+    }
+
+    /* Try to make each chat row shorter and more like a recents item */
+    .stSidebar div[data-testid="stButton"] button p {
+        font-size: 0.96rem !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Small utility buttons such as delete icon */
+    .stSidebar button[title*="delete"],
+    .stSidebar button[aria-label*="delete"],
+    .stSidebar button[title*="Delete"],
+    .stSidebar button[aria-label*="Delete"] {
+        min-height: 40px !important;
+        min-width: 40px !important;
+        width: 40px !important;
+        border-radius: 12px !important;
+        padding: 0 !important;
+    }
+
+    /* Sliders / retrieval block spacing */
+    .stSidebar [data-testid="stSlider"] {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.6rem !important;
+    }
+
+    .stSidebar [data-testid="stSlider"] p,
+    .stSidebar .stSlider p {
+        font-size: 0.95rem !important;
+    }
+
+    /* Clear session and secondary actions */
+    .stSidebar button[key="clear_session_btn"],
+    .stSidebar button[key="clear_session"],
+    .stSidebar button {
+        font-weight: 650 !important;
+    }
+
+    /* Divider rhythm */
+    .stSidebar hr {
+        margin: 0.8rem 0 0.9rem 0 !important;
+        opacity: 0.45 !important;
+    }
+
+    /* More breathing room around section groups */
+    .stSidebar [data-testid="stVerticalBlock"] > div {
+        margin-bottom: 0.08rem !important;
+    }
+
+    /* ChatGPT-like compactness on narrow widths */
+    @media (max-width: 900px) {
+        section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+        }
+
+        .dm-brand-title {
+            font-size: 1rem !important;
+        }
+
+        .dm-brand-sub {
+            font-size: 0.7rem !important;
+        }
+
+        .stSidebar div[data-testid="stButton"] button {
+            min-height: 44px !important;
+            font-size: 0.95rem !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# SIDEBAR — REMOVE SECTION-HEADING GAPS / COMPACT NAV SPACING
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* Keep Recents as the only text heading, but tighten what follows. */
+    [data-testid="stSidebar"] .dm-nav-label {
+        margin-top: .9rem !important;
+        margin-bottom: .4rem !important;
+    }
+
+    /* Analytics and Knowledge become compact navigation rows. */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin-top: .18rem !important;
+        margin-bottom: .18rem !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        min-height: 42px !important;
+        height: 42px !important;
+        padding: .55rem .72rem !important;
+        border-radius: 11px !important;
+        font-size: .92rem !important;
+        justify-content: flex-start !important;
+    }
+
+    /* Add a small natural break before Retrieval controls, without a heading. */
+    [data-testid="stSidebar"] .st-key-workspace_top_k {
+        margin-top: .75rem !important;
+        margin-bottom: .15rem !important;
+        padding-top: .45rem !important;
+        border-top: 1px solid var(--dm-sidebar-border) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-workspace_top_k label p {
+        font-size: .9rem !important;
+        font-weight: 650 !important;
+        margin-bottom: .2rem !important;
+    }
+
+    /* Retrieval description sits closer to the slider. */
+    [data-testid="stSidebar"] .st-key-workspace_top_k + div,
+    [data-testid="stSidebar"] .st-key-workspace_top_k + [data-testid="stElementContainer"] {
+        margin-top: .1rem !important;
+    }
+
+    /* Clear session gets breathing room but no oversized section gap. */
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar {
+        margin-top: .65rem !important;
+        margin-bottom: .15rem !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar button {
+        min-height: 42px !important;
+        height: 42px !important;
+        border-radius: 11px !important;
+        padding: .55rem .72rem !important;
+        font-size: .92rem !important;
+    }
+
+    /* Reduce divider whitespace around the lower utility area. */
+    [data-testid="stSidebar"] hr {
+        margin: .65rem 0 !important;
+    }
+
+    /* Tighten the generic vertical rhythm in this sidebar. */
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+        gap: .35rem !important;
+    }
+
+    /* Do not let Streamlit add large margins between adjacent sidebar items. */
+    [data-testid="stSidebar"] [data-testid="stElementContainer"] {
+        margin-bottom: 0 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# SIDEBAR CHAT DELETE — ICON ONLY, FULLY FUNCTIONAL
+# ============================================================
+
+
+
+# ============================================================
+# FINAL CHAT ROW — DELETE ICON INSIDE THE CHAT BUTTON
+# ============================================================
+
+
+
+# ============================================================
+# FINAL FIX — VISIBLE TRASH ICON INSIDE CHAT ROW
+# ============================================================
+
+
+
+# ============================================================
+# FINAL DELETE ICON — MATERIAL ICON, NO EMPTY BOX
+# ============================================================
+
+
+
+# ============================================================
+# DELETE ICON — NO BACKGROUND AT ALL
+# ============================================================
+
+
+
+
+
+# ============================================================
+# FINAL PRECISE CHAT TRASH ICON
+# - no independent background
+# - no circle/pill
+# - centered vertically
+# - aligned cleanly at the far-right inside the chat row
+# ============================================================
+
+
+
+# ============================================================
+# CHAT SIDEBAR — TRUE EMBEDDED DELETE ICON
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* One row = one rounded chat button. */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] {
+        position: relative !important;
+        width: 100% !important;
+        margin: 0 0 .28rem 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] > div,
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] [data-testid="stVerticalBlock"] {
+        position: relative !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    /* Main chat button fills the complete row. */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button {
+        position: relative !important;
+        width: 100% !important;
+        min-height: 46px !important;
+        height: 46px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+
+        padding: .55rem 2.5rem .55rem .82rem !important;
+        border-radius: 12px !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button p {
+        width: 100% !important;
+        margin: 0 !important;
+        text-align: left !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /*
+     * Hide the real Streamlit delete button COMPLETELY.
+     * It stays in the DOM so the custom icon can click it programmatically.
+     */
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_"] {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /*
+     * This is the ONLY visible delete control.
+     * It is a plain icon placed directly inside the chat row.
+     */
+    .dm-inline-chat-delete {
+        position: absolute !important;
+        top: 50% !important;
+        right: .72rem !important;
+        transform: translateY(-50%) !important;
+
+        width: 18px !important;
+        height: 18px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+
+        color: #8f9792 !important;
+        opacity: .72 !important;
+        cursor: pointer !important;
+        z-index: 1000 !important;
+
+        transition:
+            color .15s ease,
+            opacity .15s ease !important;
+    }
+
+    .dm-inline-chat-delete:hover,
+    .dm-inline-chat-delete:focus,
+    .dm-inline-chat-delete:active {
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+
+        color: var(--dm-danger) !important;
+        opacity: 1 !important;
+    }
+
+    .dm-inline-chat-delete svg {
+        width: 16px !important;
+        height: 16px !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        fill: none !important;
+        stroke: currentColor !important;
+        stroke-width: 1.8 !important;
+        stroke-linecap: round !important;
+        stroke-linejoin: round !important;
+        pointer-events: none !important;
+        background: transparent !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+components.html(
+    """
+    <script>
+    (() => {
+        const win = window.parent;
+        const doc = win.document;
+        const KEY = "__docmindInlineChatDeleteV1";
+
+        if (win[KEY]?.destroy) {
+            try { win[KEY].destroy(); } catch (_) {}
+        }
+
+        let observer = null;
+        const timers = [];
+
+        const mountIcons = () => {
+            const rows = Array.from(
+                doc.querySelectorAll(
+                    '[data-testid="stSidebar"] [class*="st-key-chat_row_"]'
+                )
+            );
+
+            rows.forEach((row) => {
+                const chatWrapper = row.querySelector(
+                    '[class*="st-key-chat_nav_"]'
+                );
+                const deleteWrapper = row.querySelector(
+                    '[class*="st-key-delete_chat_"]'
+                );
+
+                const chatButton = chatWrapper?.querySelector("button");
+                const realDeleteButton = deleteWrapper?.querySelector("button");
+
+                if (!chatButton || !realDeleteButton) return;
+
+                /* Keep only one injected icon per chat row. */
+                let iconButton = chatButton.querySelector(
+                    ".dm-inline-chat-delete"
+                );
+
+                if (!iconButton) {
+                    /*
+                     * Use a span instead of nesting a <button> inside the
+                     * Streamlit chat <button>. This keeps the markup valid
+                     * and allows exact vertical alignment to the chat text.
+                     */
+                    iconButton = doc.createElement("span");
+                    iconButton.className = "dm-inline-chat-delete";
+                    iconButton.setAttribute("role", "button");
+                    iconButton.setAttribute("tabindex", "0");
+                    iconButton.setAttribute(
+                        "aria-label",
+                        "Delete conversation"
+                    );
+                    iconButton.setAttribute(
+                        "title",
+                        "Delete conversation"
+                    );
+
+                    iconButton.innerHTML = `
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 6h18"></path>
+                            <path d="M8 6V4h8v2"></path>
+                            <path d="M19 6l-1 14H6L5 6"></path>
+                            <path d="M10 11v5"></path>
+                            <path d="M14 11v5"></path>
+                        </svg>
+                    `;
+
+                    const triggerDelete = (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        const freshDeleteButton = row.querySelector(
+                            '[class*="st-key-delete_chat_"] button'
+                        );
+
+                        if (freshDeleteButton) {
+                            freshDeleteButton.click();
+                        }
+                    };
+
+                    iconButton.addEventListener("click", triggerDelete);
+
+                    iconButton.addEventListener("keydown", (event) => {
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+                            triggerDelete(event);
+                        }
+                    });
+
+                    /*
+                     * Append directly to the chat button. Because that button
+                     * is position:relative, top:50% now means the true center
+                     * of the "Policies" row/text.
+                     */
+                    chatButton.appendChild(iconButton);
+                }
+            });
+        };
+
+        const startObserver = () => {
+            mountIcons();
+
+            observer?.disconnect();
+            observer = new win.MutationObserver(() => {
+                mountIcons();
+            });
+
+            const sidebar = doc.querySelector(
+                '[data-testid="stSidebar"]'
+            );
+
+            if (sidebar) {
+                observer.observe(sidebar, {
+                    childList: true,
+                    subtree: true,
+                });
+            }
+        };
+
+        [0, 80, 180, 350, 700].forEach((delay) => {
+            timers.push(win.setTimeout(startObserver, delay));
+        });
+
+        win[KEY] = {
+            destroy() {
+                observer?.disconnect();
+                timers.forEach((timer) => win.clearTimeout(timer));
+                doc.querySelectorAll(".dm-inline-chat-delete")
+                    .forEach((node) => node.remove());
+            }
+        };
+    })();
+    </script>
+    """,
+    height=0,
+    width=0,
+)
+
+
+# ============================================================
+# FINAL ALIGNMENT — TRASH ICON CENTERED WITH CHAT TEXT
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* The chat button is the positioning reference. */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        min-height: 46px !important;
+        height: 46px !important;
+        padding-right: 2.45rem !important;
+    }
+
+    /*
+     * Trash icon is INSIDE the same 46px button as "Policies".
+     * This makes its vertical center exactly match the chat text.
+     */
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_nav_"]
+    button .dm-inline-chat-delete {
+        position: absolute !important;
+
+        top: 50% !important;
+        right: .78rem !important;
+        transform: translateY(-50%) !important;
+
+        width: 17px !important;
+        height: 17px !important;
+        min-width: 17px !important;
+        min-height: 17px !important;
+
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+
+        color: #8f9792 !important;
+        opacity: .75 !important;
+        cursor: pointer !important;
+        line-height: 1 !important;
+
+        z-index: 20 !important;
+    }
+
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_nav_"]
+    button .dm-inline-chat-delete:hover,
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_nav_"]
+    button .dm-inline-chat-delete:focus,
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_nav_"]
+    button .dm-inline-chat-delete:active {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+
+        color: var(--dm-danger) !important;
+        opacity: 1 !important;
+    }
+
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_nav_"]
+    button .dm-inline-chat-delete svg {
+        display: block !important;
+        width: 16px !important;
+        height: 16px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+
+        fill: none !important;
+        stroke: currentColor !important;
+        stroke-width: 1.8 !important;
+        stroke-linecap: round !important;
+        stroke-linejoin: round !important;
+
+        pointer-events: none !important;
+    }
+
+    /*
+     * The hidden real Streamlit delete button remains fully hidden,
+     * so it cannot contribute any extra height or visible background.
+     */
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_"] {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        min-width: 1px !important;
+        min-height: 1px !important;
+        max-width: 1px !important;
+        max-height: 1px !important;
+
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# RECENTS SEPARATOR
+# ============================================================
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"] .dm-recents-separator {
+        width: 100% !important;
+        height: 1px !important;
+        margin: .72rem 0 .72rem 0 !important;
+        padding: 0 !important;
+
+        background: var(--dm-sidebar-border) !important;
+        border: 0 !important;
+        opacity: .85 !important;
+    }
+
+    /* Keep Analytics close to the separator like a clean navigation group. */
+    [data-testid="stSidebar"] .dm-recents-separator
+    + div {
+        margin-top: 0 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+
+# ============================================================
+# SIDEBAR PROFESSIONAL SPACING — SAFE / NO OVERLAP
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /* --------------------------------------------------------
+       SAFE SIDEBAR PADDING
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+        padding: .95rem 1rem 1rem !important;
+        box-sizing: border-box !important;
+    }
+
+    /* IMPORTANT:
+       Do not force all Streamlit vertical blocks or element containers
+       to gap:0 / margin:0. Streamlit sliders, labels, and captions need
+       their own internal spacing. */
+
+    /* --------------------------------------------------------
+       BRAND
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .dm-brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: .72rem !important;
+        min-height: 48px !important;
+        margin: 0 0 .95rem 0 !important;
+        padding: 0 !important;
+    }
+
+    [data-testid="stSidebar"] .dm-brand-icon {
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        flex: 0 0 42px !important;
+        border-radius: 12px !important;
+    }
+
+    [data-testid="stSidebar"] .dm-brand-title {
+        margin: 0 !important;
+        font-size: 1rem !important;
+        font-weight: 800 !important;
+        line-height: 1.15 !important;
+    }
+
+    [data-testid="stSidebar"] .dm-brand-sub {
+        margin: .15rem 0 0 !important;
+        font-size: .68rem !important;
+        line-height: 1.2 !important;
+    }
+
+    /* --------------------------------------------------------
+       NEW CHAT
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .st-key-new_chat_button {
+        margin: 0 0 .9rem 0 !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-new_chat_button button {
+        width: 100% !important;
+        min-height: 46px !important;
+        height: 46px !important;
+        padding: 0 .9rem !important;
+        border-radius: 12px !important;
+        font-size: .94rem !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+    }
+
+    /* --------------------------------------------------------
+       RECENTS
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .dm-nav-label {
+        display: block !important;
+        margin: 0 0 .45rem 0 !important;
+        padding: 0 !important;
+        min-height: 16px !important;
+
+        font-size: .76rem !important;
+        font-weight: 800 !important;
+        line-height: 1.25 !important;
+        color: var(--dm-heading) !important;
+        opacity: .9 !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] {
+        margin: 0 0 .48rem 0 !important;
+        padding: 0 !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button {
+        width: 100% !important;
+        min-height: 44px !important;
+        height: 44px !important;
+        padding: 0 2.4rem 0 .82rem !important;
+        border-radius: 11px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+
+        font-size: .91rem !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        text-align: left !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button p {
+        margin: 0 !important;
+        line-height: 1.1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Separator below recent chats */
+    [data-testid="stSidebar"] .dm-recents-separator {
+        width: 100% !important;
+        height: 1px !important;
+        margin: .72rem 0 .72rem !important;
+        padding: 0 !important;
+        background: var(--dm-sidebar-border) !important;
+        opacity: .8 !important;
+    }
+
+    /* --------------------------------------------------------
+       ANALYTICS + KNOWLEDGE
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin: 0 0 .48rem 0 !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        width: 100% !important;
+        min-height: 44px !important;
+        height: 44px !important;
+        padding: 0 .82rem !important;
+        border-radius: 11px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+
+        font-size: .91rem !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        text-align: left !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button p,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button p {
+        margin: 0 !important;
+        line-height: 1.1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* --------------------------------------------------------
+       RETRIEVAL
+       Let Streamlit keep internal slider label/tick spacing.
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .st-key-workspace_top_k {
+        margin: .78rem 0 0 !important;
+        padding: .72rem 0 0 !important;
+        border-top: 1px solid var(--dm-sidebar-border) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-workspace_top_k label {
+        margin-bottom: .22rem !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-workspace_top_k label p {
+        margin: 0 !important;
+        font-size: .9rem !important;
+        font-weight: 700 !important;
+        line-height: 1.25 !important;
+    }
+
+    /* Restore breathing room for slider itself and min/max labels */
+    [data-testid="stSidebar"] .st-key-workspace_top_k [data-testid="stSlider"] {
+        margin-top: .2rem !important;
+        margin-bottom: .55rem !important;
+        padding-bottom: .15rem !important;
+    }
+
+    /* Do not collapse slider internals */
+    [data-testid="stSidebar"] .st-key-workspace_top_k
+    [data-testid="stSlider"] * {
+        line-height: normal;
+    }
+
+    /* Retrieval caption */
+    [data-testid="stSidebar"] .st-key-workspace_top_k + div {
+        margin-top: .22rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-workspace_top_k + div p {
+        margin: 0 !important;
+        font-size: .77rem !important;
+        line-height: 1.4 !important;
+    }
+
+    /* --------------------------------------------------------
+       CLEAR SESSION
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar {
+        margin: .88rem 0 0 !important;
+        padding: .72rem 0 0 !important;
+        border-top: 1px solid var(--dm-sidebar-border) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar button {
+        width: 100% !important;
+        min-height: 44px !important;
+        height: 44px !important;
+        padding: 0 .82rem !important;
+        border-radius: 11px !important;
+        font-size: .91rem !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+    /* Bottom caption gets its own space */
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar ~ div {
+        margin-top: .55rem !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar ~ div p {
+        margin: 0 !important;
+        font-size: .74rem !important;
+        line-height: 1.45 !important;
+    }
+
+    /* --------------------------------------------------------
+       MOBILE / NARROW SIDEBAR
+       -------------------------------------------------------- */
+    @media (max-width: 900px) {
+        [data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+            padding-left: .85rem !important;
+            padding-right: .85rem !important;
+        }
+
+        [data-testid="stSidebar"] .st-key-new_chat_button button,
+        [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button,
+        [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+        [data-testid="stSidebar"] .st-key-knowledge_nav button,
+        [data-testid="stSidebar"] .st-key-clear_session_sidebar button {
+            min-height: 42px !important;
+            height: 42px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# SIDEBAR — UNIFORM VERTICAL GAP SYSTEM
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /*
+     * One spacing unit for the sidebar.
+     * Main controls/rows use 12px between them.
+     * Section separators use the same 12px above/below.
+     */
+
+    :root {
+        --dm-sidebar-gap: 12px;
+        --dm-sidebar-small-gap: 6px;
+    }
+
+    /* New chat -> Recents */
+    [data-testid="stSidebar"] .st-key-new_chat_button {
+        margin-bottom: var(--dm-sidebar-gap) !important;
+    }
+
+    /* Recents heading -> first chat */
+    [data-testid="stSidebar"] .dm-nav-label {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-small-gap) !important;
+    }
+
+    /* Every recent chat row */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-gap) !important;
+    }
+
+    /* Avoid adding an extra-large gap after the final recent chat. */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"]:has(
+        + .dm-recents-separator
+    ) {
+        margin-bottom: 0 !important;
+    }
+
+    /* Separator after Recents */
+    [data-testid="stSidebar"] .dm-recents-separator {
+        margin-top: var(--dm-sidebar-gap) !important;
+        margin-bottom: var(--dm-sidebar-gap) !important;
+    }
+
+    /* Analytics and Knowledge use the same 12px separation */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-gap) !important;
+    }
+
+    /* Make both nav buttons visually equal */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        min-height: 44px !important;
+        height: 44px !important;
+    }
+
+    /*
+     * Retrieval block:
+     * same 12px separation from Knowledge Base.
+     * Keep slider internals untouched so labels/ticks don't overlap.
+     */
+    [data-testid="stSidebar"] .st-key-workspace_top_k {
+        margin-top: 0 !important;
+        padding-top: var(--dm-sidebar-gap) !important;
+        margin-bottom: 0 !important;
+        border-top: 1px solid var(--dm-sidebar-border) !important;
+    }
+
+    /* Top-K label -> slider */
+    [data-testid="stSidebar"] .st-key-workspace_top_k label {
+        margin-bottom: var(--dm-sidebar-small-gap) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-workspace_top_k [data-testid="stSlider"] {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-small-gap) !important;
+    }
+
+    /* Retrieval caption spacing */
+    [data-testid="stSidebar"] .st-key-workspace_top_k + div {
+        margin-top: var(--dm-sidebar-small-gap) !important;
+        margin-bottom: 0 !important;
+    }
+
+    /*
+     * Clear session:
+     * same 12px gap above its divider and below retrieval text.
+     */
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar {
+        margin-top: var(--dm-sidebar-gap) !important;
+        padding-top: var(--dm-sidebar-gap) !important;
+        margin-bottom: 0 !important;
+        border-top: 1px solid var(--dm-sidebar-border) !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar button {
+        min-height: 44px !important;
+        height: 44px !important;
+    }
+
+    /* Bottom note gets the same consistent separation. */
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar ~ div {
+        margin-top: var(--dm-sidebar-gap) !important;
+    }
+
+    /* Keep text baselines consistent across main sidebar buttons. */
+    [data-testid="stSidebar"] .st-key-new_chat_button button,
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button,
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button,
+    [data-testid="stSidebar"] .st-key-clear_session_sidebar button {
         line-height: 1 !important;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+
+# ============================================================
+# FINAL CHAT GAP MATCH — SAME AS ANALYTICS / KNOWLEDGE
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /*
+     * Make spacing between chat rows exactly match the spacing
+     * between Analytics & Evaluation and Knowledge Base.
+     */
+
+    /* Chat rows */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] {
+        margin-top: 0 !important;
+        margin-bottom: .48rem !important;
+        padding: 0 !important;
+    }
+
+    /* Remove any extra Streamlit spacing around chat-row wrappers */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] > div,
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] [data-testid="stVerticalBlock"],
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] [data-testid="stElementContainer"] {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Ensure each chat button has the same height as nav buttons */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button {
+        min-height: 44px !important;
+        height: 44px !important;
+    }
+
+    /* Analytics / Knowledge keep the exact same spacing */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin-top: 0 !important;
+        margin-bottom: .48rem !important;
+    }
+
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        min-height: 44px !important;
+        height: 44px !important;
+    }
+
+    /*
+     * Do not add another separator-sized gap after the last chat.
+     * The dedicated Recents divider supplies the section break.
+     */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"]:last-of-type {
+        margin-bottom: .48rem !important;
+    }
+
+    /* Recents heading spacing stays compact and consistent */
+    [data-testid="stSidebar"] .dm-nav-label {
+        margin-bottom: .48rem !important;
+    }
+
+    /* Recents separator: same vertical rhythm on both sides */
+    [data-testid="stSidebar"] .dm-recents-separator {
+        margin-top: .48rem !important;
+        margin-bottom: .48rem !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL FIX — CHAT ROW GAPS EXACTLY MATCH NAV BUTTON GAPS
+# ============================================================
+st.markdown(
+    """
+    <style>
+    /*
+     * The larger gap between recent chats was coming from TWO sources:
+     * 1) our chat-row margin, and
+     * 2) Streamlit's internal vertical-block gap between the visible
+     *    chat button and the hidden functional delete button.
+     *
+     * Collapse only that INTERNAL chat-row gap, then use the same
+     * .48rem outer gap as Analytics / Knowledge Base.
+     */
+
+    /* Remove all internal spacing inside each chat row container. */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"]
+    [data-testid="stVerticalBlock"] {
+        gap: 0 !important;
+        row-gap: 0 !important;
+    }
+
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"]
+    [data-testid="stElementContainer"] {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* The hidden real delete button must consume zero layout height. */
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_"],
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_"] > div,
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_"]
+    [data-testid="stElementContainer"],
+    [data-testid="stSidebar"] [class*="st-key-delete_chat_"]
+    [data-testid="stButton"] {
+        position: absolute !important;
+        width: 1px !important;
+        min-width: 1px !important;
+        max-width: 1px !important;
+        height: 1px !important;
+        min-height: 1px !important;
+        max-height: 1px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* One and only one vertical gap between recent chats. */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] {
+        margin-top: 0 !important;
+        margin-bottom: .48rem !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Match the same gap used by Analytics / Knowledge Base exactly. */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin-top: 0 !important;
+        margin-bottom: .48rem !important;
+    }
+
+    /* Keep all three row types the same height too. */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button,
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        height: 44px !important;
+        min-height: 44px !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL SIDEBAR RHYTHM
+# Equal gaps + visible divider between Recents and navigation
+# ============================================================
+st.markdown(
+    """
+    <style>
+    :root {
+        --dm-sidebar-item-gap-final: 10px;
+        --dm-sidebar-divider-color-final: rgba(145, 158, 150, .24);
+    }
+
+    /* --------------------------------------------------------
+       RECENT CHAT ROWS
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"] {
+        margin: 0 0 var(--dm-sidebar-item-gap-final) 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Remove any hidden internal spacing from the chat-row container. */
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"]
+    [data-testid="stVerticalBlock"],
+    [data-testid="stSidebar"] [class*="st-key-chat_row_"]
+    [data-testid="stElementContainer"] {
+        gap: 0 !important;
+        row-gap: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* All sidebar item buttons use the same height. */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button,
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        height: 48px !important;
+        min-height: 48px !important;
+        max-height: 48px !important;
+        border-radius: 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* --------------------------------------------------------
+       DIVIDER AFTER RECENT CHATS
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .dm-recents-separator {
+        display: block !important;
+        visibility: visible !important;
+
+        width: 100% !important;
+        height: 1px !important;
+        min-height: 1px !important;
+
+        margin:
+            0
+            0
+            var(--dm-sidebar-item-gap-final)
+            0 !important;
+
+        padding: 0 !important;
+
+        background:
+            var(--dm-sidebar-divider-color-final) !important;
+        border: 0 !important;
+        opacity: 1 !important;
+    }
+
+    /*
+     * The final chat row already has the same 10px gap before the divider.
+     * The divider then has the same 10px gap before Analytics.
+     */
+
+    /* --------------------------------------------------------
+       ANALYTICS + KNOWLEDGE
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-item-gap-final) !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Prevent generic sidebar rules from introducing extra gaps. */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav
+    [data-testid="stElementContainer"],
+    [data-testid="stSidebar"] .st-key-knowledge_nav
+    [data-testid="stElementContainer"] {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* --------------------------------------------------------
+       RECENTS LABEL
+       -------------------------------------------------------- */
+    [data-testid="stSidebar"] .dm-nav-label {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-item-gap-final) !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL SIDEBAR GAP FIX
+# Recent chats now use the exact same spacing as Analytics / Knowledge
+# ============================================================
+st.markdown(
+    """
+    <style>
+    :root {
+        --dm-sidebar-row-gap: 10px;
+    }
+
+    /*
+     * IMPORTANT:
+     * The hidden Streamlit delete button was still reserving layout space
+     * inside every recent-chat container. Hide its ENTIRE element wrapper
+     * from layout. The custom SVG trash icon still triggers the hidden
+     * button programmatically, so delete functionality remains intact.
+     */
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_row_"]
+    [data-testid="stElementContainer"]:has([class*="st-key-delete_chat_"]) {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Remove internal extra spacing from each recent-chat container. */
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_row_"]
+    [data-testid="stVerticalBlock"] {
+        gap: 0 !important;
+        row-gap: 0 !important;
+    }
+
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_row_"] {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-row-gap) !important;
+        padding: 0 !important;
+    }
+
+    /* Analytics and Knowledge use the SAME exact outer gap. */
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav,
+    [data-testid="stSidebar"] .st-key-knowledge_nav {
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-row-gap) !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* All four row types use exactly the same height. */
+    [data-testid="stSidebar"] [class*="st-key-chat_nav_"] button,
+    [data-testid="stSidebar"] .st-key-analytics_eval_nav button,
+    [data-testid="stSidebar"] .st-key-knowledge_nav button {
+        height: 48px !important;
+        min-height: 48px !important;
+        max-height: 48px !important;
+        box-sizing: border-box !important;
+    }
+
+    /*
+     * Separator remains visible after the final recent chat.
+     * Use the same spacing unit above and below it.
+     */
+    [data-testid="stSidebar"] .dm-recents-separator {
+        display: block !important;
+        width: 100% !important;
+        height: 1px !important;
+        min-height: 1px !important;
+
+        margin-top: 0 !important;
+        margin-bottom: var(--dm-sidebar-row-gap) !important;
+        padding: 0 !important;
+
+        background: rgba(145, 158, 150, .24) !important;
+        opacity: 1 !important;
+        border: 0 !important;
+    }
+
+    /* Avoid doubling the space immediately before the separator. */
+    [data-testid="stSidebar"]
+    [class*="st-key-chat_row_"]:has(
+        + [data-testid="stElementContainer"] .dm-recents-separator
+    ) {
+        margin-bottom: var(--dm-sidebar-row-gap) !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FINAL GLOBAL THEME POSITION — DESKTOP + MOBILE
+# ============================================================
+st.markdown(
+    """
+    <style>
+    .st-key-dm_global_theme_control {
+        position: fixed !important;
+        top: 5.35rem !important;
+        right: 2rem !important;
+        left: auto !important;
+        bottom: auto !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        z-index: 100000 !important;
+    }
+
+    .st-key-dm_global_theme_control > div,
+    .st-key-dm_global_theme_control [data-testid="stVerticalBlock"],
+    .st-key-dm_global_theme_control [data-testid="stElementContainer"],
+    .st-key-dm_global_theme_control [data-testid="stRadio"] {
+        width: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* Main pill */
+    .st-key-dm_global_theme_control [role="radiogroup"] {
+        position: relative !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        align-items: center !important;
+        gap: 0 !important;
+
+        width: 92px !important;
+        height: 44px !important;
+        margin: 0 !important;
+        padding: 4px !important;
+
+        border-radius: 999px !important;
+        border: 1px solid rgba(255,255,255,.10) !important;
+        background: #0d1320 !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,.18) !important;
+        overflow: hidden !important;
+    }
+
+    /* Both icon options */
+    .st-key-dm_global_theme_control [role="radio"] {
+        position: relative !important;
+        z-index: 2 !important;
+
+        width: 42px !important;
+        min-width: 42px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 999px !important;
+        background: transparent !important;
+        color: #9aa5ba !important;
+        box-shadow: none !important;
+        cursor: pointer !important;
+
+        transition: color .18s ease, transform .18s ease !important;
+    }
+
+    .st-key-dm_global_theme_control [role="radio"]:hover {
+        color: #ffffff !important;
+        transform: scale(1.03) !important;
+    }
+
+    /* Hide native radio circle entirely */
+    .st-key-dm_global_theme_control [role="radio"] > div:first-child {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .st-key-dm_global_theme_control [role="radio"] p,
+    .st-key-dm_global_theme_control [role="radio"] span {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 18px !important;
+        line-height: 1 !important;
+        color: inherit !important;
+    }
+
+    /* Selected side gets the raised circular/rounded knob effect */
+    .st-key-dm_global_theme_control [role="radio"][aria-checked="true"] {
+        background: #2f3b63 !important;
+        color: #ffffff !important;
+        box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,.04),
+            0 4px 12px rgba(0,0,0,.28) !important;
+    }
+
+    /* Slightly mute unselected icon */
+    .st-key-dm_global_theme_control [role="radio"][aria-checked="false"] {
+        opacity: .78 !important;
+    }
+
+    .dm-right-panel-title {
+        margin-top: 2.45rem !important;
+    }
+
+    @media (max-width: 900px) {
+        .st-key-dm_global_theme_control {
+            top: 4rem !important;
+            right: .65rem !important;
+            z-index: 2147483000 !important;
+        }
+
+        .st-key-dm_global_theme_control [role="radiogroup"] {
+            width: 84px !important;
+            height: 40px !important;
+            padding: 4px !important;
+        }
+
+        .st-key-dm_global_theme_control [role="radio"] {
+            width: 38px !important;
+            min-width: 38px !important;
+            height: 32px !important;
+            min-height: 32px !important;
+        }
+
+        .st-key-dm_global_theme_control [role="radio"] p,
+        .st-key-dm_global_theme_control [role="radio"] span {
+            font-size: 16px !important;
+        }
+
+        .dm-right-panel-title {
+            margin-top: 0 !important;
+        }
+    }
+
+    @media (max-width: 430px) {
+        .st-key-dm_global_theme_control {
+            top: 3.8rem !important;
+            right: .45rem !important;
+        }
+
+        .st-key-dm_global_theme_control [role="radiogroup"] {
+            width: 78px !important;
+            height: 38px !important;
+            padding: 3px !important;
+        }
+
+        .st-key-dm_global_theme_control [role="radio"] {
+            width: 36px !important;
+            min-width: 36px !important;
+            height: 32px !important;
+            min-height: 32px !important;
+        }
+
+        .st-key-dm_global_theme_control [role="radio"] p,
+        .st-key-dm_global_theme_control [role="radio"] span {
+            font-size: 15px !important;
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ============================================================
+# COMPACT PROFESSIONAL THEME TOGGLE
+# ============================================================
+# Disabled old toggle styles to avoid conflicts with the final moon/sun toggle above.
+
